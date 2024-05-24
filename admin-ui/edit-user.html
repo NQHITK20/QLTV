@@ -36,7 +36,7 @@
         let userData = {
             id:userId
         }
-        xhr.open("POST", "http://localhost:8000/api/get-user-by-id", true);
+        xhr.open("POST", "https://qltv-backend.vercel.app/api/get-user-by-id", true);
         xhr.setRequestHeader("Content-Type", "application/json");
         xhr.onreadystatechange = function () {
             if (xhr.readyState === 4 && xhr.status === 200) {
@@ -106,7 +106,7 @@ document.addEventListener("DOMContentLoaded", async function() {
             };
 
             let xhr = new XMLHttpRequest(); // Tạo đối tượng XMLHttpRequest
-            xhr.open('POST', 'http://localhost:8000/api/edit-user',true); // Gửi yêu cầu POST đến đường dẫn '/api/users'
+            xhr.open('POST', 'https://qltv-backend.vercel.app/api/edit-user',true); // Gửi yêu cầu POST đến đường dẫn '/api/users'
             xhr.setRequestHeader("Content-Type", "application/json"); // Thiết lập tiêu đề 'Content-Type'
 
             xhr.onload = function() {

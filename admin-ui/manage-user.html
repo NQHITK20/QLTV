@@ -29,7 +29,7 @@
 
     <link href='https://fonts.googleapis.com/css?family=Open+Sans:400,600,700,800' rel='stylesheet' type='text/css'>
     <script>
-        fetch('http://localhost:8000/api/get-all-user')
+        fetch('https://qltv-backend.vercel.app/api/get-all-user')
     .then(response => response.json())
     .then(data => {
         const dataTable = data.data;
@@ -77,7 +77,7 @@
         }
 
         const xhr = new XMLHttpRequest();
-        xhr.open('DELETE', `http://localhost:8000/api/delete-user`, true);
+        xhr.open('DELETE', `https://qltv-backend.vercel.app/api/delete-user`, true);
         xhr.setRequestHeader('Content-Type', 'application/json');
         xhr.setRequestHeader('Authorization', 'Bearer');
 

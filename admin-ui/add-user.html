@@ -390,7 +390,7 @@
             };
 
             const xhr = new XMLHttpRequest(); // Tạo đối tượng XMLHttpRequest
-            xhr.open('POST', 'http://localhost:8000/api/create-new-user',true); // Gửi yêu cầu POST đến đường dẫn '/api/users'
+            xhr.open('POST', 'https://qltv-backend.vercel.app/api/create-new-user',true); // Gửi yêu cầu POST đến đường dẫn '/api/users'
             xhr.setRequestHeader("Content-Type", "application/json"); // Thiết lập tiêu đề 'Content-Type'
 
             xhr.onload = function() {

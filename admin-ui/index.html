@@ -40,7 +40,7 @@
     <link href='https://fonts.googleapis.com/css?family=Open+Sans:400,600,700,800' rel='stylesheet' type='text/css'>  
 </head>
 <script>
-    fetch('http://localhost:8000/api/get-count')
+    fetch('https://qltv-backend.vercel.app/api/get-count')
   .then(response => response.json())
   .then(data => {
       document.getElementById('count').innerText = data.countUser;
@@ -383,7 +383,7 @@ if (exportButton) {
 
 const handleExportClick = async () => {
 try {
-    const response = await fetch('http://localhost:8000/api/export-data-user', { method: 'GET' });
+    const response = await fetch('https://qltv-backend.vercel.app/api/export-data-user', { method: 'GET' });
 
     if (!response.ok) {
         throw new Error('Network response was not ok');
