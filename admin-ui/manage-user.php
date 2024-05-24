@@ -1,3 +1,28 @@
+<?php
+ini_set('display_errors', 1);
+ini_set('display_startup_errors', 1);
+error_reporting(E_ALL);
+
+$url = 'https://qltv-backend.vercel.app/api/get-all-user'; // URL của API backend
+
+// Lấy nội dung từ backend (ví dụ: dữ liệu JSON)
+$response = file_get_contents($url);
+
+// Kiểm tra nếu có lỗi khi lấy dữ liệu từ backend
+if ($response === FALSE) {
+    die('Lỗi khi lấy dữ liệu từ backend');
+}
+
+// Chuyển đổi JSON thành mảng dữ liệu trong PHP
+$data = json_decode($response, true);
+
+// Kiểm tra nếu có lỗi khi chuyển đổi JSON
+if ($data === null) {
+    die('Lỗi khi chuyển đổi JSON');
+}
+
+// In ra dữ liệu để kiểm tra (debugging)
+?>
 <!doctype html>
 <!--[if lt IE 7]>      <html class="no-js lt-ie9 lt-ie8 lt-ie7" lang=""> <![endif]-->
 <!--[if IE 7]>         <html class="no-js lt-ie9 lt-ie8" lang=""> <![endif]-->
@@ -72,7 +97,7 @@
                     <li class="menu-item-has-children dropdown">
                         <a href="#" class="dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"> <i class="menu-icon fa fa-user"></i>Tài khoản</a>
                         <ul class="sub-menu children dropdown-menu">
-                            <li><i class="fa fa-user"></i><a href="manage-user.html">Quản lý tài khoản</a></li>
+                            <li><i class="fa fa-user"></i><a href="manage-user.php">Quản lý tài khoản</a></li>
                             <li><i class="fa fa-plus"></i><a href="add-user.html">Thêm tài khoản</a></li>
                         </ul>
                     </li>
@@ -199,7 +224,7 @@
                 <div class="page-header float-right">
                     <div class="page-title">
                         <ol class="breadcrumb text-right">
-                            <li><a href="manage-user.html">Tài khoản</a></li>
+                            <li><a href="manage-user.php">Tài khoản</a></li>
                             <li class="active">Quản lý tài khoản</li>
                         </ol>
                     </div>
@@ -225,38 +250,52 @@
                                             <th>Hành động</th>
                                         </tr>
                                     </thead>
-                                    <tbody>
+                                    <tbody>   
                                     <?php
-            $url = 'https://qltv-backend.vercel.app/api/get-all-user'; // URL của API backend
-
-            // Lấy nội dung từ backend (ví dụ: dữ liệu JSON)
-            $response = file_get_contents($url);
-
-            // Chuyển đổi JSON thành mảng dữ liệu trong PHP
-            $data = json_decode($response, true);
-            
-            echo 'check data ' . $data;
-
-
-            // Kiểm tra nếu có lỗi khi lấy dữ liệu từ backend
-            if ($data === null) {
-                die('Lỗi khi lấy dữ liệu từ backend');
-            }
-
-            // Lặp qua dữ liệu và hiển thị trong bảng
-            foreach ($data as $user) {
-                ?>
-                <tr>
-                    <td><?php echo $user['firstName']; ?></td>
-                    <td><?php echo $user['firstName']; ?></td>
-                    <td><?php echo $user['firstName']; ?></td>
-                    <td><?php echo $user['firstName']; ?></td>
-                </tr>
-                <?php
+            // Kiểm tra nếu dữ liệu có chứa key 'data'
+            if (isset($data['data'])) {
+                // Lặp qua dữ liệu và hiển thị trong bảng
+                foreach ($data['data'] as $user) {
+                    ?>
+                    <tr>
+                        <td><?php echo htmlspecialchars($user['firstName']) . ' ' . htmlspecialchars($user['lastName']); ?></td>
+                        <td><?php echo htmlspecialchars($user['email']); ?></td>
+                        <td>
+                            <?php
+                            if ($user['roleId'] == "1") {
+                                echo "Khách";
+                            } elseif ($user['roleId'] == "2") {
+                                echo "Thủ Thư";
+                            } elseif ($user['roleId'] == "3") {
+                                echo "Admin";
+                            } else {
+                                echo "Unknown";
+                            }
+                            ?>
+                        </td>
+                        <td>
+                            <button type="submit" class="btn btn-primary btn-sm" id="editUserInfo" data-id="<?php echo htmlspecialchars($user['id']); ?>" onclick="sendData()">
+                                <i class="fa fa-eraser"></i> Sửa
+                            </button>
+                            <button type="button" class="btn btn-danger btn-sm" id="deleteUser" onclick="deleteUserData('<?php echo htmlspecialchars($user['id']); ?>', '<?php echo htmlspecialchars($user['lastName']); ?>')">
+                                <i class="fa fa-ban"></i> Xoá
+                            </button>
+                        </td>
+                    </tr>
+                    <?php
+                }
+            } else {
+                echo '<tr><td colspan="4">Không có dữ liệu</td></tr>';
             }
             ?>
                                     </tbody>     
                                 </table>
+                                <script type="text/javascript">
+        // Chuyển đổi dữ liệu PHP sang JSON và gán cho biến JavaScript
+        var data = <?php echo json_encode($data); ?>;
+        // Ghi dữ liệu ra console
+        console.log(data);
+    </script>
                             </div>
                         </div>
                     </div>
@@ -286,33 +325,8 @@
     <script src="vendors/datatables.net-buttons/js/buttons.colVis.min.js"></script>
     <script src="assets/js/init-scripts/data-table/datatables-init.js"></script>
 </body>
-<!-- <script>
-    document.getElementById('loadingOverlay').style.display = 'flex';
-    fetch('https://qltv-backend.vercel.app/api/get-all-user')
-.then(response => response.json())
-.then(data => {
-    const dataTable = data.data;
-    const tableBody = document.getElementById('tbody');
-    tableBody.innerHTML = dataTable.map(user => `
-        <tr>
-            <td>${user.firstName} ${user.lastName}</td>
-            <td>${user.email}</td>
-            <td>${user.roleId === "1" ? "Khách" : user.roleId === "2" ? "Thủ Thư" : user.roleId === "3" ? "Admin" : "Unknown"}</td>
-            <td>
-                <button type="submit" class="btn btn-primary btn-sm" id="editUserInfo" data-id="${user.id}" onclick="sendData()">
-                    <i class="fa fa-eraser"></i> Sửa
-                </button>
-                <button type="button" class="btn btn-danger btn-sm"  id="deleteUser"  onclick="deleteUserData('${user.id}','${user.lastName}')">
-                    <i class="fa fa-ban"></i> Xoá
-                </button>
-            </td>
-        </tr>
-    `).join('');
-    document.getElementById('loadingOverlay').style.display = 'none';
-})
-.catch(error => console.error('Lỗi lấy data từ server:', error));
-
-const sendData = async () => {
+<script>
+    const sendData = async () => {
 try {
     const id = await document.getElementById("editUserInfo").getAttribute("data-id");
     // Chuyển đến trang HTML khác với query parameter id
@@ -321,8 +335,6 @@ try {
     console.error('Error occurred:', error);
 }
 };
-</script> -->
-<script>
     const deleteUserData = async (id,name) => {
 try {
     // Lấy giá trị ID từ thuộc tính data-id của phần tử
@@ -348,7 +360,7 @@ try {
                 var responseData = JSON.parse(xhr.responseText);
                 if (xhr.status === 200 && responseData.errCode === 0) { // Kiểm tra nếu mã trạng thái là 201 (Created)
                     alert('Xoá thành công')
-                    window.location.href = "manage-user.html";
+                    window.location.href = "manage-user.php";
             } else {
                 alert(responseData.errMessage)
             }

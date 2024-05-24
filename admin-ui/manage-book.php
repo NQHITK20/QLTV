@@ -1,3 +1,46 @@
+<?php
+ini_set('display_errors', 1);
+ini_set('display_startup_errors', 1);
+error_reporting(E_ALL);
+
+$url = 'https://qltv-backend.vercel.app/api/get-all-book'; // URL của API backend
+
+// Dữ liệu gửi đi
+$data = array('id' => 'ALL');
+
+// Chuyển đổi mảng dữ liệu thành JSON
+$jsonData = json_encode($data);
+
+// Cấu hình cURL
+$ch = curl_init($url);
+curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+curl_setopt($ch, CURLOPT_HTTPHEADER, array('Content-Type: application/json'));
+curl_setopt($ch, CURLOPT_POST, true);
+curl_setopt($ch, CURLOPT_POSTFIELDS, $jsonData);
+
+// Thực hiện yêu cầu POST và nhận phản hồi
+$response = curl_exec($ch);
+
+// Kiểm tra nếu có lỗi khi gửi yêu cầu
+if ($response === FALSE) {
+    die('Lỗi khi gửi yêu cầu: ' . curl_error($ch));
+}
+
+// Đóng cURL
+curl_close($ch);
+
+// Chuyển đổi JSON thành mảng dữ liệu trong PHP
+$data = json_decode($response, true);
+
+// Kiểm tra nếu có lỗi khi chuyển đổi JSON
+if ($data === null) {
+    die('Lỗi khi chuyển đổi JSON');
+}
+
+// In ra dữ liệu để kiểm tra (debugging)
+
+?>
+
 <!doctype html>
 <!--[if lt IE 7]>      <html class="no-js lt-ie9 lt-ie8 lt-ie7" lang=""> <![endif]-->
 <!--[if IE 7]>         <html class="no-js lt-ie9 lt-ie8" lang=""> <![endif]-->
@@ -72,14 +115,14 @@
                     <li class="menu-item-has-children dropdown">
                         <a href="#" class="dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"> <i class="menu-icon fa fa-user"></i>Tài khoản</a>
                         <ul class="sub-menu children dropdown-menu">
-                            <li><i class="fa fa-user"></i><a href="manage-user.html">Quản lý tài khoản</a></li>
+                            <li><i class="fa fa-user"></i><a href="manage-user.php">Quản lý tài khoản</a></li>
                             <li><i class="fa fa-plus"></i><a href="add-user.html">Thêm tài khoản</a></li>
                         </ul>
                     </li>
                     <li class="menu-item-has-children dropdown">
                         <a href="#" class="dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"> <i class="menu-icon fa fa-book"></i>Sách</a>
                         <ul class="sub-menu children dropdown-menu">
-                            <li><i class="fa fa-book"></i><a href="manage-book.html">Quản lý sách</a></li>
+                            <li><i class="fa fa-book"></i><a href="manage-book.php">Quản lý sách</a></li>
                             <li><i class="fa fa-plus"></i><a href="add-book.html">Thêm sách</a></li>
                         </ul>
                     </li>
@@ -206,7 +249,7 @@
                 <div class="page-header float-right">
                     <div class="page-title">
                         <ol class="breadcrumb text-right">
-                            <li><a href="manage-user.html">Sách</a></li>
+                            <li><a href="manage-user.php">Sách</a></li>
                             <li class="active">Quản lý sách</li>
                         </ol>
                     </div>
@@ -235,8 +278,42 @@
                                             <th>Hành động</th>
                                         </tr>
                                     </thead>
-                                    <tbody id="data" class="data-table">
-                                
+                                    <tbody>
+                                    <?php
+            // Kiểm tra nếu dữ liệu có chứa key 'data'
+            if (isset($data['data'])) {
+                // Lặp qua dữ liệu và hiển thị trong bảng
+                foreach ($data['data'] as $book) {
+                    ?>
+                    <tr>
+                        <td style="max-width: 232px !important;"><?php echo htmlspecialchars($book['bookName']); ?></td>
+                        <td ><?php echo htmlspecialchars($book['bookCode']); ?></td>
+                        <td style="max-width: 150px !important;"><img src="../images/books/<?php echo htmlspecialchars($book['image']); ?>" alt="<?php echo htmlspecialchars($book['bookName']); ?>" style="width"></td>
+                        <td><?php echo htmlspecialchars($book['author']); ?></td>
+                        <td><?php echo htmlspecialchars($book['category']); ?></td>
+                        <td>
+                            <button type="button" class="btn btn-info btn-sm" onclick="sendData('<?php echo htmlspecialchars($book['id']); ?>')">
+                                <i class="fa fa-eye"></i> Hiện
+                            </button>
+                            <button type="button" class="btn btn-danger btn-sm" onclick="deleteUserData('<?php echo htmlspecialchars($book['id']); ?>', '<?php echo htmlspecialchars($book['bookName']); ?>')">
+                                <i class="fa fa-eye-slash"></i> Ẩn
+                            </button>
+                        </td>
+                        <td>
+                            <button type="button" class="btn btn-primary btn-sm" onclick="sendData('<?php echo htmlspecialchars($book['id']); ?>')">
+                                <i class="fa fa-eraser"></i> Sửa
+                            </button>
+                            <button type="button" class="btn btn-danger btn-sm" onclick="deleteUserData('<?php echo htmlspecialchars($book['id']); ?>', '<?php echo htmlspecialchars($book['bookName']); ?>')">
+                                <i class="fa fa-ban"></i> Xoá
+                            </button>
+                        </td>
+                    </tr>
+                    <?php
+                }
+            } else {
+                echo '<tr><td colspan="7">Không có dữ liệu</td></tr>';
+            }
+            ?>
                                     </tbody>     
                                 </table>
                             </div>
@@ -256,7 +333,7 @@
     <script src="vendors/popper.js/dist/umd/popper.min.js"></script>
     <script src="vendors/bootstrap/dist/js/bootstrap.min.js"></script>
     <script src="assets/js/main.js"></script>
-    <!-- <script src="vendors/datatables.net/js/jquery.dataTables.min.js"></script> -->
+    <script src="vendors/datatables.net/js/jquery.dataTables.min.js"></script>
     <script src="vendors/datatables.net-bs4/js/dataTables.bootstrap4.min.js"></script>
     <script src="vendors/datatables.net-buttons/js/dataTables.buttons.min.js"></script>
     <script src="vendors/datatables.net-buttons-bs4/js/buttons.bootstrap4.min.js"></script>
@@ -269,57 +346,6 @@
     <script src="assets/js/init-scripts/data-table/datatables-init.js"></script>
 </body>
 <script>
-    document.addEventListener("DOMContentLoaded", async function() {
-        try {
-            document.getElementById('loadingOverlay').style.display = 'flex';
-            const response = await fetch('https://qltv-backend.vercel.app/api/get-all-book', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({ id: "ALL" })
-            });
-
-
-            if (!response.ok) {
-                throw new Error('Failed to fetch data');
-                document.getElementById('loadingOverlay').style.display = 'none';
-            }
-            const data = await response.json();
-            const dataTable = data.data;
-            const tableBody = document.querySelector('tbody');
-            tableBody.innerHTML = dataTable.map(book => {
-                    return`<tr>
-                        <td style="max-width: 232px !important">${book.bookName}</td>
-                        <td>${book.bookCode}</td>
-                        <td><img src="../images/books/${book.image}" alt="${book.bookName}" width="150"></td>
-                        <td>${book.author}</td>
-                        <td>${book.category}</td>
-                        <td>
-                            <button type="button" class="btn btn-info btn-sm" onclick="sendData('${book.id}')">
-                                <i class="fa fa-eye"></i> Hiện
-                            </button>
-                            <button type="button" class="btn btn-danger btn-sm" onclick="deleteUserData('${book.id}','${book.bookName}')">
-                                <i class="fa fa-eye-slash"></i> Ẩn
-                            </button>
-                        </td>
-                        <td>
-                            <button type="button" class="btn btn-primary btn-sm" onclick="sendData('${book.id}')">
-                                <i class="fa fa-eraser"></i> Sửa
-                            </button>
-                            <button type="button" class="btn btn-danger btn-sm" onclick="deleteUserData('${book.id}','${book.bookName}')">
-                                <i class="fa fa-ban"></i> Xoá
-                            </button>
-                        </td>
-                    </tr>
-                `;
-            }).join('');
-            document.getElementById('loadingOverlay').style.display = 'none';
-        } catch (error) {
-            console.error('Lỗi lấy data từ server:', error);
-        }
-    });
-
     // Hàm gửi dữ liệu
     const sendData = async (id) => {
         try {

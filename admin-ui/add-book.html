@@ -59,14 +59,14 @@
                     <li class="menu-item-has-children dropdown">
                         <a href="#" class="dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"> <i class="menu-icon fa fa-user"></i>Tài khoản</a>
                         <ul class="sub-menu children dropdown-menu">
-                            <li><i class="fa fa-user"></i><a href="manage-user.html">Quản lý tài khoản</a></li>
+                            <li><i class="fa fa-user"></i><a href="manage-user.php">Quản lý tài khoản</a></li>
                             <li><i class="fa fa-plus"></i><a href="add-user.html">Thêm sách</a></li>
                         </ul>
                     </li>
                     <li class="menu-item-has-children dropdown">
                         <a href="#" class="dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"> <i class="menu-icon fa fa-book"></i>Sách</a>
                         <ul class="sub-menu children dropdown-menu">
-                            <li><i class="fa fa-book"></i><a href="manage-user.html">Quản lý sách</a></li>
+                            <li><i class="fa fa-book"></i><a href="manage-user.php">Quản lý sách</a></li>
                             <li><i class="fa fa-plus"></i><a href="add-user.html">Thêm sách</a></li>
                         </ul>
                     </li>
@@ -378,7 +378,7 @@
                     var responseData = JSON.parse(xhr.responseText);
                     if (xhr.status === 200 && responseData.errCode === 0) { // Kiểm tra nếu mã trạng thái là 201 (Created)
                         alert('Bạn đã thêm sách vào kho thành công')
-                        window.location.href = "manage-book.html";
+                        window.location.href = "manage-book.php";
                 } else {
                     alert(responseData.errMessage)
                 }
