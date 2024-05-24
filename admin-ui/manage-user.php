@@ -28,89 +28,6 @@
     <link rel="stylesheet" href="assets/css/style.css">
 
     <link href='https://fonts.googleapis.com/css?family=Open+Sans:400,600,700,800' rel='stylesheet' type='text/css'>
-    <script>
-        fetch('https://qltv-backend.vercel.app/api/get-all-user')
-    .then(response => response.json())
-    .then(data => {
-        const dataTable = data.data;
-        const tableBody = document.querySelector('tbody');
-        tableBody.innerHTML = dataTable.map(user => `
-            <tr>
-                <td>${user.firstName} ${user.lastName}</td>
-                <td>${user.email}</td>
-                <td>${user.roleId === "1" ? "Khách" : user.roleId === "2" ? "Thủ Thư" : user.roleId === "3" ? "Admin" : "Unknown"}</td>
-                <td>
-                    <button type="submit" class="btn btn-primary btn-sm" id="editUserInfo" data-id="${user.id}" onclick="sendData()">
-                        <i class="fa fa-eraser"></i> Sửa
-                    </button>
-                    <button type="button" class="btn btn-danger btn-sm"  id="deleteUser"  onclick="deleteUserData('${user.id}','${user.lastName}')">
-                        <i class="fa fa-ban"></i> Xoá
-                    </button>
-                </td>
-            </tr>
-        `).join('');
-    })
-    .catch(error => console.error('Lỗi lấy data từ server:', error));
-
-    const sendData = async () => {
-    try {
-        const id = await document.getElementById("editUserInfo").getAttribute("data-id");
-        // Chuyển đến trang HTML khác với query parameter id
-        window.location.href = `edit-user.html?id=${id}`;
-    } catch (error) {
-        console.error('Error occurred:', error);
-    }
-};
-    </script>
-    <script>
-        const deleteUserData = async (id,name) => {
-    try {
-        // Lấy giá trị ID từ thuộc tính data-id của phần tử
-        // Hiển thị hộp thoại xác nhận
-        const userConfirmed = confirm(`Bạn có chắc là muốn xoá người dùng ${name} ?`);
-        if (!userConfirmed) {
-            // Người dùng chọn không xóa
-            return;
-        }
-        let userId={
-            id:id
-        }
-
-        const xhr = new XMLHttpRequest();
-        xhr.open('DELETE', `https://qltv-backend.vercel.app/api/delete-user`, true);
-        xhr.setRequestHeader('Content-Type', 'application/json');
-        xhr.setRequestHeader('Authorization', 'Bearer');
-
-        // Định nghĩa hàm callback khi yêu cầu thay đổi trạng thái
-        xhr.onload = function() {
-            document.getElementById('loadingOverlay').style.display = 'none';
-                try {
-                    var responseData = JSON.parse(xhr.responseText);
-                    if (xhr.status === 200 && responseData.errCode === 0) { // Kiểm tra nếu mã trạng thái là 201 (Created)
-                        alert('Xoá thành công')
-                        window.location.href = "manage-user.html";
-                } else {
-                    alert(responseData.errMessage)
-                }
-                } catch (error) {
-                    console.log(error)
-                    alert('Lỗi sever');
-                }
-            };
-            xhr.onerror = function () {
-                console.error('Request failed');
-                alert('Có lỗi xảy ra khi gửi yêu cầu. Vui lòng thử lại sau.');
-                document.getElementById('loadingOverlay').style.display = 'none';
-                   };
-            document.getElementById('loadingOverlay').style.display = 'flex';
-
-        // Gửi yêu cầu
-        xhr.send(JSON.stringify(userId));
-    } catch (error) {
-        console.error('An error occurred while trying to delete the user:', error);
-    }
-};
-    </script>
     <style>
         .overlay {
             position: fixed;
@@ -142,7 +59,7 @@
                 <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#main-menu" aria-controls="main-menu" aria-expanded="false" aria-label="Toggle navigation">
                     <i class="fa fa-bars"></i>
                 </button>
-                <a class="navbar-brand" href="../web-ui/index.html"><img src="images/logo.png" alt="Logo"></a>
+                <a class="navbar-brand" href="../index.html"><img src="images/logo.png" alt="Logo"></a>
                 <a class="navbar-brand hidden" href="./"><img src="images/logo2.png" alt="Logo"></a>
             </div>
 
@@ -309,7 +226,35 @@
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        
+                                    <?php
+            $url = 'https://qltv-backend.vercel.app/api/get-all-user'; // URL của API backend
+
+            // Lấy nội dung từ backend (ví dụ: dữ liệu JSON)
+            $response = file_get_contents($url);
+
+            // Chuyển đổi JSON thành mảng dữ liệu trong PHP
+            $data = json_decode($response, true);
+            
+            echo 'check data ' . $data;
+
+
+            // Kiểm tra nếu có lỗi khi lấy dữ liệu từ backend
+            if ($data === null) {
+                die('Lỗi khi lấy dữ liệu từ backend');
+            }
+
+            // Lặp qua dữ liệu và hiển thị trong bảng
+            foreach ($data as $user) {
+                ?>
+                <tr>
+                    <td><?php echo $user['firstName']; ?></td>
+                    <td><?php echo $user['firstName']; ?></td>
+                    <td><?php echo $user['firstName']; ?></td>
+                    <td><?php echo $user['firstName']; ?></td>
+                </tr>
+                <?php
+            }
+            ?>
                                     </tbody>     
                                 </table>
                             </div>
@@ -340,8 +285,91 @@
     <script src="vendors/datatables.net-buttons/js/buttons.print.min.js"></script>
     <script src="vendors/datatables.net-buttons/js/buttons.colVis.min.js"></script>
     <script src="assets/js/init-scripts/data-table/datatables-init.js"></script>
-    <script>
-    </script>
 </body>
+<!-- <script>
+    document.getElementById('loadingOverlay').style.display = 'flex';
+    fetch('https://qltv-backend.vercel.app/api/get-all-user')
+.then(response => response.json())
+.then(data => {
+    const dataTable = data.data;
+    const tableBody = document.getElementById('tbody');
+    tableBody.innerHTML = dataTable.map(user => `
+        <tr>
+            <td>${user.firstName} ${user.lastName}</td>
+            <td>${user.email}</td>
+            <td>${user.roleId === "1" ? "Khách" : user.roleId === "2" ? "Thủ Thư" : user.roleId === "3" ? "Admin" : "Unknown"}</td>
+            <td>
+                <button type="submit" class="btn btn-primary btn-sm" id="editUserInfo" data-id="${user.id}" onclick="sendData()">
+                    <i class="fa fa-eraser"></i> Sửa
+                </button>
+                <button type="button" class="btn btn-danger btn-sm"  id="deleteUser"  onclick="deleteUserData('${user.id}','${user.lastName}')">
+                    <i class="fa fa-ban"></i> Xoá
+                </button>
+            </td>
+        </tr>
+    `).join('');
+    document.getElementById('loadingOverlay').style.display = 'none';
+})
+.catch(error => console.error('Lỗi lấy data từ server:', error));
+
+const sendData = async () => {
+try {
+    const id = await document.getElementById("editUserInfo").getAttribute("data-id");
+    // Chuyển đến trang HTML khác với query parameter id
+    window.location.href = `edit-user.html?id=${id}`;
+} catch (error) {
+    console.error('Error occurred:', error);
+}
+};
+</script> -->
+<script>
+    const deleteUserData = async (id,name) => {
+try {
+    // Lấy giá trị ID từ thuộc tính data-id của phần tử
+    // Hiển thị hộp thoại xác nhận
+    const userConfirmed = confirm(`Bạn có chắc là muốn xoá người dùng ${name} ?`);
+    if (!userConfirmed) {
+        // Người dùng chọn không xóa
+        return;
+    }
+    let userId={
+        id:id
+    }
+
+    const xhr = new XMLHttpRequest();
+    xhr.open('DELETE', `https://qltv-backend.vercel.app/api/delete-user`, true);
+    xhr.setRequestHeader('Content-Type', 'application/json');
+    xhr.setRequestHeader('Authorization', 'Bearer');
+
+    // Định nghĩa hàm callback khi yêu cầu thay đổi trạng thái
+    xhr.onload = function() {
+        document.getElementById('loadingOverlay').style.display = 'none';
+            try {
+                var responseData = JSON.parse(xhr.responseText);
+                if (xhr.status === 200 && responseData.errCode === 0) { // Kiểm tra nếu mã trạng thái là 201 (Created)
+                    alert('Xoá thành công')
+                    window.location.href = "manage-user.html";
+            } else {
+                alert(responseData.errMessage)
+            }
+            } catch (error) {
+                console.log(error)
+                alert('Lỗi sever');
+            }
+        };
+        xhr.onerror = function () {
+            console.error('Request failed');
+            alert('Có lỗi xảy ra khi gửi yêu cầu. Vui lòng thử lại sau.');
+            document.getElementById('loadingOverlay').style.display = 'none';
+               };
+        document.getElementById('loadingOverlay').style.display = 'flex';
+
+    // Gửi yêu cầu
+    xhr.send(JSON.stringify(userId));
+} catch (error) {
+    console.error('An error occurred while trying to delete the user:', error);
+}
+};
+</script>
 
 </html>
