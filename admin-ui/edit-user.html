@@ -37,13 +37,14 @@
         let userData = {
             id:userId
         }
-        xhr.open("POST", "https://qltv-backend.vercel.appapi/get-user-by-id", true);
+        xhr.open("POST", "https://qltv-backend.vercel.app/api/get-user-by-id", true);
         xhr.setRequestHeader("Content-Type", "application/json");
         xhr.onreadystatechange = function () {
             if (xhr.readyState === 4 && xhr.status === 200) {
                 var responseData = JSON.parse(xhr.responseText);
                 resolve(responseData);
-                
+             document.getElementById('loadingOverlay').style.display = 'none';
+
             }
         };
         xhr.send(JSON.stringify(userData));
@@ -108,7 +109,7 @@ document.addEventListener("DOMContentLoaded", async function() {
             };
 
             let xhr = new XMLHttpRequest(); // Tạo đối tượng XMLHttpRequest
-            xhr.open('POST', 'https://qltv-backend.vercel.appapi/edit-user',true); // Gửi yêu cầu POST đến đường dẫn '/api/users'
+            xhr.open('POST', 'https://qltv-backend.vercel.app/api/edit-user',true); // Gửi yêu cầu POST đến đường dẫn '/api/users'
             xhr.setRequestHeader("Content-Type", "application/json"); // Thiết lập tiêu đề 'Content-Type'
 
             xhr.onload = function() {
@@ -131,7 +132,7 @@ document.addEventListener("DOMContentLoaded", async function() {
             alert('Có lỗi xảy ra khi gửi yêu cầu. Vui lòng thử lại sau.');
             document.getElementById('loadingOverlay').style.display = 'none';
             };
-            document.getElementById('loadingOverlay').style.display = 'flex';
+            document.getElementById('loadingOverlay').style.display = 'none';
             xhr.send(JSON.stringify(userData));
         }
     </script>
