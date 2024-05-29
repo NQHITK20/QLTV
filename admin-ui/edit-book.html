@@ -27,115 +27,7 @@
     <link rel="stylesheet" href="assets/css/style.css">
 
     <link href='https://fonts.googleapis.com/css?family=Open+Sans:400,600,700,800' rel='stylesheet' type='text/css'>
-    <script>
-  function fetchData() {
-    document.getElementById('loadingOverlay').style.display = 'flex';
-    return new Promise(function(resolve, reject) {
-        let xhr = new XMLHttpRequest();
-        let urlParams = new URLSearchParams(window.location.search);
-        let userId = urlParams.get('id');
-        let userData = {
-            id:userId
-        }
-        xhr.open("POST", "http://localhost:3307/api/get-user-by-id", true);
-        xhr.setRequestHeader("Content-Type", "application/json");
-        xhr.onreadystatechange = function () {
-            if (xhr.readyState === 4 && xhr.status === 200) {
-                var responseData = JSON.parse(xhr.responseText);
-                resolve(responseData);
-             document.getElementById('loadingOverlay').style.display = 'none';
-
-            }
-        };
-        xhr.send(JSON.stringify(userData));
-    });
-}
-
-document.addEventListener("DOMContentLoaded", async function() {
-    try {
-        const responseData = await fetchData();
-        console.log('check res data',responseData)
-        if (responseData.errCode === 0) {
-            document.getElementById("firstName").value = responseData.data.firstName;
-            document.getElementById("lastName").value = responseData.data.lastName;
-            document.getElementById("email").value = responseData.data.email;
-            document.getElementById("roleId").value = responseData.data.roleId;
-            document.getElementById("nationalId").value = responseData.data.nationalId;
-            document.getElementById("phoneNumber").value = responseData.data.phoneNumber;
-            document.getElementById("address").value = responseData.data.address;us
-        }
-    } catch (error) {
-        console.error(error);
-    }
-});
-
-    // Gửi request API
-
-         function submitForm() {
-            let firstName = document.getElementById('firstName').value;
-            let lastName = document.getElementById('lastName').value;
-            let roleId = document.getElementById('roleId').value;
-            let nationalId = document.getElementById('nationalId').value;
-            let email = document.getElementById('email').value;
-            let phoneNumber = document.getElementById('phoneNumber').value;
-            let address = document.getElementById('address').value;
-
-            if (firstName === "") {
-                alert("Vui lòng nhập họ.");
-                return ;
-            }else if (lastName === "") {
-                alert("Vui lòng nhập tên.");
-                return ;
-            }else if (roleId === "") {
-                alert("Vui lòng chọn vai trò");
-                return ;
-            }
-            else if (nationalId === "") {
-                alert("Vui lòng nhập CCCD");
-                return ;
-            }else if (roleId === "") {
-                alert("Vui lòng chọn vai trò");
-                return ;
-            }
-            
-            let userData = {
-                firstName: firstName,
-                lastName: lastName,
-                roleId:roleId,
-                email:email,
-                phoneNumber:phoneNumber,
-                nationalId:nationalId,
-                address:address,
-            };
-
-            let xhr = new XMLHttpRequest(); // Tạo đối tượng XMLHttpRequest
-            xhr.open('POST', 'http://localhost:3307/api/edit-user',true); // Gửi yêu cầu POST đến đường dẫn '/api/users'
-            xhr.setRequestHeader("Content-Type", "application/json"); // Thiết lập tiêu đề 'Content-Type'
-
-            xhr.onload = function() {
-            document.getElementById('loadingOverlay').style.display = 'none';
-                try {
-                    var responseData = JSON.parse(xhr.responseText);
-                    if (xhr.status === 200 && responseData.errCode === 0) { // Kiểm tra nếu mã trạng thái là 201 (Created)
-                        alert('Thay đổi thông tin thành công')
-                        window.location.href = "manage-user.php";
-                } else {
-                    alert(responseData.errMessage)
-                }
-                } catch (error) {
-                    console.log(error)
-                    alert('Lỗi sever');
-                }
-            };
-            xhr.onerror = function () {
-            console.error('Request failed');
-            alert('Có lỗi xảy ra khi gửi yêu cầu. Vui lòng thử lại sau.');
-            document.getElementById('loadingOverlay').style.display = 'none';
-            };
-            document.getElementById('loadingOverlay').style.display = 'none';
-            xhr.send(JSON.stringify(userData));
-        }
-    </script>
+    
 
 </head>
 
@@ -154,7 +46,7 @@ document.addEventListener("DOMContentLoaded", async function() {
                 <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#main-menu" aria-controls="main-menu" aria-expanded="false" aria-label="Toggle navigation">
                     <i class="fa fa-bars"></i>
                 </button>
-                <a class="navbar-brand" href="./"><img src="images/logo.png" alt="Logo"></a>
+                <a class="navbar-brand" href="../web-ui/index.html"><img src="images/logo.png" alt="Logo"></a>
                 <a class="navbar-brand hidden" href="./"><img src="images/logo2.png" alt="Logo"></a>
             </div>
 
@@ -168,60 +60,14 @@ document.addEventListener("DOMContentLoaded", async function() {
                         <a href="#" class="dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"> <i class="menu-icon fa fa-user"></i>Tài khoản</a>
                         <ul class="sub-menu children dropdown-menu">
                             <li><i class="fa fa-user"></i><a href="manage-user.php">Quản lý tài khoản</a></li>
-                            <li><i class="fa fa-plus"></i><a href="add-user.html">Thêm tài khoản</a></li>
-
+                            <li><i class="fa fa-plus"></i><a href="add-user.html">Thêm sách</a></li>
                         </ul>
                     </li>
                     <li class="menu-item-has-children dropdown">
-                        <a href="#" class="dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"> <i class="menu-icon fa fa-table"></i>Tables</a>
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"> <i class="menu-icon fa fa-book"></i>Sách</a>
                         <ul class="sub-menu children dropdown-menu">
-                            <li><i class="fa fa-table"></i><a href="tables-basic.html">Basic Table</a></li>
-                            <li><i class="fa fa-table"></i><a href="tables-data.html">Data Table</a></li>
-                        </ul>
-                    </li>
-                    <li class="menu-item-has-children dropdown">
-                        <a href="#" class="dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"> <i class="menu-icon fa fa-th"></i>Forms</a>
-                        <ul class="sub-menu children dropdown-menu">
-                            <li><i class="menu-icon fa fa-th"></i><a href="forms-basic.html">Basic Form</a></li>
-                            <li><i class="menu-icon fa fa-th"></i><a href="forms-advanced.html">Advanced Form</a></li>
-                        </ul>
-                    </li>
-
-                    <h3 class="menu-title">Icons</h3><!-- /.menu-title -->
-
-                    <li class="menu-item-has-children dropdown">
-                        <a href="#" class="dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"> <i class="menu-icon fa fa-tasks"></i>Icons</a>
-                        <ul class="sub-menu children dropdown-menu">
-                            <li><i class="menu-icon fa fa-fort-awesome"></i><a href="font-fontawesome.html">Font Awesome</a></li>
-                            <li><i class="menu-icon ti-themify-logo"></i><a href="font-themify.html">Themefy Icons</a></li>
-                        </ul>
-                    </li>
-                    <li>
-                        <a href="widgets.html"> <i class="menu-icon ti-email"></i>Widgets </a>
-                    </li>
-                    <li class="menu-item-has-children dropdown">
-                        <a href="#" class="dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"> <i class="menu-icon fa fa-bar-chart"></i>Charts</a>
-                        <ul class="sub-menu children dropdown-menu">
-                            <li><i class="menu-icon fa fa-line-chart"></i><a href="charts-chartjs.html">Chart JS</a></li>
-                            <li><i class="menu-icon fa fa-area-chart"></i><a href="charts-flot.html">Flot Chart</a></li>
-                            <li><i class="menu-icon fa fa-pie-chart"></i><a href="charts-peity.html">Peity Chart</a></li>
-                        </ul>
-                    </li>
-
-                    <li class="menu-item-has-children dropdown">
-                        <a href="#" class="dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"> <i class="menu-icon fa fa-area-chart"></i>Maps</a>
-                        <ul class="sub-menu children dropdown-menu">
-                            <li><i class="menu-icon fa fa-map-o"></i><a href="maps-gmap.html">Google Maps</a></li>
-                            <li><i class="menu-icon fa fa-street-view"></i><a href="maps-vector.html">Vector Maps</a></li>
-                        </ul>
-                    </li>
-                    <h3 class="menu-title">Extras</h3><!-- /.menu-title -->
-                    <li class="menu-item-has-children dropdown">
-                        <a href="#" class="dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"> <i class="menu-icon fa fa-glass"></i>Pages</a>
-                        <ul class="sub-menu children dropdown-menu">
-                            <li><i class="menu-icon fa fa-sign-in"></i><a href="page-login.html">Login</a></li>
-                            <li><i class="menu-icon fa fa-sign-in"></i><a href="page-register.html">Register</a></li>
-                            <li><i class="menu-icon fa fa-paper-plane"></i><a href="pages-forget.html">Forget Pass</a></li>
+                            <li><i class="fa fa-book"></i><a href="manage-user.php">Quản lý sách</a></li>
+                            <li><i class="fa fa-plus"></i><a href="add-user.html">Thêm sách</a></li>
                         </ul>
                     </li>
                 </ul>
@@ -348,8 +194,8 @@ document.addEventListener("DOMContentLoaded", async function() {
                 <div class="page-header float-right">
                     <div class="page-title">
                         <ol class="breadcrumb text-right">
-                            <li><a href="manage-user.php">Tài khoản</a></li>
-                            <li class="active">Sửa tài khoản</li>
+                            <li><a href="">Sách</a></li>
+                            <li class="active">Thêm sách</li>
                         </ol>
                     </div>
                 </div>
@@ -361,48 +207,39 @@ document.addEventListener("DOMContentLoaded", async function() {
             <div class="col-lg-12">
                 <div class="card">
                     <div class="card-header">
-                        <strong>Sửa tài khoản</strong>
+                        <strong>Thêm sách</strong>
                     </div>
                     <div class="card-body card-block">
                         <form id="registerForm" action="" method="post" enctype="multipart/form-data" class="form-horizontal">
                             <div class="row form-group">
-                                <div class="col col-md-3"><label for="text-input" class=" form-control-label">Họ</label></div>
-                                <div class="col-12 col-md-2"><input type="text" id="firstName" name="firstName" placeholder="Nguyễn" class="form-control" value=""></div>
+                                <div class="col col-md-3"><label for="text-input" class=" form-control-label">Tên sách</label></div>
+                                <div class="col-12 col-md-3"><input type="text" id="bookName" name="bookName" placeholder="" class="form-control"></div>
                             </div>
                             <div class="row form-group">
-                                <div class="col col-md-3"><label for="text-input" class=" form-control-label">Tên</label></div>
-                                <div class="col-12 col-md-2"><input type="text" id="lastName" name="lastName" placeholder="Hoà" class="form-control" value=""></div>
+                                <div class="col col-md-3"><label for="text-input" class=" form-control-label">Ảnh sách</label></div>
+                                <div class="col-12 col-md-3">
+                                    <input type="file" id="image" name="image" onchange="onchangeImage()">
+                                    <img id="displayedImage" alt="image" class="mt-1" style="display: none;">
+                                </div>
                             </div>
                             <div class="row form-group">
-                                <div class="col col-md-3"><label for="email-input" class=" form-control-label"></label>Email</div>
-                                <div class="col-12 col-md-3"><input type="email" id="email" name="email" placeholder="hang2@gmail.com" class="form-control" value="" disabled></div>
-                            </div>
-                            <div class="row form-group">
-                                <div class="col col-md-3"><label for="password-input" class=" form-control-label">Mât khẩu</label></div>
-                                <div class="col-12 col-md-3"><input type="disabled-input" id="disabled-input" name="disabled-input" placeholder="********" class="form-control" style="background-color: #e9ecef;" disabled></div>
+                                <div class="col col-md-3"><label for="text-input" class=" form-control-label">Tác giả</label></div>
+                                <div class="col-12 col-md-3"><input type="text" id="author" name="author" placeholder="" class="form-control"></div>
                             </div>
                                 <div class="row form-group">
-                                    <div class="col col-md-3"><label for="select" class=" form-control-label">Vai trò</label></div>
+                                    <div class="col col-md-3"><label for="select" class=" form-control-label">Danh mục</label></div>
                                     <div class="col-12 col-md-2">
-                                        <select name="roleId" id="roleId" class="form-control" value="">
-                                            <option value="0">Vai trò</option>
-                                            <option value="1">Khách</option>
-                                            <option value="2">Thủ thư</option>
-                                            <option value="3">Admin</option>
+                                        <select name="category" id="category" class="form-control">
                                         </select>
                                     </div>
                                 </div>
                                 <div class="row form-group">
-                                    <div class="col col-md-3"><label for="text-input" class=" form-control-label">CCCD</label></div>
-                                    <div class="col-12 col-md-3"><input type="text" id="nationalId" name="nationalId" placeholder="241923657" class="form-control" value=""></div>
+                                    <div class="col col-md-3"><label for="text-input" class=" form-control-label">Số lượng</label></div>
+                                    <div class="col-12 col-md-1"><input type="number" id="soLuong" name="soLuong" placeholder="0" class="form-control"></div>
                                 </div>
                                 <div class="row form-group">
-                                    <div class="col col-md-3"><label for="text-input" class=" form-control-label">Số điện thoại</label></div>
-                                    <div class="col-12 col-md-3"><input type="text" id="phoneNumber" name="phoneNumber" placeholder="0912312423" class="form-control" value=""></div>
-                                </div>
-                                <div class="row form-group">
-                                    <div class="col col-md-3"><label for="text-input" class=" form-control-label">Địa chỉ</label></div>
-                                    <div class="col-12 col-md-6"><input type="text" id="address" name="address" placeholder="87/2 Ywang phường Eatam thành phố Buôn Ma Thuột Đăk Lăk " class="form-control" value=""></div>
+                                    <div class="col col-md-3"><label for="text-input" class=" form-control-label">Mô tả</label></div>
+                                    <div class="col-12 col-md-6"><input type="text" id="description" name="description" placeholder="" class="form-control"></div>
                                 </div>
                         </form>
                     </div>
@@ -435,7 +272,6 @@ document.addEventListener("DOMContentLoaded", async function() {
     <script>
         (function($) {
             "use strict";
-
             jQuery('#vmap').vectorMap({
                 map: 'world_en',
                 backgroundColor: null,
@@ -450,7 +286,157 @@ document.addEventListener("DOMContentLoaded", async function() {
             });
         })(jQuery);
     </script>
+    <script>
+          function fetchData() {
+    document.getElementById('loadingOverlay').style.display = 'flex';
+    return new Promise(function(resolve, reject) {
+        let xhr = new XMLHttpRequest();
+        let urlParams = new URLSearchParams(window.location.search);
+        let userId = urlParams.get('id');
+        let userData = {
+            id:userId
+        }
+        xhr.open("POST", "http://localhost:3307/api/get-all-book", true);
+        xhr.setRequestHeader("Content-Type", "application/json");
+        xhr.onreadystatechange = function () {
+            if (xhr.readyState === 4 && xhr.status === 200) {
+                var responseData = JSON.parse(xhr.responseText);
+                resolve(responseData);
+             document.getElementById('loadingOverlay').style.display = 'none';
 
+            }
+        };
+        xhr.send(JSON.stringify(userData));
+    });
+}
+
+document.addEventListener("DOMContentLoaded", async function() {
+    try {
+        const responseData = await fetchData();
+        console.log('check res data',responseData)
+        if (responseData.errCode === 0) {
+            document.getElementById("bookName").value = responseData.data.bookName;
+            // document.getElementById("image").value = responseData.data.lastName;
+            document.getElementById("author").value = responseData.data.author;
+            document.getElementById("category").value = responseData.data.category;
+            document.getElementById("soLuong").value = responseData.data.soLuong;
+            document.getElementById("description").value = responseData.data.description;
+        }
+    } catch (error) {
+        console.error(error);
+    }
+});
+    </script>
+    <script>
+        fetch('http://localhost:3307/api/get-all-category')
+    .then(response => response.json())
+    .then(data => {
+        const dataTable = data.data;
+        const tableBody = document.querySelector('select');
+        tableBody.innerHTML = dataTable.map(user => `
+        <option value="${user.id}">${user.category}</option>
+        `).join('');
+    })
+    .catch(error => console.error('Lỗi lấy data từ server:', error));
+    </script>
+    <script>
+        function onchangeImage() {
+            const fileInput = document.getElementById('image');
+            var file = fileInput.files[0]; // Lấy đối tượng file từ input
+
+            // Tách tên file từ đối tượng file
+            let fileNamez = file.name;
+            
+            // Tạo đường dẫn mới
+            var image= '../images/books/' + fileNamez;
+            
+            // Đặt đường dẫn mới cho thẻ <img> để hiển thị ảnh
+            var img = document.getElementById('displayedImage');
+            img.src = image;
+            img.style.display = 'block';  // Thay đổi 'flex' thành 'block' nếu cần
+        }
+        
+    </script>
+    <script>
+    var generateRandomCode=(length)=> {
+    const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';//Xuất rand code
+    let result = '';
+    for (let i = 0; i < length; i++) {
+        const randomIndex = Math.floor(Math.random() * characters.length);
+        result += characters.charAt(randomIndex);
+    }
+    return result;
+}
+        function submitForm() {
+            const bookName = document.getElementById('bookName').value;
+            const author = document.getElementById('author').value;
+            const category = document.getElementById('category').value;
+            const soLuong = document.getElementById('soLuong').value;
+            const description = document.getElementById('description').value;
+            const fileInput = document.getElementById('image');
+            let file = fileInput.files[0]; // Lấy đối tượng file từ input
+
+            if (!bookName) {
+                alert("Vui lòng tên sách.");
+                return ;
+            }else if (!file) {
+                alert("Vui lòng chọn ảnh sách.");
+                return ;
+            } 
+            else if (!author) {
+                alert("Vui lòng nhập tên tác giả.");
+                return ;
+            } else  if (!category) {
+                alert("Vui lòng chọn danh mục.");
+                return ;
+            } else if (!soLuong) {
+                alert("Vui lòng nhập số lượng");
+                return ;
+            } 
+            
+            // Tách tên file từ đối tượng file
+            let fileName = file.name;
+            
+            // Tạo đường dẫn mới
+            const userData = {
+                bookName: bookName,
+                image: fileName,
+                author: author,
+                bookCode:generateRandomCode(6),
+                category: category,
+                soLuong:soLuong,
+                description:description,
+            };
+            console.log('check userDataa',userData)
+
+            const xhr = new XMLHttpRequest(); // Tạo đối tượng XMLHttpRequest
+            xhr.open('POST', 'http://localhost:3307/api/create-new-book',true); // Gửi yêu cầu POST đến đường dẫn '/api/users'
+            xhr.setRequestHeader("Content-Type", "application/json"); // Thiết lập tiêu đề 'Content-Type'
+
+            xhr.onload = function() {
+                document.getElementById('loadingOverlay').style.display = 'none';
+                try {
+                    var responseData = JSON.parse(xhr.responseText);
+                    if (xhr.status === 200 && responseData.errCode === 0) { // Kiểm tra nếu mã trạng thái là 201 (Created)
+                        alert('Bạn đã thêm sách vào kho thành công')
+                        window.location.href = "manage-book.php";
+                } else {
+                    alert(responseData.errMessage)
+                }
+                } catch (error) {
+                    console.log(error)
+                    alert('Lỗi sever');
+                }
+            };
+            xhr.onerror = function () {
+                console.error('Request failed');
+                alert('Có lỗi xảy ra khi gửi yêu cầu. Vui lòng thử lại sau.');
+                document.getElementById('loadingOverlay').style.display = 'none';
+            };
+            document.getElementById('loadingOverlay').style.display = 'flex';
+            xhr.send(JSON.stringify(userData));
+        }
+    </script>
 </body>
 <style>
     .overlay {
@@ -466,5 +452,4 @@ document.addEventListener("DOMContentLoaded", async function() {
         z-index: 999;
     }
 </style>
-
 </html>
