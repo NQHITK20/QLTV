@@ -229,7 +229,8 @@
                                 <div class="row form-group">
                                     <div class="col col-md-3"><label for="select" class=" form-control-label">Danh mục</label></div>
                                     <div class="col-12 col-md-2">
-                                        <select name="category" id="category" class="form-control">
+                                        <select name="category" id="category" class="form-control" onclick="loadOption()">
+                                            <option id="loadButton"></option>
                                         </select>
                                     </div>
                                 </div>
@@ -287,7 +288,7 @@
         })(jQuery);
     </script>
     <script>
-          function fetchData() {
+    function fetchData() {
     document.getElementById('loadingOverlay').style.display = 'flex';
     return new Promise(function(resolve, reject) {
         let xhr = new XMLHttpRequest();
@@ -303,7 +304,6 @@
                 var responseData = JSON.parse(xhr.responseText);
                 resolve(responseData);
              document.getElementById('loadingOverlay').style.display = 'none';
-
             }
         };
         xhr.send(JSON.stringify(userData));
@@ -313,31 +313,54 @@
 document.addEventListener("DOMContentLoaded", async function() {
     try {
         const responseData = await fetchData();
-        console.log('check res data',responseData)
-        if (responseData.errCode === 0) {
+        console.log('check res data',responseData.data)
+        if (responseData) {
             document.getElementById("bookName").value = responseData.data.bookName;
-            // document.getElementById("image").value = responseData.data.lastName;
+            // document.getElementById("lastName").value = responseData.data.lastName;
             document.getElementById("author").value = responseData.data.author;
-            document.getElementById("category").value = responseData.data.category;
+            document.getElementById("loadButton").innerHTML = responseData.data.category;
             document.getElementById("soLuong").value = responseData.data.soLuong;
             document.getElementById("description").value = responseData.data.description;
         }
     } catch (error) {
         console.error(error);
     }
-});
+});               
     </script>
     <script>
-        fetch('https://qltv-backend.vercel.app/api/get-all-category')
-    .then(response => response.json())
-    .then(data => {
-        const dataTable = data.data;
-        const tableBody = document.querySelector('select');
-        tableBody.innerHTML = dataTable.map(user => `
-        <option value="${user.id}">${user.category}</option>
-        `).join('');
-    })
-    .catch(error => console.error('Lỗi lấy data từ server:', error));
+         let optionsLoaded = false;
+function loadOption() {
+    document.getElementById('loadingOverlay').style.display = 'flex';
+
+    fetch('https://qltv-backend.vercel.app/api/get-all-category')
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Network response was not ok ' + response.statusText);
+            }
+            return response.json();
+        })
+        .then(data => {
+            const dataTable = data.data;
+            const categorySelect = document.getElementById('category');
+            categorySelect.innerHTML = dataTable.map(user => `
+                <option value="${user.id}">${user.category}</option>
+            `).join('');
+            document.getElementById('loadingOverlay').style.display = 'none';
+        })
+        .catch(error => {
+            console.error('Lỗi lấy data từ server:', error);
+            document.getElementById('loadingOverlay').style.display = 'none';
+        });
+}
+
+document.getElementById('loadButton').addEventListener('click', function() {
+    if (!optionsLoaded) {
+        loadOption();
+        optionsLoaded = true;
+    } else {
+        console.log('Options already loaded');
+    }
+});
     </script>
     <script>
         function onchangeImage() {
