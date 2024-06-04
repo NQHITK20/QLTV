@@ -260,6 +260,6 @@ function serverTask() {
 // Convenience task for opening the project straight from the command line
 
 function _openTask() {
-  exec('open https://qltv-backend.vercel.app');
+  exec('open http://localhost:3307');
   exec('subl .');
 }

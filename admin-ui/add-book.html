@@ -287,7 +287,7 @@
         })(jQuery);
     </script>
     <script>
-        fetch('https://qltv-backend.vercel.app/api/get-all-category')
+        fetch('http://localhost:3307/api/get-all-category')
     .then(response => response.json())
     .then(data => {
         const dataTable = data.data;
@@ -369,7 +369,7 @@
             console.log('check userDataa',userData)
 
             const xhr = new XMLHttpRequest(); // Tạo đối tượng XMLHttpRequest
-            xhr.open('POST', 'https://qltv-backend.vercel.app/api/create-new-book',true); // Gửi yêu cầu POST đến đường dẫn '/api/users'
+            xhr.open('POST', 'http://localhost:3307/api/create-new-book',true); // Gửi yêu cầu POST đến đường dẫn '/api/users'
             xhr.setRequestHeader("Content-Type", "application/json"); // Thiết lập tiêu đề 'Content-Type'
 
             xhr.onload = function() {

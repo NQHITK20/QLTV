@@ -3,7 +3,7 @@ ini_set('display_errors', 1);
 ini_set('display_startup_errors', 1);
 error_reporting(E_ALL);
 
-$url = 'https://qltv-backend.vercel.app/api/get-all-book'; // URL của API backend
+$url = 'http://localhost:3307/api/get-all-book'; // URL của API backend
 
 // Dữ liệu gửi đi
 $data = array('id' => 'ALL');
@@ -360,7 +360,7 @@ if ($data === null) {
     const deleteUserData = async (id, name) => {
         if (confirm(`Bạn có chắc là muốn xoá người dùng ${name}?`)) {
             try {
-                const response = await fetch('https://qltv-backend.vercel.app/api/delete-user', {
+                const response = await fetch('http://localhost:3307/api/delete-user', {
                     method: 'DELETE',
                     headers: {
                         'Content-Type': 'application/json'

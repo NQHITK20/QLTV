@@ -3,7 +3,7 @@ ini_set('display_errors', 1);
 ini_set('display_startup_errors', 1);
 error_reporting(E_ALL);
 
-$url = 'https://qltv-backend.vercel.app/api/get-all-user'; // URL của API backend
+$url = 'http://localhost:3307/api/get-all-user'; // URL của API backend
 
 // Lấy nội dung từ backend (ví dụ: dữ liệu JSON)
 $response = file_get_contents($url);
@@ -349,7 +349,7 @@ try {
     }
 
     const xhr = new XMLHttpRequest();
-    xhr.open('DELETE', `https://qltv-backend.vercel.app/api/delete-user`, true);
+    xhr.open('DELETE', `http://localhost:3307/api/delete-user`, true);
     xhr.setRequestHeader('Content-Type', 'application/json');
 
     // Định nghĩa hàm callback khi yêu cầu thay đổi trạng thái

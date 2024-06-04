@@ -219,7 +219,7 @@
                                 <div class="col col-md-3"><label for="text-input" class=" form-control-label">Ảnh sách</label></div>
                                 <div class="col-12 col-md-3">
                                     <input type="file" id="image" name="image" onchange="onchangeImage()">
-                                    <img id="displayedImage" alt="image" class="mt-1" style="display: none;">
+                                    <img id="displayedImage" alt="image" class="mt-1">
                                 </div>
                             </div>
                             <div class="row form-group">
@@ -233,6 +233,7 @@
                                             <option id="loadButton"></option>
                                         </select>
                                     </div>
+                                    <div id="hiddenCatId" hidden></div>
                                 </div>
                                 <div class="row form-group">
                                     <div class="col col-md-3"><label for="text-input" class=" form-control-label">Số lượng</label></div>
@@ -297,7 +298,7 @@
         let userData = {
             id:userId
         }
-        xhr.open("POST", "https://qltv-backend.vercel.app/api/get-all-book", true);
+        xhr.open("POST", "http://localhost:3307/api/get-all-book", true);
         xhr.setRequestHeader("Content-Type", "application/json");
         xhr.onreadystatechange = function () {
             if (xhr.readyState === 4 && xhr.status === 200) {
@@ -313,14 +314,15 @@
 document.addEventListener("DOMContentLoaded", async function() {
     try {
         const responseData = await fetchData();
-        console.log('check res data',responseData.data)
+        console.log('check res data',responseData)
         if (responseData) {
             document.getElementById("bookName").value = responseData.data.bookName;
-            // document.getElementById("lastName").value = responseData.data.lastName;
+            document.getElementById("hiddenCatId").value = responseData.category.id;
             document.getElementById("author").value = responseData.data.author;
             document.getElementById("loadButton").innerHTML = responseData.data.category;
             document.getElementById("soLuong").value = responseData.data.soLuong;
             document.getElementById("description").value = responseData.data.description;
+            document.getElementById("displayedImage").src = '../images/books/' + responseData.data.image;
         }
     } catch (error) {
         console.error(error);
@@ -328,11 +330,9 @@ document.addEventListener("DOMContentLoaded", async function() {
 });               
     </script>
     <script>
-         let optionsLoaded = false;
-function loadOption() {
+        //Load và onchane cái option
     document.getElementById('loadingOverlay').style.display = 'flex';
-
-    fetch('https://qltv-backend.vercel.app/api/get-all-category')
+    fetch('http://localhost:3307/api/get-all-category')
         .then(response => {
             if (!response.ok) {
                 throw new Error('Network response was not ok ' + response.statusText);
@@ -345,22 +345,18 @@ function loadOption() {
             categorySelect.innerHTML = dataTable.map(user => `
                 <option value="${user.id}">${user.category}</option>
             `).join('');
+            categorySelect.value = document.getElementById("hiddenCatId").value;
+            // Thêm sự kiện change để hiển thị giá trị được chọn
+            categorySelect.addEventListener('change', function() {
+                const selectedValue = categorySelect.value;
+                const selectedOptionText = categorySelect.options[categorySelect.selectedIndex].text;
+            });
             document.getElementById('loadingOverlay').style.display = 'none';
         })
         .catch(error => {
             console.error('Lỗi lấy data từ server:', error);
             document.getElementById('loadingOverlay').style.display = 'none';
         });
-}
-
-document.getElementById('loadButton').addEventListener('click', function() {
-    if (!optionsLoaded) {
-        loadOption();
-        optionsLoaded = true;
-    } else {
-        console.log('Options already loaded');
-    }
-});
     </script>
     <script>
         function onchangeImage() {
@@ -376,9 +372,7 @@ document.getElementById('loadButton').addEventListener('click', function() {
             // Đặt đường dẫn mới cho thẻ <img> để hiển thị ảnh
             var img = document.getElementById('displayedImage');
             img.src = image;
-            img.style.display = 'block';  // Thay đổi 'flex' thành 'block' nếu cần
         }
-        
     </script>
     <script>
     var generateRandomCode=(length)=> {
@@ -402,7 +396,7 @@ document.getElementById('loadButton').addEventListener('click', function() {
             if (!bookName) {
                 alert("Vui lòng tên sách.");
                 return ;
-            }else if (!file) {
+            }else if (!fileInput) {
                 alert("Vui lòng chọn ảnh sách.");
                 return ;
             } 
@@ -433,7 +427,7 @@ document.getElementById('loadButton').addEventListener('click', function() {
             console.log('check userDataa',userData)
 
             const xhr = new XMLHttpRequest(); // Tạo đối tượng XMLHttpRequest
-            xhr.open('POST', 'https://qltv-backend.vercel.app/api/create-new-book',true); // Gửi yêu cầu POST đến đường dẫn '/api/users'
+            xhr.open('POST', '',true); // Gửi yêu cầu POST đến đường dẫn '/api/users'
             xhr.setRequestHeader("Content-Type", "application/json"); // Thiết lập tiêu đề 'Content-Type'
 
             xhr.onload = function() {

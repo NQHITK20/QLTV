@@ -54,7 +54,7 @@
     }
 </style>
 <script>
-    fetch('https://qltv-backend.vercel.app/api/get-count')
+    fetch('http://localhost:3307/api/get-count')
   .then(response => response.json())
   .then(data => {
       document.getElementById('count').innerText = data.countUser;
@@ -401,7 +401,7 @@ if (exportButton) {
 const handleExportClick = async () => {
 try {
     document.getElementById('loadingOverlay').style.display = 'flex';
-    const response = await fetch('https://qltv-backend.vercel.app/api/export-data-user', { method: 'GET' });
+    const response = await fetch('http://localhost:3307/api/export-data-user', { method: 'GET' });
     if (!response.ok) {
         throw new Error('Network response was not ok');
     }
