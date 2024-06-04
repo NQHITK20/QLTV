@@ -390,8 +390,7 @@ document.addEventListener("DOMContentLoaded", async function() {
             const category = document.getElementById('category').value;
             const soLuong = document.getElementById('soLuong').value;
             const description = document.getElementById('description').value;
-            const fileInput = document.getElementById('image');
-            let file = fileInput.files[0]; // Lấy đối tượng file từ input
+            const fileInput = document.getElementById('displayedImage').src;
 
             if (!bookName) {
                 alert("Vui lòng tên sách.");
@@ -410,9 +409,9 @@ document.addEventListener("DOMContentLoaded", async function() {
                 alert("Vui lòng nhập số lượng");
                 return ;
             } 
+            //  Tách tên file từ đối tượng file
+             let fileName = extractFilename(fileInput);
             
-            // Tách tên file từ đối tượng file
-            let fileName = file.name;
             
             // Tạo đường dẫn mới
             const userData = {
@@ -453,6 +452,20 @@ document.addEventListener("DOMContentLoaded", async function() {
             document.getElementById('loadingOverlay').style.display = 'flex';
             xhr.send(JSON.stringify(userData));
         }
+    </script>
+    <script>
+        function extractFilename(imageUrl) {
+  // Handle potential invalid URLs or missing file extensions gracefully
+  if (!imageUrl || !imageUrl.includes('.')) {
+    return '';
+  }
+
+  // Split the URL path using the last forward slash (/)
+  const pathParts = imageUrl.split('/');
+  const filename = pathParts[pathParts.length - 1];
+
+  return filename;
+}
     </script>
 </body>
 <style>
