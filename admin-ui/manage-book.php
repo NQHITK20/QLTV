@@ -358,9 +358,9 @@ if ($data === null) {
 
     // Hàm xoá dữ liệu
     const deleteUserData = async (id, name) => {
-        if (confirm(`Bạn có chắc là muốn xoá người dùng ${name}?`)) {
+        if (confirm(`Bạn có chắc là muốn xoá sách tên ${name}?`)) {
             try {
-                const response = await fetch('http://localhost:3307/api/delete-user', {
+                const response = await fetch('http://localhost:3307/api/delete-book', {
                     method: 'DELETE',
                     headers: {
                         'Content-Type': 'application/json'

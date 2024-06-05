@@ -187,6 +187,8 @@
                         }else{
                         // Login successful, save JWT to localStorage
                         localStorage.setItem('userData', JSON.stringify(data.user));
+                        localStorage.setItem('jwtToken', data.token);
+                        
                         //lưu checkbox
                         if (rememberMe) {
                             // If rememberMe is checked, save email to localStorage

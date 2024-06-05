@@ -3,14 +3,43 @@ ini_set('display_errors', 1);
 ini_set('display_startup_errors', 1);
 error_reporting(E_ALL);
 
+// Kiểm tra và lấy token từ cookie hoặc localStorage
+$token = isset($_COOKIE['jwtToken']) ? $_COOKIE['jwtToken'] : '';
+
+if (empty($token)) {
+    // Thử lấy token từ localStorage (nếu có thể, qua JavaScript)
+    echo '<script>
+        var token = localStorage.getItem("jwtToken");
+        if (token) {
+            document.cookie = "jwtToken=" + token + "; path=/";
+            window.location.reload();
+        } else {
+            alert("Không có token, từ chối truy cập");
+        }
+    </script>';
+    exit();
+}
+
 $url = 'http://localhost:3307/api/get-all-user'; // URL của API backend
 
-// Lấy nội dung từ backend (ví dụ: dữ liệu JSON)
-$response = file_get_contents($url);
+// Khởi tạo context để gửi yêu cầu HTTP
+$context = stream_context_create([
+    'http' => [
+        'method' => 'GET',
+        'header' => "Authorization: Bearer $token\r\n" . // Thêm token vào header Authorization
+                    "Content-Type: application/json\r\n", // Đặt kiểu nội dung là JSON
+        'ignore_errors' => true, // Bắt mọi lỗi, không chỉ lỗi không thể kết nối
+    ]
+]);
+
+// Gửi yêu cầu GET đến backend và nhận nội dung phản hồi
+$response = @file_get_contents($url, false, $context);
 
 // Kiểm tra nếu có lỗi khi lấy dữ liệu từ backend
 if ($response === FALSE) {
-    die('Lỗi khi lấy dữ liệu từ backend');
+    // Lấy thông tin chi tiết về lỗi
+    $error = error_get_last();
+    die('Lỗi khi lấy dữ liệu từ backend: ' . $error['message']);
 }
 
 // Chuyển đổi JSON thành mảng dữ liệu trong PHP
@@ -18,11 +47,13 @@ $data = json_decode($response, true);
 
 // Kiểm tra nếu có lỗi khi chuyển đổi JSON
 if ($data === null) {
-    die('Lỗi khi chuyển đổi JSON');
+    die('Lỗi khi chuyển đổi JSON: ' . json_last_error_msg());
 }
 
 // In ra dữ liệu để kiểm tra (debugging)
 ?>
+
+
 <!doctype html>
 <!--[if lt IE 7]>      <html class="no-js lt-ie9 lt-ie8 lt-ie7" lang=""> <![endif]-->
 <!--[if IE 7]>         <html class="no-js lt-ie9 lt-ie8" lang=""> <![endif]-->

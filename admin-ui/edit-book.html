@@ -234,6 +234,7 @@
                                         </select>
                                     </div>
                                     <div id="hiddenCatId" hidden></div>
+                                    <div id="hiddenBookcode" hidden></div>
                                 </div>
                                 <div class="row form-group">
                                     <div class="col col-md-3"><label for="text-input" class=" form-control-label">Số lượng</label></div>
@@ -318,6 +319,7 @@ document.addEventListener("DOMContentLoaded", async function() {
         if (responseData) {
             document.getElementById("bookName").value = responseData.data.bookName;
             document.getElementById("hiddenCatId").value = responseData.category.id;
+            document.getElementById("hiddenBookcode").value = responseData.data.bookCode;
             document.getElementById("author").value = responseData.data.author;
             document.getElementById("loadButton").innerHTML = responseData.data.category;
             document.getElementById("soLuong").value = responseData.data.soLuong;
@@ -375,15 +377,6 @@ document.addEventListener("DOMContentLoaded", async function() {
         }
     </script>
     <script>
-    var generateRandomCode=(length)=> {
-    const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';//Xuất rand code
-    let result = '';
-    for (let i = 0; i < length; i++) {
-        const randomIndex = Math.floor(Math.random() * characters.length);
-        result += characters.charAt(randomIndex);
-    }
-    return result;
-}
         function submitForm() {
             const bookName = document.getElementById('bookName').value;
             const author = document.getElementById('author').value;
@@ -418,7 +411,7 @@ document.addEventListener("DOMContentLoaded", async function() {
                 bookName: bookName,
                 image: fileName,
                 author: author,
-                bookCode:generateRandomCode(6),
+                bookCode:document.getElementById("hiddenBookcode").value,
                 category: category,
                 soLuong:soLuong,
                 description:description,
@@ -426,7 +419,7 @@ document.addEventListener("DOMContentLoaded", async function() {
             console.log('check userDataa',userData)
 
             const xhr = new XMLHttpRequest(); // Tạo đối tượng XMLHttpRequest
-            xhr.open('POST', '',true); // Gửi yêu cầu POST đến đường dẫn '/api/users'
+            xhr.open('POST', 'http://localhost:3307/api/edit-book',true); // Gửi yêu cầu POST đến đường dẫn '/api/users'
             xhr.setRequestHeader("Content-Type", "application/json"); // Thiết lập tiêu đề 'Content-Type'
 
             xhr.onload = function() {
@@ -434,7 +427,7 @@ document.addEventListener("DOMContentLoaded", async function() {
                 try {
                     var responseData = JSON.parse(xhr.responseText);
                     if (xhr.status === 200 && responseData.errCode === 0) { // Kiểm tra nếu mã trạng thái là 201 (Created)
-                        alert('Bạn đã thêm sách vào kho thành công')
+                        alert('Bạn đã sửa sách thành công')
                         window.location.href = "manage-book.php";
                 } else {
                     alert(responseData.errMessage)
