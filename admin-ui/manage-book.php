@@ -11,10 +11,20 @@ $data = array('id' => 'ALL');
 // Chuyển đổi mảng dữ liệu thành JSON
 $jsonData = json_encode($data);
 
+// Lấy token từ localStorage
+$token = isset($_COOKIE['jwtToken']) ? $_COOKIE['jwtToken'] : null; // Lấy token từ cookie
+
+if (!$token) {
+    die('Không tìm thấy token trong localStorage');
+}
+
 // Cấu hình cURL
 $ch = curl_init($url);
 curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-curl_setopt($ch, CURLOPT_HTTPHEADER, array('Content-Type: application/json'));
+curl_setopt($ch, CURLOPT_HTTPHEADER, array(
+    'Content-Type: application/json',
+    'Authorization: Bearer ' . $token // Thêm token vào header Authorization
+));
 curl_setopt($ch, CURLOPT_POST, true);
 curl_setopt($ch, CURLOPT_POSTFIELDS, $jsonData);
 
@@ -36,8 +46,6 @@ $data = json_decode($response, true);
 if ($data === null) {
     die('Lỗi khi chuyển đổi JSON');
 }
-
-// In ra dữ liệu để kiểm tra (debugging)
 
 ?>
 
@@ -274,7 +282,7 @@ if ($data === null) {
                                             <th>Ảnh</th>
                                             <th>Tác giả</th>
                                             <th>Danh mục</th>
-                                            <th>Hiện/ẩn sách</th>
+                                            <th>Trạng thái</th>
                                             <th>Hành động</th>
                                         </tr>
                                     </thead>
@@ -359,11 +367,13 @@ if ($data === null) {
     // Hàm xoá dữ liệu
     const deleteUserData = async (id, name) => {
         if (confirm(`Bạn có chắc là muốn xoá sách tên ${name}?`)) {
+            const token = localStorage.getItem('jwtToken');
             try {
                 const response = await fetch('http://localhost:3307/api/delete-book', {
                     method: 'DELETE',
                     headers: {
-                        'Content-Type': 'application/json'
+                        'Content-Type': 'application/json',
+                        'Authorization' : `Bearer ${token}`
                     },
                     body: JSON.stringify({ id })
                 });
@@ -376,13 +386,13 @@ if ($data === null) {
                 if (responseData.errCode === 0) {
                     alert('Xoá thành công');
                     // Sau khi xoá thành công, tải lại dữ liệu
-                    await fetchUserData();
+                    window.location.href = "manage-book.php";
                 } else {
                     alert(responseData.errMessage);
                 }
             } catch (error) {
-                console.error('Lỗi xoá người dùng:', error);
-                alert('Có lỗi xảy ra khi xoá người dùng');
+                console.error('Lỗi xoá Sách:', error);
+                alert('Có lỗi xảy ra khi xoá Sách');
             }
         }
     };

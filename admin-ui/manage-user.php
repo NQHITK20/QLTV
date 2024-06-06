@@ -375,6 +375,8 @@ try {
         // Người dùng chọn không xóa
         return;
     }
+
+    
     let userId={
         id:id
     }
@@ -382,6 +384,8 @@ try {
     const xhr = new XMLHttpRequest();
     xhr.open('DELETE', `http://localhost:3307/api/delete-user`, true);
     xhr.setRequestHeader('Content-Type', 'application/json');
+    const token = localStorage.getItem('jwtToken');
+    xhr.setRequestHeader('Authorization', `Bearer ${token}`);
 
     // Định nghĩa hàm callback khi yêu cầu thay đổi trạng thái
     xhr.onload = function() {
@@ -405,13 +409,19 @@ try {
             document.getElementById('loadingOverlay').style.display = 'none';
                };
         document.getElementById('loadingOverlay').style.display = 'flex';
-
     // Gửi yêu cầu
     xhr.send(JSON.stringify(userId));
 } catch (error) {
     console.error('An error occurred while trying to delete the user:', error);
 }
 };
+</script>
+<script>
+    function logout()
+    {
+        localStorage.removeItem('userData')
+        localStorage.removeItem('jwtToken')
+    }
 </script>
 
 </html>

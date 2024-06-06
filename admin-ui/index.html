@@ -131,7 +131,6 @@
 
         <!-- Header-->
         <header id="header" class="header">
-
             <div class="header-menu">
 
                 <div class="col-sm-7" >
@@ -151,7 +150,6 @@
                     </div>
                 </div>
             </div>
-
         </header><!-- /header -->
         <!-- Header-->
 
@@ -342,18 +340,39 @@ if (exportButton) {
 });
 
 const handleExportClick = async () => {
-try {
-    document.getElementById('loadingOverlay').style.display = 'flex';
-    const response = await fetch('http://localhost:3307/api/export-data-user', { method: 'GET' });
-    if (!response.ok) {
-        throw new Error('Network response was not ok');
-    }
-    const blob = await response.blob();
-    downloadBlob(blob, 'data.xlsx');
+    try {
+  // Get the token from localStorage
+  const token = localStorage.getItem('jwtToken'); // Replace 'your_token_key' with the actual key
+
+  if (!token) {
+    throw new Error('Missing token in localStorage');
+  }
+
+  // Show loading overlay
+  document.getElementById('loadingOverlay').style.display = 'flex';
+
+  // Create headers with the token for authorization
+  const headers = new Headers({
+    'Authorization': `Bearer ${token}` // Include 'Bearer ' before the token
+  });
+
+  // Fetch data with the headers
+  const response = await fetch('http://localhost:3307/api/export-data-user', {
+    method: 'POST',
+    headers: headers
+  });
+
+  if (!response.ok) {
+    throw new Error('Network response was not ok');
+  }
+
+  const blob = await response.blob();
+  downloadBlob(blob, 'data.xlsx');
 } catch (error) {
-    console.error('Có lỗi:', error);
-    document.getElementById('loadingOverlay').style.display = 'none';
+  console.error('Có lỗi:', error);
+  document.getElementById('loadingOverlay').style.display = 'none';
 }
+
 };
 
 const downloadBlob = (blob, filename) => {
@@ -373,7 +392,7 @@ document.getElementById('loadingOverlay').style.display = 'none';
     function logout()
     {
         localStorage.removeItem('userData')
-        localStorage.removeItem('token')
+        localStorage.removeItem('jwtToken')
     }
 </script>
 

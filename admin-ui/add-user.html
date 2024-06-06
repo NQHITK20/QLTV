@@ -259,19 +259,19 @@
                         <form id="registerForm" action="" method="post" enctype="multipart/form-data" class="form-horizontal">
                             <div class="row form-group">
                                 <div class="col col-md-3"><label for="text-input" class=" form-control-label">Họ</label></div>
-                                <div class="col-12 col-md-2"><input type="text" id="firstName" name="firstName" placeholder="Nguyễn" class="form-control"></div>
+                                <div class="col-12 col-md-2"><input type="text" id="firstName" name="firstName" placeholder="Nhập họ" class="form-control"></div>
                             </div>
                             <div class="row form-group">
                                 <div class="col col-md-3"><label for="text-input" class=" form-control-label">Tên</label></div>
-                                <div class="col-12 col-md-2"><input type="text" id="lastName" name="lastName" placeholder="Hoà" class="form-control"></div>
+                                <div class="col-12 col-md-2"><input type="text" id="lastName" name="lastName" placeholder="Nhập tên" class="form-control"></div>
                             </div>
                             <div class="row form-group">
                                 <div class="col col-md-3"><label for="email-input" class=" form-control-label"></label>Email</div>
-                                <div class="col-12 col-md-3"><input type="email" id="email" name="email" placeholder="hang2@gmail.com" class="form-control"></div>
+                                <div class="col-12 col-md-3"><input type="email" id="email" name="email" placeholder="Nhập email" class="form-control"></div>
                             </div>
                             <div class="row form-group">
                                 <div class="col col-md-3"><label for="password-input" class=" form-control-label">Mât khẩu</label></div>
-                                <div class="col-12 col-md-3"><input type="password" id="password" name="password" placeholder="Mât khẩu" class="form-control"></div>
+                                <div class="col-12 col-md-3"><input type="password" id="password" name="password" placeholder="Nhập mât khẩu" class="form-control"></div>
                             </div>
                             <div class="row form-group">
                                 <div class="col col-md-3"><label for="password-input" class=" form-control-label">Xác nhận mật khẩu</label></div>
@@ -289,15 +289,15 @@
                                 </div>
                                 <div class="row form-group">
                                     <div class="col col-md-3"><label for="text-input" class=" form-control-label">CCCD</label></div>
-                                    <div class="col-12 col-md-3"><input type="text" id="nationalId" name="nationalId" placeholder="2419792123" class="form-control"></div>
+                                    <div class="col-12 col-md-3"><input type="text" id="nationalId" name="nationalId" placeholder="" class="form-control"></div>
                                 </div>
                                 <div class="row form-group">
                                     <div class="col col-md-3"><label for="text-input" class=" form-control-label">Số điện thoại</label></div>
-                                    <div class="col-12 col-md-3"><input type="text" pattern="[0-9]{10,11}" id="phoneNumber" name="phoneNumber" placeholder="0912312423" class="form-control"></div>
+                                    <div class="col-12 col-md-3"><input type="text" pattern="[0-9]{10,11}" id="phoneNumber" name="phoneNumber" placeholder="" class="form-control"></div>
                                 </div>
                                 <div class="row form-group">
                                     <div class="col col-md-3"><label for="text-input" class=" form-control-label">Địa chỉ</label></div>
-                                    <div class="col-12 col-md-6"><input type="text" id="address" name="address" placeholder="87/2 Ywang phường Eatam thành phố Buôn Ma Thuột Đăk Lăk " class="form-control"></div>
+                                    <div class="col-12 col-md-6"><input type="text" id="address" name="address" placeholder="" class="form-control"></div>
                                 </div>
                         </form>
                     </div>
@@ -377,7 +377,8 @@
                 alert("Vui lòng chọn vai trò");
                 return ;
             }
-            
+
+
             const userData = {
                 firstName: firstName,
                 lastName: lastName,
@@ -392,6 +393,9 @@
             const xhr = new XMLHttpRequest(); // Tạo đối tượng XMLHttpRequest
             xhr.open('POST', 'http://localhost:3307/api/create-new-user',true); // Gửi yêu cầu POST đến đường dẫn '/api/users'
             xhr.setRequestHeader("Content-Type", "application/json"); // Thiết lập tiêu đề 'Content-Type'
+            const token = localStorage.getItem('jwtToken');
+            xhr.setRequestHeader('Authorization', `Bearer ${token}`);
+
 
             xhr.onload = function() {
                 document.getElementById('loadingOverlay').style.display = 'none';

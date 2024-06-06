@@ -366,11 +366,12 @@
                 soLuong:soLuong,
                 description:description,
             };
-            console.log('check userDataa',userData)
 
             const xhr = new XMLHttpRequest(); // Tạo đối tượng XMLHttpRequest
             xhr.open('POST', 'http://localhost:3307/api/create-new-book',true); // Gửi yêu cầu POST đến đường dẫn '/api/users'
             xhr.setRequestHeader("Content-Type", "application/json"); // Thiết lập tiêu đề 'Content-Type'
+            const token = localStorage.getItem('jwtToken');
+            xhr.setRequestHeader('Authorization', `Bearer ${token}`);
 
             xhr.onload = function() {
                 document.getElementById('loadingOverlay').style.display = 'none';
