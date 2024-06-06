@@ -1,3 +1,53 @@
+<?php
+ini_set('display_errors', 1);
+ini_set('display_startup_errors', 1);
+error_reporting(E_ALL);
+
+$url = 'http://localhost:3307/api/get-all-book'; // URL của API backend
+
+// Dữ liệu gửi đi
+$data = array('id' => 'ALL');
+
+// Chuyển đổi mảng dữ liệu thành JSON
+$jsonData = json_encode($data);
+
+// Lấy token từ localStorage
+$token = isset($_COOKIE['jwtToken']) ? $_COOKIE['jwtToken'] : null; // Lấy token từ cookie
+
+if (!$token) {
+    die('Không tìm thấy token trong localStorage');
+}
+
+// Cấu hình cURL
+$ch = curl_init($url);
+curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+curl_setopt($ch, CURLOPT_HTTPHEADER, array(
+    'Content-Type: application/json',
+    'Authorization: Bearer ' . $token // Thêm token vào header Authorization
+));
+curl_setopt($ch, CURLOPT_POST, true);
+curl_setopt($ch, CURLOPT_POSTFIELDS, $jsonData);
+
+// Thực hiện yêu cầu POST và nhận phản hồi
+$response = curl_exec($ch);
+
+// Kiểm tra nếu có lỗi khi gửi yêu cầu
+if ($response === FALSE) {
+    die('Lỗi khi gửi yêu cầu: ' . curl_error($ch));
+}
+
+// Đóng cURL
+curl_close($ch);
+
+// Chuyển đổi JSON thành mảng dữ liệu trong PHP
+$data = json_decode($response, true);
+
+// Kiểm tra nếu có lỗi khi chuyển đổi JSON
+if ($data === null) {
+    die('Lỗi khi chuyển đổi JSON');
+}
+?>
+
 <!doctype html>
 <html class="no-js" lang="zxx">
 
@@ -71,7 +121,7 @@
 							<div class="tg-searchbox">
 								<form class="tg-formtheme tg-formsearch">
 									<fieldset>
-										<input type="text" name="search" class="typeahead form-control" placeholder="Tìm kiếm sách tốt . . .">
+										<input type="text" name="search" class="typeahead form-control" placeholder="Tìm kiếm ...">
 										<button type="submit" class="tg-btn">Search</button>
 									</fieldset>
 								</form>
@@ -685,18 +735,19 @@
 												</div>
 											</li>
 											<li class="menu-item-has-children">
-												<a href="nothing">Sách</a>
+												<a href="productdetail.html">Sách</a>
 												<ul class="sub-menu">
 													<li><a href="index-2.html">Sách mới nhất</a></li>
 													<li><a href="indexv2.html">Sách hay</a></li>
 												</ul>
 											</li>
-										<li><a href="newsgrid.html">Tin tức</a>
-											<ul class="sub-menu">
+										    <li class="menu-item-has-children">
+											<a href="newsgrid.html">Tin tức</a>
+											<ul class="sub-menu" id="menu-tin-tuc">
 												<li><a href="index-2.html">Tin tức mới nhất</a></li>
 												<li><a href="indexv2.html">tin tức nổi bật</a></li>
 											</ul>
-										</li>	
+										    </li>	
 									</div>
 								</nav>
 								<div class="tg-wishlistandcart">
@@ -805,7 +856,7 @@
 						</div>
 						<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
 							<div id="tg-bestsellingbooksslider" class="tg-bestsellingbooksslider tg-bestsellingbooks owl-carousel">
-								<div class="item">
+								<!-- <div class="item">
 									<div class="tg-postbook">
 										<figure class="tg-featureimg">
 											<div class="tg-bookimg">
@@ -818,24 +869,57 @@
 										</figure>
 										<div class="tg-postbookcontent">
 											<ul class="tg-bookscategories">
-												<li><a href="javascript:void(0);">Adventure</a></li>
-												<li><a href="javascript:void(0);">Fun</a></li>
+												<li>Adventure</li>
 											</ul>
 											<div class="tg-themetagbox"><span class="tg-themetag">mới</span></div>
 											<div class="tg-booktitle">
-												<h3><a href="javascript:void(0);">Help Me Find My Stomach</a></h3>
+												<h3><a href="productdetail.html">Help Me Find My Stomach</a></h3>
 											</div>
-											<span class="tg-bookwriter">By: <a href="javascript:void(0);">Angela Gunning</a></span>
+											<span class="tg-bookwriter">By: Angela Gunning</span>
 											<span class="tg-stars"><span></span></span>
-											
 											<a class="tg-btn tg-btnstyletwo" href="javascript:void(0);" style="font:400 17px/38px 'Work Sans', Arial, Helvetica, sans-serif;gap: 10px;">
 												<em>Thêm vào</em>
 												<i class="fa fa-heart" style="margin-left: 8px;"></i>
 											</a>
 										</div>
 									</div>
-								</div>
-								
+								</div> -->
+								<?php
+        // Kiểm tra nếu dữ liệu có chứa key 'data'
+        if (isset($data['data'])) {
+            // Lặp qua dữ liệu và hiển thị trong các div item
+            foreach ($data['data'] as $book) {
+                ?>
+                <div class="item">
+                    <div class="tg-postbook">
+                        <figure class="tg-featureimg">
+                            <div class="tg-bookimg">
+                                <div class="tg-frontcover"><img src="images/books/<?php echo htmlspecialchars($book['image']); ?>" alt="<?php echo htmlspecialchars($book['bookName']); ?>"></div>
+                                <div class="tg-backcover"><img src="images/books/<?php echo htmlspecialchars($book['image']); ?>" alt="<?php echo htmlspecialchars($book['bookName']); ?>"></div>
+                            </div>
+                            <a class="tg-btnaddtowishlist" href="productdetail.html">
+                                <span>Xem thêm </span>
+                            </a>
+                        </figure>
+                        <div class="tg-postbookcontent">
+                            <ul class="tg-bookscategories">
+                                <li><?php echo htmlspecialchars($book['category']); ?></li>
+                            </ul>
+                            <div class="tg-themetagbox"><span class="tg-themetag">mới</span></div>
+                            <div class="tg-booktitle">
+                                <h3><a href="productdetail.html"><?php echo htmlspecialchars($book['bookName']); ?></a></h3>
+                            </div>
+                            <span class="tg-bookwriter">Tác giả : <?php echo htmlspecialchars($book['author']); ?></span>
+                            <span class="tg-stars"><span></span></span>
+                        </div>
+                    </div>
+                </div>
+                <?php
+            }
+        } else {
+            echo '<p>Không có dữ liệu</p>';
+        }
+        ?>
 							</div>
 						</div>
 					</div>
@@ -1112,7 +1196,12 @@
 			}
 		  }
 		}
-		</script>
+	</script>
+	<style>
+		#menu-tin-tuc{
+
+		}
+	</style>
 </body>
 
 </html>
