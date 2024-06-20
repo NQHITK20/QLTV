@@ -59,7 +59,7 @@
 
     // Kiểm tra nếu token tồn tại
     if (token) {
-        fetch('http://localhost:3307/api/get-count', {
+        fetch('http://localhost:8000/api/get-count', {
             headers: {
                 'Authorization': 'Bearer ' + token, // Thêm token vào header Authorization
                 'Content-Type': 'application/json'
@@ -357,7 +357,7 @@ const handleExportClick = async () => {
   });
 
   // Fetch data with the headers
-  const response = await fetch('http://localhost:3307/api/export-data-user', {
+  const response = await fetch('http://localhost:8000/api/export-data-user', {
     method: 'POST',
     headers: headers
   });

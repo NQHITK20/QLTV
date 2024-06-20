@@ -3,7 +3,7 @@ ini_set('display_errors', 1);
 ini_set('display_startup_errors', 1);
 error_reporting(E_ALL);
 
-$url = 'http://localhost:3307/api/get-all-book'; // URL của API backend
+$url = 'http://localhost:8000/api/get-all-book'; // URL của API backend
 
 // Dữ liệu gửi đi
 $data = array('id' => 'ALL');
@@ -76,6 +76,7 @@ if ($data === null) {
     <link rel="stylesheet" href="vendors/datatables.net-buttons-bs4/css/buttons.bootstrap4.min.css">
 
     <link rel="stylesheet" href="assets/css/style.css">
+    <link rel="stylesheet" href="assets/css/main.css">
 
     <link href='https://fonts.googleapis.com/css?family=Open+Sans:400,600,700,800' rel='stylesheet' type='text/css'>
    
@@ -300,10 +301,14 @@ if ($data === null) {
                         <td><?php echo htmlspecialchars($book['author']); ?></td>
                         <td><?php echo htmlspecialchars($book['category']); ?></td>
                         <td>
-                            <button type="button" class="btn btn-info btn-sm" onclick="sendData('<?php echo htmlspecialchars($book['id']); ?>')">
+                        <?php
+                          $button_id = ($book['showing'] === 1) ? 'btn-show' : 'btn-show-fade';
+                          $button_2 = ($book['showing'] === 0) ? 'btn-hide' : 'btn-hide-fade';
+                         ?>
+                            <button id="<?php echo $button_id ?>" type="button" class="btn btn-info btn-sm" onclick="showbook('<?php echo htmlspecialchars($book['id']); ?>')">
                                 <i class="fa fa-eye"></i> Hiện
                             </button>
-                            <button type="button" class="btn btn-danger btn-sm" onclick="deleteUserData('<?php echo htmlspecialchars($book['id']); ?>', '<?php echo htmlspecialchars($book['bookName']); ?>')">
+                            <button id="<?php echo $button_2 ?>" type="button" class="btn btn-danger btn-sm" onclick="hidebook('<?php echo htmlspecialchars($book['id']); ?>', '<?php echo htmlspecialchars($book['bookName']); ?>')">
                                 <i class="fa fa-eye-slash"></i> Ẩn
                             </button>
                         </td>
@@ -355,7 +360,7 @@ if ($data === null) {
 </body>
 <script>
     // Hàm gửi dữ liệu
-    const sendData = async (id) => {
+    let sendData = async (id) => {
         try {
             // Chuyển đến trang HTML khác với query parameter id
             window.location.href = `edit-book.html?id=${id}`;
@@ -365,11 +370,11 @@ if ($data === null) {
     };
 
     // Hàm xoá dữ liệu
-    const deleteUserData = async (id, name) => {
+    let deleteUserData = async (id, name) => {
         if (confirm(`Bạn có chắc là muốn xoá sách tên ${name}?`)) {
             const token = localStorage.getItem('jwtToken');
             try {
-                const response = await fetch('http://localhost:3307/api/delete-book', {
+                const response = await fetch('http://localhost:8000/api/delete-book', {
                     method: 'DELETE',
                     headers: {
                         'Content-Type': 'application/json',
@@ -396,6 +401,21 @@ if ($data === null) {
             }
         }
     };
+
+    function hidebook() {
+            let btnShow = document.getElementById('btn-show');
+            let btnHide = document.getElementById('btn-hide');
+
+            // if (btnShow.style.opacity === '0' && element2.style.opacity === '0') {
+            //     btnShow.style.opacity = '1';
+            //     btnHide.style.opacity = '1';
+            // } else {
+            //     btnShow.style.opacity = '0';
+            //     btnHide.style.opacity = '0';
+            // }
+    }
+
+        document.getElementById('toggleButton').addEventListener('click', toggleOpacity);
                                            
 </script>
 

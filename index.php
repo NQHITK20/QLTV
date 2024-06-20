@@ -3,7 +3,7 @@ ini_set('display_errors', 1);
 ini_set('display_startup_errors', 1);
 error_reporting(E_ALL);
 
-$url = 'http://localhost:3307/api/get-all-book'; // URL của API backend
+$url = 'http://localhost:8000/api/get-all-book'; // URL của API backend
 
 // Dữ liệu gửi đi
 $data = array('id' => 'ALL');
@@ -885,8 +885,8 @@ if ($data === null) {
 									</div>
 								</div> -->
 								<?php
-        // Kiểm tra nếu dữ liệu có chứa key 'data'
-        if (isset($data['data'])) {
+                                // Kiểm tra nếu dữ liệu có chứa key 'data'
+                               if (isset($data['data'])) {
             // Lặp qua dữ liệu và hiển thị trong các div item
             foreach ($data['data'] as $book) {
                 ?>
@@ -916,10 +916,10 @@ if ($data === null) {
                 </div>
                 <?php
             }
-        } else {
-            echo '<p>Không có dữ liệu</p>';
-        }
-        ?>
+                               } else {
+                                 echo '<p>Không có dữ liệu</p>';
+                                   }
+                                ?>
 							</div>
 						</div>
 					</div>

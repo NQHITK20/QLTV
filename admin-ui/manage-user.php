@@ -1,3 +1,4 @@
+
 <?php
 ini_set('display_errors', 1);
 ini_set('display_startup_errors', 1);
@@ -6,21 +7,8 @@ error_reporting(E_ALL);
 // Kiểm tra và lấy token từ cookie hoặc localStorage
 $token = isset($_COOKIE['jwtToken']) ? $_COOKIE['jwtToken'] : '';
 
-if (empty($token)) {
-    // Thử lấy token từ localStorage (nếu có thể, qua JavaScript)
-    echo '<script>
-        var token = localStorage.getItem("jwtToken");
-        if (token) {
-            document.cookie = "jwtToken=" + token + "; path=/";
-            window.location.reload();
-        } else {
-            alert("Không có token, từ chối truy cập");
-        }
-    </script>';
-    exit();
-}
 
-$url = 'http://localhost:3307/api/get-all-user'; // URL của API backend
+$url = 'http://localhost:8000/api/get-all-user'; // URL của API backend
 
 // Khởi tạo context để gửi yêu cầu HTTP
 $context = stream_context_create([
@@ -98,6 +86,7 @@ if ($data === null) {
             z-index: 999;
         }
     </style>
+    
 </head>
 
 <body>
@@ -382,7 +371,7 @@ try {
     }
 
     const xhr = new XMLHttpRequest();
-    xhr.open('DELETE', `http://localhost:3307/api/delete-user`, true);
+    xhr.open('DELETE', `http://localhost:8000/api/delete-user`, true);
     xhr.setRequestHeader('Content-Type', 'application/json');
     const token = localStorage.getItem('jwtToken');
     xhr.setRequestHeader('Authorization', `Bearer ${token}`);
