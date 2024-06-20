@@ -305,10 +305,10 @@ if ($data === null) {
                           $button_id = ($book['showing'] === 1) ? 'btn-show' : 'btn-show-fade';
                           $button_2 = ($book['showing'] === 0) ? 'btn-hide' : 'btn-hide-fade';
                          ?>
-                            <button id="<?php echo $button_id ?>" type="button" class="btn btn-info btn-sm" onclick="showbook('<?php echo htmlspecialchars($book['id']); ?>')">
+                            <button id="<?php echo $button_id ?>" type="button" class="btn btn-info btn-sm" onclick="showBook('<?php echo htmlspecialchars($book['id']); ?>', '<?php echo htmlspecialchars($book['bookName']); ?>')">
                                 <i class="fa fa-eye"></i> Hiện
                             </button>
-                            <button id="<?php echo $button_2 ?>" type="button" class="btn btn-danger btn-sm" onclick="hidebook('<?php echo htmlspecialchars($book['id']); ?>', '<?php echo htmlspecialchars($book['bookName']); ?>')">
+                            <button id="<?php echo $button_2 ?>" type="button" class="btn btn-danger btn-sm" onclick="HideBook('<?php echo htmlspecialchars($book['id']); ?>', '<?php echo htmlspecialchars($book['bookName']); ?>')">
                                 <i class="fa fa-eye-slash"></i> Ẩn
                             </button>
                         </td>
@@ -402,20 +402,42 @@ if ($data === null) {
         }
     };
 
-    function hidebook() {
-            let btnShow = document.getElementById('btn-show');
-            let btnHide = document.getElementById('btn-hide');
+    const showHideBook = async (id, name) => {
+    try {
+        // Lấy JWT từ localStorage
+        const token = localStorage.getItem('jwtToken');
+        if (!token) {
+            alert('JWT token not found!');
+            return;
+        }
 
-            // if (btnShow.style.opacity === '0' && element2.style.opacity === '0') {
-            //     btnShow.style.opacity = '1';
-            //     btnHide.style.opacity = '1';
-            // } else {
-            //     btnShow.style.opacity = '0';
-            //     btnHide.style.opacity = '0';
-            // }
+        // Gọi API để xác thực JWT
+        const response = await fetch('/api/verify-jwt', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${token}`
+            },
+            body: JSON.stringify({ id })
+        });
+
+        const result = await response.json();
+
+        // Kiểm tra mã lỗi từ phản hồi API
+        if (result.errCode === 0) {
+            // Tìm phần tử sách bằng ID và đổi tên
+            aleart()
+        } else {
+            alert(`Error: ${result.errMessage}`);
+        }
+    } catch (error) {
+        console.error(`Error in showHideBook: ${error}`);
+        alert('An error occurred while updating the book name.');
     }
+};
 
-        document.getElementById('toggleButton').addEventListener('click', toggleOpacity);
+
+    document.getElementById('toggleButton').addEventListener('click', toggleOpacity);
                                            
 </script>
 
