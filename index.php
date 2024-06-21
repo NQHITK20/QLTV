@@ -735,14 +735,14 @@ if ($data === null) {
 												</div>
 											</li>
 											<li class="menu-item-has-children">
-												<a href="productdetail.html">Sách</a>
+												<a>Sách</a>
 												<ul class="sub-menu">
 													<li><a href="index-2.html">Sách mới nhất</a></li>
 													<li><a href="indexv2.html">Sách hay</a></li>
 												</ul>
 											</li>
 										    <li class="menu-item-has-children">
-											<a href="newsgrid.html">Tin tức</a>
+											<a>Tin tức</a>
 											<ul class="sub-menu" id="menu-tin-tuc">
 												<li><a href="index-2.html">Tin tức mới nhất</a></li>
 												<li><a href="indexv2.html">tin tức nổi bật</a></li>
@@ -885,41 +885,45 @@ if ($data === null) {
 									</div>
 								</div> -->
 								<?php
-                                // Kiểm tra nếu dữ liệu có chứa key 'data'
-                               if (isset($data['data'])) {
-            // Lặp qua dữ liệu và hiển thị trong các div item
-            foreach ($data['data'] as $book) {
-                ?>
-                <div class="item">
-                    <div class="tg-postbook">
-                        <figure class="tg-featureimg">
-                            <div class="tg-bookimg">
-                                <div class="tg-frontcover"><img src="images/books/<?php echo htmlspecialchars($book['image']); ?>" alt="<?php echo htmlspecialchars($book['bookName']); ?>"></div>
-                                <div class="tg-backcover"><img src="images/books/<?php echo htmlspecialchars($book['image']); ?>" alt="<?php echo htmlspecialchars($book['bookName']); ?>"></div>
-                            </div>
-                            <a class="tg-btnaddtowishlist" href="productdetail.html">
-                                <span>Xem thêm </span>
-                            </a>
-                        </figure>
-                        <div class="tg-postbookcontent">
-                            <ul class="tg-bookscategories">
-                                <li><?php echo htmlspecialchars($book['category']); ?></li>
-                            </ul>
-                            <div class="tg-themetagbox"><span class="tg-themetag">mới</span></div>
-                            <div class="tg-booktitle">
-                                <h3><a href="productdetail.html"><?php echo htmlspecialchars($book['bookName']); ?></a></h3>
-                            </div>
-                            <span class="tg-bookwriter">Tác giả : <?php echo htmlspecialchars($book['author']); ?></span>
-                            <span class="tg-stars"><span></span></span>
+// Kiểm tra nếu dữ liệu có chứa key 'data'
+if (isset($data['data'])) {
+    // Lặp qua dữ liệu và hiển thị trong các div item
+    foreach ($data['data'] as $book) {
+        // Chỉ hiển thị sách nếu showing = 1
+        if ($book['showing'] == 1) {
+            ?>
+            <div class="item">
+                <div class="tg-postbook">
+                    <figure class="tg-featureimg">
+                        <div class="tg-bookimg">
+                            <div class="tg-frontcover"><img src="images/books/<?php echo htmlspecialchars($book['image']); ?>" alt="<?php echo htmlspecialchars($book['bookName']); ?>"></div>
+                            <div class="tg-backcover"><img src="images/books/<?php echo htmlspecialchars($book['image']); ?>" alt="<?php echo htmlspecialchars($book['bookName']); ?>"></div>
                         </div>
+                        <a class="tg-btnaddtowishlist" href="productdetail.html">
+                            <span>Xem thêm </span>
+                        </a>
+                    </figure>
+                    <div class="tg-postbookcontent">
+                        <ul class="tg-bookscategories">
+                            <li><?php echo htmlspecialchars($book['category']); ?></li>
+                        </ul>
+                        <div class="tg-themetagbox"><span class="tg-themetag">mới</span></div>
+                        <div class="tg-booktitle">
+                            <h3><a href="productdetail.html"><?php echo htmlspecialchars($book['bookName']); ?></a></h3>
+                        </div>
+                        <span class="tg-bookwriter">Tác giả : <?php echo htmlspecialchars($book['author']); ?></span>
+                        <span class="tg-stars"><span></span></span>
                     </div>
                 </div>
-                <?php
-            }
-                               } else {
-                                 echo '<p>Không có dữ liệu</p>';
-                                   }
-                                ?>
+            </div>
+            <?php
+        }
+    }
+} else {
+    echo '<p>Không có dữ liệu</p>';
+}
+?>
+
 							</div>
 						</div>
 					</div>

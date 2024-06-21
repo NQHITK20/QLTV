@@ -27,131 +27,7 @@
     <link rel="stylesheet" href="assets/css/style.css">
 
     <link href='https://fonts.googleapis.com/css?family=Open+Sans:400,600,700,800' rel='stylesheet' type='text/css'>
-    <script>
-  function fetchData() {
-    document.getElementById('loadingOverlay').style.display = 'flex';
-    return new Promise(function(resolve, reject) {
-        let xhr = new XMLHttpRequest();
-        let urlParams = new URLSearchParams(window.location.search);
-        let userId = urlParams.get('id');
-        let userData = {
-            id:userId
-        }
-        xhr.open("POST", "http://localhost:8000/api/get-user-by-id", true);
-        xhr.setRequestHeader("Content-Type", "application/json");
-        const token = localStorage.getItem('jwtToken');
-        xhr.setRequestHeader('Authorization', `Bearer ${token}`);
-        xhr.onreadystatechange = function () {
-            if (xhr.readyState === 4 && xhr.status === 200) {
-                var responseData = JSON.parse(xhr.responseText);
-                resolve(responseData);
-             document.getElementById('loadingOverlay').style.display = 'none';
-
-            }
-        };
-        xhr.send(JSON.stringify(userData));
-    });
-}
-
-document.addEventListener("DOMContentLoaded", async function() {
-    try {
-        const responseData = await fetchData();
-        console.log('check res data',responseData)
-        if (responseData.errCode === 0) {
-            document.getElementById("firstName").value = responseData.data.firstName;
-            document.getElementById("lastName").value = responseData.data.lastName;
-            document.getElementById("email").value = responseData.data.email;
-            document.getElementById("roleId").value = responseData.data.roleId;
-            document.getElementById("nationalId").value = responseData.data.nationalId;
-            document.getElementById("phoneNumber").value = responseData.data.phoneNumber;
-            document.getElementById("address").value = responseData.data.address;us
-        }
-    } catch (error) {
-        console.error(error);
-    }
-});
-
-    // Gửi request API
-
-         function submitForm() {
-            let firstName = document.getElementById('firstName').value;
-            let lastName = document.getElementById('lastName').value;
-            let roleId = document.getElementById('roleId').value;
-            let nationalId = document.getElementById('nationalId').value;
-            let email = document.getElementById('email').value;
-            let phoneNumber = document.getElementById('phoneNumber').value;
-            let address = document.getElementById('address').value;
-
-            if (firstName === "") {
-                alert("Vui lòng nhập họ.");
-                return ;
-            }else if (lastName === "") {
-                alert("Vui lòng nhập tên.");
-                return ;
-            }else if (roleId === "") {
-                alert("Vui lòng chọn vai trò");
-                return ;
-            }
-            else if (nationalId === "") {
-                alert("Vui lòng nhập CCCD");
-                return ;
-            }else if (roleId === "") {
-                alert("Vui lòng chọn vai trò");
-                return ;
-            }
-            
-            let userData = {
-                firstName: firstName,
-                lastName: lastName,
-                roleId:roleId,
-                email:email,
-                phoneNumber:phoneNumber,
-                nationalId:nationalId,
-                address:address,
-            };
-
-            let xhr = new XMLHttpRequest(); // Tạo đối tượng XMLHttpRequest
-            xhr.open('POST', 'http://localhost:8000/api/edit-user',true); // Gửi yêu cầu POST đến đường dẫn '/api/users'
-            xhr.setRequestHeader("Content-Type", "application/json"); // Thiết lập tiêu đề 'Content-Type'
-            const token = localStorage.getItem('jwtToken');
-            xhr.setRequestHeader('Authorization', `Bearer ${token}`);
-
-            xhr.onload = function() {
-            document.getElementById('loadingOverlay').style.display = 'none';
-                try {
-                    var responseData = JSON.parse(xhr.responseText);
-                    if (xhr.status === 200 && responseData.errCode === 0) { // Kiểm tra nếu mã trạng thái là 201 (Created)
-                        alert('Thay đổi thông tin thành công')
-                        window.location.href = "manage-user.php";
-                } else {
-                    alert(responseData.errMessage)
-                }
-                } catch (error) {
-                    console.log(error)
-                    alert('Lỗi sever');
-                }
-            };
-            xhr.onerror = function () {
-            console.error('Request failed');
-            alert('Có lỗi xảy ra khi gửi yêu cầu. Vui lòng thử lại sau.');
-            document.getElementById('loadingOverlay').style.display = 'none';
-            };
-            document.getElementById('loadingOverlay').style.display = 'none';
-            xhr.send(JSON.stringify(userData));
-        }
-    </script>
-     <script>
-        //check vai trò hiện tên các thứ
-     document.addEventListener('DOMContentLoaded', function() {
-        // check role
-        let userData = JSON.parse(localStorage.getItem('userData'))
-        if (userData.roleId !== "3") {
-            window.location.href ="../web-ui/index.html"
-        }
-        //load data ra page
-        document.getElementById("span-avatar").innerText = 'Hi ' + userData.lastName;
-    });
-    </script>
+    
 
 </head>
 
@@ -253,34 +129,36 @@ document.addEventListener("DOMContentLoaded", async function() {
 
         <!-- Header-->
         <header id="header" class="header">
+
             <div class="header-menu">
 
-                <div class="col-sm-7" >
-                   
+                <div class="col-sm-7">
+                    <a id="menuToggle" class="menutoggle pull-left"><i class="fa fa fa-tasks"></i></a>
+                    
                 </div>
 
                 <div class="col-sm-5">
                     <div class="user-area dropdown float-right">
-                        <span id="span-avatar"></span>
+                        <span id="span-avatar">Hi, John </span>
                         <a href="#" class="dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                             <img class="user-avatar rounded-circle" src="images/admin.jpg" alt="User Avatar">
                         </a>
                         <div class="user-menu dropdown-menu">
-                            <a class="nav-link" href="page-login.html" onclick="logout()"><i class="fa fa-sign-out"></i> Đăng xuất </a>
-                            <a class="nav-link" href="../web-ui/index.html"><i class="fa fa-newspaper-o"></i> Về trang chủ </a>
+                            <a class="nav-link" href="#"><i class="fa fa-user"></i> Đăng kí </a>
+                            <a class="nav-link" href="#"><i class="fa fa-power-off"></i> Đăng nhập </a>
                         </div>
                     </div>
                 </div>
             </div>
+
         </header><!-- /header -->
-        <!-- Header-->
         <!-- Header-->
 
         <div class="breadcrumbs">
             <div class="col-sm-4">
                 <div class="page-header float-left">
                     <div class="page-title">
-                        <h1>Tài khoản</h1>
+                        <h1>Danh mục</h1>
                     </div>
                 </div>
             </div>
@@ -288,8 +166,8 @@ document.addEventListener("DOMContentLoaded", async function() {
                 <div class="page-header float-right">
                     <div class="page-title">
                         <ol class="breadcrumb text-right">
-                            <li><a href="manage-user.php">Tài khoản</a></li>
-                            <li class="active">Sửa tài khoản</li>
+                            <li><a href="manage-category.php">Danh mục</a></li>
+                            <li class="active">Quản lý Danh mục</li>
                         </ol>
                     </div>
                 </div>
@@ -301,53 +179,18 @@ document.addEventListener("DOMContentLoaded", async function() {
             <div class="col-lg-12">
                 <div class="card">
                     <div class="card-header">
-                        <strong>Sửa tài khoản</strong>
+                        <strong>Sửa danh mục Sách</strong>
                     </div>
                     <div class="card-body card-block">
                         <form id="registerForm" action="" method="post" enctype="multipart/form-data" class="form-horizontal">
                             <div class="row form-group">
-                                <div class="col col-md-3"><label for="text-input" class=" form-control-label">Họ</label></div>
-                                <div class="col-12 col-md-2"><input type="text" id="firstName" name="firstName" placeholder="Nhập họ" class="form-control" value=""></div>
+                                <div class="col col-md-3"><label for="text-input" class=" form-control-label">Danh mục</label></div>
+                                <div class="col-12 col-md-2"><input type="text" id="category" name="category" placeholder="Nhập danh mục" class="form-control"></div>
                             </div>
-                            <div class="row form-group">
-                                <div class="col col-md-3"><label for="text-input" class=" form-control-label">Tên</label></div>
-                                <div class="col-12 col-md-2"><input type="text" id="lastName" name="lastName" placeholder="Nhập tên" class="form-control" value=""></div>
-                            </div>
-                            <div class="row form-group">
-                                <div class="col col-md-3"><label for="email-input" class=" form-control-label"></label>Email</div>
-                                <div class="col-12 col-md-3"><input type="email" id="email" name="email" placeholder="Nhập email" class="form-control" value="" disabled></div>
-                            </div>
-                            <div class="row form-group">
-                                <div class="col col-md-3"><label for="password-input" class=" form-control-label">Mât khẩu</label></div>
-                                <div class="col-12 col-md-3"><input type="disabled-input" id="disabled-input" name="disabled-input" placeholder="nhập mật khẩu" class="form-control" style="background-color: #e9ecef;" disabled></div>
-                            </div>
-                                <div class="row form-group">
-                                    <div class="col col-md-3"><label for="select" class=" form-control-label">Vai trò</label></div>
-                                    <div class="col-12 col-md-2">
-                                        <select name="roleId" id="roleId" class="form-control" value="">
-                                            <option value="0">Vai trò</option>
-                                            <option value="1">Khách</option>
-                                            <option value="2">Thủ thư</option>
-                                            <option value="3">Admin</option>
-                                        </select>
-                                    </div>
-                                </div>
-                                <div class="row form-group">
-                                    <div class="col col-md-3"><label for="text-input" class=" form-control-label">CCCD</label></div>
-                                    <div class="col-12 col-md-3"><input type="text" id="nationalId" name="nationalId" placeholder="nhập cccd" class="form-control" value=""></div>
-                                </div>
-                                <div class="row form-group">
-                                    <div class="col col-md-3"><label for="text-input" class=" form-control-label">Số điện thoại</label></div>
-                                    <div class="col-12 col-md-3"><input type="text" id="phoneNumber" name="phoneNumber" placeholder="nhập số điện thoại" class="form-control" value=""></div>
-                                </div>
-                                <div class="row form-group">
-                                    <div class="col col-md-3"><label for="text-input" class=" form-control-label">Địa chỉ</label></div>
-                                    <div class="col-12 col-md-6"><input type="text" id="address" name="address" placeholder="nhập địa chỉ" class="form-control" value=""></div>
-                                </div>
                         </form>
                     </div>
                     <div class="card-footer">
-                        <button type="submit" class="btn btn-primary btn-sm" onclick="submitForm()">
+                        <button type="submit" class="btn btn-primary btn-sm" >
                             <i class="fa fa-dot-circle-o"></i> Xác nhận
                         </button>
                        
@@ -373,7 +216,6 @@ document.addEventListener("DOMContentLoaded", async function() {
     <script>
         (function($) {
             "use strict";
-
             jQuery('#vmap').vectorMap({
                 map: 'world_en',
                 backgroundColor: null,
@@ -387,7 +229,9 @@ document.addEventListener("DOMContentLoaded", async function() {
                 normalizeFunction: 'polynomial'
             });
         })(jQuery);
-    </script>
+       
+
+     </script>
 
 </body>
 <style>
@@ -404,5 +248,4 @@ document.addEventListener("DOMContentLoaded", async function() {
         z-index: 999;
     }
 </style>
-
 </html>

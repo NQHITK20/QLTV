@@ -305,10 +305,10 @@ if ($data === null) {
                           $button_id = ($book['showing'] === 1) ? 'btn-show' : 'btn-show-fade';
                           $button_2 = ($book['showing'] === 0) ? 'btn-hide' : 'btn-hide-fade';
                          ?>
-                            <button id="<?php echo $button_id ?>" type="button" class="btn btn-info btn-sm" onclick="showBook('<?php echo htmlspecialchars($book['id']); ?>', '<?php echo htmlspecialchars($book['bookName']); ?>')">
+                            <button id="<?php echo $button_id ?>" type="button" class="btn btn-info btn-sm" onclick="showBook('<?php echo htmlspecialchars($book['id']); ?>', '<?php echo htmlspecialchars($book['bookName']); ?>', '<?php echo $button_id; ?>')">
                                 <i class="fa fa-eye"></i> Hiện
                             </button>
-                            <button id="<?php echo $button_2 ?>" type="button" class="btn btn-danger btn-sm" onclick="HideBook('<?php echo htmlspecialchars($book['id']); ?>', '<?php echo htmlspecialchars($book['bookName']); ?>')">
+                            <button id="<?php echo $button_2 ?>" type="button" class="btn btn-danger btn-sm" onclick="hideBook('<?php echo htmlspecialchars($book['id']); ?>', '<?php echo htmlspecialchars($book['bookName']); ?>', '<?php echo $button_2; ?>')">
                                 <i class="fa fa-eye-slash"></i> Ẩn
                             </button>
                         </td>
@@ -402,8 +402,9 @@ if ($data === null) {
         }
     };
 
-    const showHideBook = async (id, name) => {
-    try {
+    let showBook = async (id, name , buttonId) => {
+        if (buttonId === "btn-show-fade") {
+        try {
         // Lấy JWT từ localStorage
         const token = localStorage.getItem('jwtToken');
         if (!token) {
@@ -412,7 +413,7 @@ if ($data === null) {
         }
 
         // Gọi API để xác thực JWT
-        const response = await fetch('/api/verify-jwt', {
+        const response = await fetch('http://localhost:8000/api/show-hide-book', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -426,19 +427,55 @@ if ($data === null) {
         // Kiểm tra mã lỗi từ phản hồi API
         if (result.errCode === 0) {
             // Tìm phần tử sách bằng ID và đổi tên
-            aleart()
+            alert(`Đã hiện sách ' ${name} 'Thành công `);
+            window.location.reload();
         } else {
             alert(`Error: ${result.errMessage}`);
         }
     } catch (error) {
         console.error(`Error in showHideBook: ${error}`);
         alert('An error occurred while updating the book name.');
-    }
-};
+    }   
+  }
+}    
 
+let hideBook = async (id, name , buttonId) => {
+        if (buttonId === "btn-hide-fade") {
+        try {
+        // Lấy JWT từ localStorage
+        const token = localStorage.getItem('jwtToken');
+        if (!token) {
+            alert('JWT token not found!');
+            return;
+        }
 
-    document.getElementById('toggleButton').addEventListener('click', toggleOpacity);
-                                           
+        // Gọi API để xác thực JWT
+        const response = await fetch('http://localhost:8000/api/show-hide-book', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${token}`
+            },
+            body: JSON.stringify({ id })
+        });
+
+        const result = await response.json();
+
+        // Kiểm tra mã lỗi từ phản hồi API
+        if (result.errCode === 0) {
+            // Tìm phần tử sách bằng ID và đổi tên
+            alert(`Đã ẩn sách ' ${name} 'Thành công `);
+            window.location.reload();
+        } else {
+            alert(`Error: ${result.errMessage}`);
+        }
+    } catch (error) {
+        console.error(`Error in showHideBook: ${error}`);
+        alert('An error occurred while updating the book name.');
+    }   
+  }
+}    
+                                       
 </script>
 
 </html>
