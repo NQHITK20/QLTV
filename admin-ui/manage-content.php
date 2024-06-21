@@ -7,20 +7,23 @@ error_reporting(E_ALL);
 // Kiểm tra và lấy token từ cookie hoặc localStorage
 $token = isset($_COOKIE['jwtToken']) ? $_COOKIE['jwtToken'] : '';
 
+$url = 'http://localhost:8000/api/get-category-by-id'; // URL của API backend
 
-$url = 'http://localhost:8000/api/get-all-user'; // URL của API backend
+// Tạo body của yêu cầu với id = "ALL"
+$data = json_encode(['id' => 'ALL']);
 
 // Khởi tạo context để gửi yêu cầu HTTP
 $context = stream_context_create([
     'http' => [
-        'method' => 'GET',
+        'method' => 'POST',
         'header' => "Authorization: Bearer $token\r\n" . // Thêm token vào header Authorization
                     "Content-Type: application/json\r\n", // Đặt kiểu nội dung là JSON
+        'content' => $data, // Thêm dữ liệu vào body của yêu cầu
         'ignore_errors' => true, // Bắt mọi lỗi, không chỉ lỗi không thể kết nối
     ]
 ]);
 
-// Gửi yêu cầu GET đến backend và nhận nội dung phản hồi
+// Gửi yêu cầu POST đến backend và nhận nội dung phản hồi
 $response = @file_get_contents($url, false, $context);
 
 // Kiểm tra nếu có lỗi khi lấy dữ liệu từ backend
@@ -34,6 +37,7 @@ if ($response === FALSE) {
 $data = json_decode($response, true);
 
 // Kiểm tra nếu có lỗi khi chuyển đổi JSON
+
 if ($data === null) {
     die('Lỗi khi chuyển đổi JSON: ' . json_last_error_msg());
 }
@@ -130,7 +134,7 @@ if ($data === null) {
     <!-- Right Panel -->
 
     <div id="right-panel" class="right-panel">
-
+        
         <!-- Header-->
         <header id="header" class="header">
 
@@ -138,81 +142,7 @@ if ($data === null) {
 
                 <div class="col-sm-7">
                     <a id="menuToggle" class="menutoggle pull-left"><i class="fa fa fa-tasks"></i></a>
-                    <div class="header-left">
-                        <button class="search-trigger"><i class="fa fa-search"></i></button>
-                        <div class="form-inline">
-                            <form class="search-form">
-                                <input class="form-control mr-sm-2" type="text" placeholder="Search ..." aria-label="Search">
-                                <button class="search-close" type="submit"><i class="fa fa-close"></i></button>
-                            </form>
-                        </div>
-
-                        <div class="dropdown for-notification">
-                            <button class="btn btn-secondary dropdown-toggle" type="button" id="notification" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                <i class="fa fa-bell"></i>
-                                <span class="count bg-danger">5</span>
-                            </button>
-                            <div class="dropdown-menu" aria-labelledby="notification">
-                                <p class="red">You have 3 Notification</p>
-                                <a class="dropdown-item media bg-flat-color-1" href="#">
-                                <i class="fa fa-check"></i>
-                                <p>Server #1 overloaded.</p>
-                            </a>
-                                <a class="dropdown-item media bg-flat-color-4" href="#">
-                                <i class="fa fa-info"></i>
-                                <p>Server #2 overloaded.</p>
-                            </a>
-                                <a class="dropdown-item media bg-flat-color-5" href="#">
-                                <i class="fa fa-warning"></i>
-                                <p>Server #3 overloaded.</p>
-                            </a>
-                            </div>
-                        </div>
-
-                        <div class="dropdown for-message">
-                            <button class="btn btn-secondary dropdown-toggle" type="button"
-                                id="message"
-                                data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                <i class="ti-email"></i>
-                                <span class="count bg-primary">9</span>
-                            </button>
-                            <div class="dropdown-menu" aria-labelledby="message">
-                                <p class="red">You have 4 Mails</p>
-                                <a class="dropdown-item media bg-flat-color-1" href="#">
-                                <span class="photo media-left"><img alt="avatar" src="images/avatar/1.jpg"></span>
-                                <span class="message media-body">
-                                    <span class="name float-left">Jonathan Smith</span>
-                                    <span class="time float-right">Just now</span>
-                                        <p>Hello, this is an example msg</p>
-                                </span>
-                            </a>
-                                <a class="dropdown-item media bg-flat-color-4" href="#">
-                                <span class="photo media-left"><img alt="avatar" src="images/avatar/2.jpg"></span>
-                                <span class="message media-body">
-                                    <span class="name float-left">Jack Sanders</span>
-                                    <span class="time float-right">5 minutes ago</span>
-                                        <p>Lorem ipsum dolor sit amet, consectetur</p>
-                                </span>
-                            </a>
-                                <a class="dropdown-item media bg-flat-color-5" href="#">
-                                <span class="photo media-left"><img alt="avatar" src="images/avatar/3.jpg"></span>
-                                <span class="message media-body">
-                                    <span class="name float-left">Cheryl Wheeler</span>
-                                    <span class="time float-right">10 minutes ago</span>
-                                        <p>Hello, this is an example msg</p>
-                                </span>
-                            </a>
-                                <a class="dropdown-item media bg-flat-color-3" href="#">
-                                <span class="photo media-left"><img alt="avatar" src="images/avatar/4.jpg"></span>
-                                <span class="message media-body">
-                                    <span class="name float-left">Rachel Santos</span>
-                                    <span class="time float-right">15 minutes ago</span>
-                                        <p>Lorem ipsum dolor sit amet, consectetur</p>
-                                </span>
-                            </a>
-                            </div>
-                        </div>
-                    </div>
+                    
                 </div>
 
                 <div class="col-sm-5">
@@ -236,7 +166,7 @@ if ($data === null) {
             <div class="col-sm-4">
                 <div class="page-header float-left">
                     <div class="page-title">
-                        <h1>Tài khoản</h1>
+                        <h1>Danh mục</h1>
                     </div>
                 </div>
             </div>
@@ -244,8 +174,8 @@ if ($data === null) {
                 <div class="page-header float-right">
                     <div class="page-title">
                         <ol class="breadcrumb text-right">
-                            <li><a href="manage-user.php">Tài khoản</a></li>
-                            <li class="active">Quản lý tài khoản</li>
+                            <li><a href="manage-category.php">Danh mục</a></li>
+                            <li class="active">Quản lý Danh mục</li>
                         </ol>
                     </div>
                 </div>
@@ -258,46 +188,30 @@ if ($data === null) {
                     <div class="col-md-12">
                         <div class="card">
                             <div class="card-header">
-                                <strong class="card-title">Bảng tài khoản người dùng</strong>
+                                <strong class="card-title">Bảng danh mục <strong>
                             </div>
                             <div class="card-body">
                                 <table id="bootstrap-data-table-export" class="table table-striped table-bordered">
                                     <thead>
                                         <tr>
-                                            <th>Tên người dùng</th>
-                                            <th>Email</th>
-                                            <th>Vai trò</th>
+                                            <th>Tên danh mục</th>
                                             <th>Hành động</th>
                                         </tr>
                                     </thead>
-                                    <tbody>   
+                                    <tbody>
                                     <?php
             // Kiểm tra nếu dữ liệu có chứa key 'data'
             if (isset($data['data'])) {
                 // Lặp qua dữ liệu và hiển thị trong bảng
-                foreach ($data['data'] as $user) {
+                foreach ($data['data'] as $category) {
                     ?>
                     <tr>
-                        <td><?php echo htmlspecialchars($user['firstName']) . ' ' . htmlspecialchars($user['lastName']); ?></td>
-                        <td><?php echo htmlspecialchars($user['email']); ?></td>
+                        <td><?php echo htmlspecialchars($category['category']); ?></td>
                         <td>
-                            <?php
-                            if ($user['roleId'] == "1") {
-                                echo "Khách";
-                            } elseif ($user['roleId'] == "2") {
-                                echo "Thủ Thư";
-                            } elseif ($user['roleId'] == "3") {
-                                echo "Admin";
-                            } else {
-                                echo "Unknown";
-                            }
-                            ?>
-                        </td>
-                        <td>
-                            <button type="submit" class="btn btn-primary btn-sm" id="editUserInfo" data-id="<?php echo htmlspecialchars($user['id']); ?>" onclick="sendData()">
+                            <button type="submit" class="btn btn-primary btn-sm" onclick="editCat('<?php echo htmlspecialchars($category['id']); ?>')">
                                 <i class="fa fa-eraser"></i> Sửa
                             </button>
-                            <button type="button" class="btn btn-danger btn-sm" id="deleteUser" onclick="deleteUserData('<?php echo htmlspecialchars($user['id']); ?>', '<?php echo htmlspecialchars($user['lastName']); ?>')">
+                            <button type="button" class="btn btn-danger btn-sm"  onclick="deleteCategory('<?php echo htmlspecialchars($category['id']); ?>', '<?php echo htmlspecialchars($category['category']); ?>')">
                                 <i class="fa fa-ban"></i> Xoá
                             </button>
                         </td>
@@ -310,20 +224,15 @@ if ($data === null) {
             ?>
                                     </tbody>     
                                 </table>
-                                <script type="text/javascript">
-        // Chuyển đổi dữ liệu PHP sang JSON và gán cho biến JavaScript
-        var data = <?php echo json_encode($data); ?>;
-        // Ghi dữ liệu ra console
-        console.log(data);
-    </script>
                             </div>
                         </div>
                     </div>
                 </div>
             </div><!-- .animated -->
         </div><!-- .content -->
-
-
+        <div id="editor">
+	   <p>This is the editor content.</p>
+        </div>
     </div><!-- /#right-panel -->
 
     <!-- Right Panel -->
@@ -346,31 +255,39 @@ if ($data === null) {
     <script src="assets/js/init-scripts/data-table/datatables-init.js"></script>
 </body>
 <script>
-    const sendData = async () => {
+    const editCat = async (id) => {
 try {
-    const id = await document.getElementById("editUserInfo").getAttribute("data-id");
     // Chuyển đến trang HTML khác với query parameter id
-    window.location.href = `edit-user.html?id=${id}`;
+    window.location.href = `edit-category.html?id=${id}`;
 } catch (error) {
     console.error('Error occurred:', error);
 }
-};
-    const deleteUserData = async (id,name) => {
+    }
+</script>
+<script>
+    function logout()
+    {
+        localStorage.removeItem('userData')
+        localStorage.removeItem('jwtToken')
+    }
+
+    const deleteCategory = async (id,name) => {
 try {
     // Lấy giá trị ID từ thuộc tính data-id của phần tử
     // Hiển thị hộp thoại xác nhận
-    const userConfirmed = confirm(`Bạn có chắc là muốn xoá người dùng ${name} ?`);
+    const userConfirmed = confirm(`Bạn có chắc là muốn xoá danh mục ${name} ?`);
     if (!userConfirmed) {
         // Người dùng chọn không xóa
         return;
     }
+
     
     let userId={
         id:id
     }
 
     const xhr = new XMLHttpRequest();
-    xhr.open('DELETE', `http://localhost:8000/api/delete-user`, true);
+    xhr.open('DELETE', `http://localhost:8000/api/delete-category`, true);
     xhr.setRequestHeader('Content-Type', 'application/json');
     const token = localStorage.getItem('jwtToken');
     xhr.setRequestHeader('Authorization', `Bearer ${token}`);
@@ -382,7 +299,7 @@ try {
                 var responseData = JSON.parse(xhr.responseText);
                 if (xhr.status === 200 && responseData.errCode === 0) { // Kiểm tra nếu mã trạng thái là 201 (Created)
                     alert('Xoá thành công')
-                    window.location.href = "manage-user.php";
+                    window.location.href = "manage-category.php";
             } else {
                 alert(responseData.errMessage)
             }
@@ -403,13 +320,6 @@ try {
     console.error('An error occurred while trying to delete the user:', error);
 }
 };
-</script>
-<script>
-    function logout()
-    {
-        localStorage.removeItem('userData')
-        localStorage.removeItem('jwtToken')
-    }
 </script>
 
 </html>

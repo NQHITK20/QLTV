@@ -7,20 +7,23 @@ error_reporting(E_ALL);
 // Kiểm tra và lấy token từ cookie hoặc localStorage
 $token = isset($_COOKIE['jwtToken']) ? $_COOKIE['jwtToken'] : '';
 
+$url = 'http://localhost:8000/api/get-category-by-id'; // URL của API backend
 
-$url = 'http://localhost:8000/api/get-all-user'; // URL của API backend
+// Tạo body của yêu cầu với id = "ALL"
+$data = json_encode(['id' => 'ALL']);
 
 // Khởi tạo context để gửi yêu cầu HTTP
 $context = stream_context_create([
     'http' => [
-        'method' => 'GET',
+        'method' => 'POST',
         'header' => "Authorization: Bearer $token\r\n" . // Thêm token vào header Authorization
                     "Content-Type: application/json\r\n", // Đặt kiểu nội dung là JSON
+        'content' => $data, // Thêm dữ liệu vào body của yêu cầu
         'ignore_errors' => true, // Bắt mọi lỗi, không chỉ lỗi không thể kết nối
     ]
 ]);
 
-// Gửi yêu cầu GET đến backend và nhận nội dung phản hồi
+// Gửi yêu cầu POST đến backend và nhận nội dung phản hồi
 $response = @file_get_contents($url, false, $context);
 
 // Kiểm tra nếu có lỗi khi lấy dữ liệu từ backend
@@ -34,6 +37,7 @@ if ($response === FALSE) {
 $data = json_decode($response, true);
 
 // Kiểm tra nếu có lỗi khi chuyển đổi JSON
+
 if ($data === null) {
     die('Lỗi khi chuyển đổi JSON: ' . json_last_error_msg());
 }
@@ -194,8 +198,30 @@ if ($data === null) {
                                             <th>Hành động</th>
                                         </tr>
                                     </thead>
-                                    <tbody>   
-                                   
+                                    <tbody>
+                                    <?php
+            // Kiểm tra nếu dữ liệu có chứa key 'data'
+            if (isset($data['data'])) {
+                // Lặp qua dữ liệu và hiển thị trong bảng
+                foreach ($data['data'] as $category) {
+                    ?>
+                    <tr>
+                        <td><?php echo htmlspecialchars($category['category']); ?></td>
+                        <td>
+                            <button type="submit" class="btn btn-primary btn-sm" onclick="editCat('<?php echo htmlspecialchars($category['id']); ?>')">
+                                <i class="fa fa-eraser"></i> Sửa
+                            </button>
+                            <button type="button" class="btn btn-danger btn-sm"  onclick="deleteCategory('<?php echo htmlspecialchars($category['id']); ?>', '<?php echo htmlspecialchars($category['category']); ?>')">
+                                <i class="fa fa-ban"></i> Xoá
+                            </button>
+                        </td>
+                    </tr>
+                    <?php
+                }
+            } else {
+                echo '<tr><td colspan="4">Không có dữ liệu</td></tr>';
+            }
+            ?>
                                     </tbody>     
                                 </table>
                             </div>
@@ -204,8 +230,9 @@ if ($data === null) {
                 </div>
             </div><!-- .animated -->
         </div><!-- .content -->
-
-
+        
+        
+        
     </div><!-- /#right-panel -->
 
     <!-- Right Panel -->
@@ -228,7 +255,14 @@ if ($data === null) {
     <script src="assets/js/init-scripts/data-table/datatables-init.js"></script>
 </body>
 <script>
-   
+    const editCat = async (id) => {
+try {
+    // Chuyển đến trang HTML khác với query parameter id
+    window.location.href = `edit-category.html?id=${id}`;
+} catch (error) {
+    console.error('Error occurred:', error);
+}
+    }
 </script>
 <script>
     function logout()
@@ -236,6 +270,56 @@ if ($data === null) {
         localStorage.removeItem('userData')
         localStorage.removeItem('jwtToken')
     }
+
+    const deleteCategory = async (id,name) => {
+try {
+    // Lấy giá trị ID từ thuộc tính data-id của phần tử
+    // Hiển thị hộp thoại xác nhận
+    const userConfirmed = confirm(`Bạn có chắc là muốn xoá danh mục ${name} ?`);
+    if (!userConfirmed) {
+        // Người dùng chọn không xóa
+        return;
+    }
+
+    
+    let userId={
+        id:id
+    }
+
+    const xhr = new XMLHttpRequest();
+    xhr.open('DELETE', `http://localhost:8000/api/delete-category`, true);
+    xhr.setRequestHeader('Content-Type', 'application/json');
+    const token = localStorage.getItem('jwtToken');
+    xhr.setRequestHeader('Authorization', `Bearer ${token}`);
+
+    // Định nghĩa hàm callback khi yêu cầu thay đổi trạng thái
+    xhr.onload = function() {
+        document.getElementById('loadingOverlay').style.display = 'none';
+            try {
+                var responseData = JSON.parse(xhr.responseText);
+                if (xhr.status === 200 && responseData.errCode === 0) { // Kiểm tra nếu mã trạng thái là 201 (Created)
+                    alert('Xoá thành công')
+                    window.location.href = "manage-category.php";
+            } else {
+                alert(responseData.errMessage)
+            }
+            } catch (error) {
+                console.log(error)
+                alert('Lỗi sever');
+            }
+        };
+        xhr.onerror = function () {
+            console.error('Request failed');
+            alert('Có lỗi xảy ra khi gửi yêu cầu. Vui lòng thử lại sau.');
+            document.getElementById('loadingOverlay').style.display = 'none';
+               };
+        document.getElementById('loadingOverlay').style.display = 'flex';
+    // Gửi yêu cầu
+    xhr.send(JSON.stringify(userId));
+} catch (error) {
+    console.error('An error occurred while trying to delete the user:', error);
+}
+};
 </script>
 
 </html>

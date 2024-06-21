@@ -190,10 +190,9 @@
                         </form>
                     </div>
                     <div class="card-footer">
-                        <button type="submit" class="btn btn-primary btn-sm" >
+                        <button type="submit" class="btn btn-primary btn-sm" onclick="editCategory()">
                             <i class="fa fa-dot-circle-o"></i> Xác nhận
                         </button>
-                       
                     </div>
                 </div>
             </div>
@@ -229,8 +228,104 @@
                 normalizeFunction: 'polynomial'
             });
         })(jQuery);
-       
 
+        function fetchData() {
+    document.getElementById('loadingOverlay').style.display = 'flex';
+    return new Promise(function(resolve, reject) {
+    let xhr = new XMLHttpRequest();
+    let urlParams = new URLSearchParams(window.location.search);
+    let userId = urlParams.get('id');
+    let userData = {
+        id: userId
+    };
+    
+    xhr.open("POST", "http://localhost:8000/api/get-category-by-id", true); // Thay đổi phương thức GET thành POST
+    xhr.setRequestHeader("Content-Type", "application/json");
+    
+    const token = localStorage.getItem('jwtToken');
+    xhr.setRequestHeader('Authorization', `Bearer ${token}`);
+    
+    xhr.onreadystatechange = function () {
+        if (xhr.readyState === 4) {
+            document.getElementById('loadingOverlay').style.display = 'none';
+            
+            if (xhr.status === 200) {
+                var responseData = JSON.parse(xhr.responseText);
+                resolve(responseData);
+            } else {
+                var errorResponse = JSON.parse(xhr.responseText);
+                reject(errorResponse.errMessage || 'Unknown error occurred');
+                alert('Error: ' + (errorResponse.errMessage || 'Unknown error occurred'));
+            }
+        }
+    };
+    
+    xhr.onerror = function () {
+        document.getElementById('loadingOverlay').style.display = 'none';
+        reject('Network error');
+        alert('Network error');
+    };
+    xhr.send(JSON.stringify(userData));
+});
+
+}
+
+document.addEventListener("DOMContentLoaded", async function() {
+    try {
+        const responseData = await fetchData();
+        if (responseData.errCode === 0) {
+            document.getElementById("category").value = responseData.data.category;
+        }
+    } catch (error) {
+        console.error(error);
+    }
+});
+
+        function editCategory() {
+            let category = document.getElementById('category').value;
+            let urlParams = new URLSearchParams(window.location.search);
+            let userId = urlParams.get('id');
+
+            if (category === "") {
+                alert("Vui lòng nhập danh mục.");
+                return ;
+            }
+
+            const userData = {
+                id:userId,
+                category: category,
+            };
+
+            const xhr = new XMLHttpRequest(); // Tạo đối tượng XMLHttpRequest
+            xhr.open('POST', 'http://localhost:8000/api/edit-category',true); // Gửi yêu cầu POST đến đường dẫn '/api/users'
+            xhr.setRequestHeader("Content-Type", "application/json"); // Thiết lập tiêu đề 'Content-Type'
+            const token = localStorage.getItem('jwtToken');
+            xhr.setRequestHeader('Authorization', `Bearer ${token}`);
+
+
+            xhr.onload = function() {
+                document.getElementById('loadingOverlay').style.display = 'none';
+                try {
+                    var responseData = JSON.parse(xhr.responseText);
+                    if (xhr.status === 200 && responseData.errCode === 0) { // Kiểm tra nếu mã trạng thái là 201 (Created)
+                        alert('Bạn sửa danh mục thành công')
+                        window.location.href = "manage-category.php";
+                } else {
+                    alert(responseData.errMessage)
+                }
+                } catch (error) {
+                    console.log(error)
+                    alert('Lỗi sever');
+                }
+            };
+            xhr.onerror = function () {
+                console.error('Request failed');
+                alert('Có lỗi xảy ra khi gửi yêu cầu. Vui lòng thử lại sau.');
+                document.getElementById('loadingOverlay').style.display = 'none';
+            };
+            document.getElementById('loadingOverlay').style.display = 'flex';
+            xhr.send(JSON.stringify(userData));
+        }
      </script>
 
 </body>

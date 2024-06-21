@@ -1,0 +1,5 @@
+{
+  "dependencies": {
+    "@ckeditor/ckeditor5-html-embed": "^41.4.2"
+  }
+}
