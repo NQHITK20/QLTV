@@ -184,16 +184,31 @@
                     <div class="card-body card-block">
                         <form id="registerForm" action="" method="post" enctype="multipart/form-data" class="form-horizontal">
                             <div class="row form-group">
-                                <div class="col col-md-3"><label for="text-input" class=" form-control-label">Danh mục</label></div>
-                                <div class="col-12 col-md-2"><input type="text" id="category" name="category" placeholder="Nhập danh mục" class="form-control"></div>
-                                <div class="col-12 col-md-2"></div>
+                                <div class="col col-md-3"><label for="text-input" class=" form-control-label">Tiêu đề bài viết</label></div>
+                                <div class="col-12 col-md-6"><input type="text" id="titleNew" name="titleNew" placeholder="Nhập tiêu đề bài viết" class="form-control"></div>
+                            </div>
+                            <div class="row form-group">
+                                <div class="col col-md-3"><label for="text-input" class=" form-control-label">Ảnh đại diện bài viết</label></div>
+                                <div class="col-12 col-md-6">
+                                    <input type="file" id="image" name="image" onchange="onchangeImage()">
+                                    <img id="displayedImage" alt="image" class="mt-1" style="display: none;">
+                                </div>
+                            </div>
+                            <div class="row form-group">
+                                <div class="col col-md-3"><label for="text-input" class=" form-control-label">Nội dung bài viết</label></div>
+                                <div class="col-12 col-md-9">
+                                    <div id="editor">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row form-group">
+                                <div class="col col-md-3"><label for="text-input" class=" form-control-label">Tác giả</label></div>
+                                <div class="col-12 col-md-4"><input type="text" id="author" name="author" placeholder="" class="form-control"></div>
                             </div>
                         </form>
                     </div>
-                    <div id="editor">
-                    </div>
                     <div class="card-footer">
-                        <button type="submit" class="btn btn-primary btn-sm" onclick="addCategory()">
+                        <button type="submit" class="btn btn-primary btn-sm">
                             <i class="fa fa-dot-circle-o"></i> Xác nhận
                         </button>
                     </div>
@@ -221,7 +236,7 @@ class MyUploadAdapter {
         constructor(loader) {
       // The file loader instance to use during the upload.
       this.loader = loader;
-    //   this.url = 'http://localhost/QuanLyThuVien/images/uploadImages/books/';
+      //   this.url = 'http://localhost/QuanLyThuVien/images/uploadImages/books/';
        }
 
     // request(file) {
@@ -289,48 +304,22 @@ ClassicEditor
             });
         })(jQuery);
 
-        function addCategory() {
-            let category = document.getElementById('category').value;
+        function onchangeImage() {
+            const fileInput = document.getElementById('image');
+            var file = fileInput.files[0]; // Lấy đối tượng file từ input
 
-            if (category === "") {
-                alert("Vui lòng nhập danh mục.");
-                return ;
-            }
-
-            const userData = {
-                category: category,
-            };
-
-            const xhr = new XMLHttpRequest(); // Tạo đối tượng XMLHttpRequest
-            xhr.open('POST', 'http://localhost:8000/api/create-category',true); // Gửi yêu cầu POST đến đường dẫn '/api/users'
-            xhr.setRequestHeader("Content-Type", "application/json"); // Thiết lập tiêu đề 'Content-Type'
-            const token = localStorage.getItem('jwtToken');
-            xhr.setRequestHeader('Authorization', `Bearer ${token}`);
-
-
-            xhr.onload = function() {
-                document.getElementById('loadingOverlay').style.display = 'none';
-                try {
-                    var responseData = JSON.parse(xhr.responseText);
-                    if (xhr.status === 200 && responseData.errCode === 0) { // Kiểm tra nếu mã trạng thái là 201 (Created)
-                        alert('Bạn đã tạo danh mục thành công')
-                        window.location.href = "manage-category.php";
-                } else {
-                    alert(responseData.errMessage)
-                }
-                } catch (error) {
-                    console.log(error)
-                    alert('Lỗi sever');
-                }
-            };
-            xhr.onerror = function () {
-                console.error('Request failed');
-                alert('Có lỗi xảy ra khi gửi yêu cầu. Vui lòng thử lại sau.');
-                document.getElementById('loadingOverlay').style.display = 'none';
-            };
-            document.getElementById('loadingOverlay').style.display = 'flex';
-            xhr.send(JSON.stringify(userData));
+            // Tách tên file từ đối tượng file
+            let fileNamez = file.name;
+            
+            // Tạo đường dẫn mới
+            var image= '../images/blog/' + fileNamez;
+            
+            // Đặt đường dẫn mới cho thẻ <img> để hiển thị ảnh
+            var img = document.getElementById('displayedImage');
+            img.src = image;
+            img.style.display = 'block';  // Thay đổi 'flex' thành 'block' nếu cần
         }
+
      </script>
 
 </body>

@@ -912,7 +912,6 @@ if (isset($data['data'])) {
                             <h3><a href="productdetail.html"><?php echo htmlspecialchars($book['bookName']); ?></a></h3>
                         </div>
                         <span class="tg-bookwriter">Tác giả : <?php echo htmlspecialchars($book['author']); ?></span>
-                        <span class="tg-stars"><span></span></span>
                     </div>
                 </div>
             </div>
