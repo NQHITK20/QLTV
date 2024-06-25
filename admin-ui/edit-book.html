@@ -315,7 +315,6 @@
 document.addEventListener("DOMContentLoaded", async function() {
     try {
         const responseData = await fetchData();
-        console.log('check res data',responseData)
         if (responseData) {
             document.getElementById("bookName").value = responseData.data.bookName;
             document.getElementById("hiddenCatId").value = responseData.category.id;

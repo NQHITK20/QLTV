@@ -7,7 +7,7 @@ error_reporting(E_ALL);
 // Kiểm tra và lấy token từ cookie hoặc localStorage
 $token = isset($_COOKIE['jwtToken']) ? $_COOKIE['jwtToken'] : '';
 
-$url = 'http://localhost:8000/api/get-category-by-id'; // URL của API backend
+$url = 'http://localhost:8000/api/get-news'; // URL của API backend
 
 // Tạo body của yêu cầu với id = "ALL"
 $data = json_encode(['id' => 'ALL']);
@@ -74,6 +74,7 @@ if ($data === null) {
     <link rel="stylesheet" href="vendors/datatables.net-buttons-bs4/css/buttons.bootstrap4.min.css">
 
     <link rel="stylesheet" href="assets/css/style.css">
+    <link rel="stylesheet" href="assets/css/main.css">
 
     <link href='https://fonts.googleapis.com/css?family=Open+Sans:400,600,700,800' rel='stylesheet' type='text/css'>
     <style>
@@ -88,6 +89,9 @@ if ($data === null) {
             justify-content: center;
             align-items: center;
             z-index: 999;
+        }
+        .table.dataTable td{
+            min-width: 150px;
         }
     </style>
     
@@ -166,7 +170,7 @@ if ($data === null) {
             <div class="col-sm-4">
                 <div class="page-header float-left">
                     <div class="page-title">
-                        <h1>Danh mục</h1>
+                        <h1>Bài viết</h1>
                     </div>
                 </div>
             </div>
@@ -174,8 +178,8 @@ if ($data === null) {
                 <div class="page-header float-right">
                     <div class="page-title">
                         <ol class="breadcrumb text-right">
-                            <li><a href="manage-category.php">Danh mục</a></li>
-                            <li class="active">Quản lý Danh mục</li>
+                            <li><a href="manage-content.php">Bài viết</a></li>
+                            <li class="active">Quản lý bài viết</li>
                         </ol>
                     </div>
                 </div>
@@ -188,13 +192,16 @@ if ($data === null) {
                     <div class="col-md-12">
                         <div class="card">
                             <div class="card-header">
-                                <strong class="card-title">Bảng danh mục <strong>
+                                <strong class="card-title">Bảng bài viết <strong>
                             </div>
                             <div class="card-body">
                                 <table id="bootstrap-data-table-export" class="table table-striped table-bordered">
                                     <thead>
                                         <tr>
-                                            <th>Tên danh mục</th>
+                                            <th>Tiêu đề bài viết</th>
+                                            <th>Tác giả</th>
+                                            <th>Ảnh chính</th>
+                                            <th>Tình trạng</th>
                                             <th>Hành động</th>
                                         </tr>
                                     </thead>
@@ -203,15 +210,29 @@ if ($data === null) {
             // Kiểm tra nếu dữ liệu có chứa key 'data'
             if (isset($data['data'])) {
                 // Lặp qua dữ liệu và hiển thị trong bảng
-                foreach ($data['data'] as $category) {
+                foreach ($data['data'] as $new) {
                     ?>
                     <tr>
-                        <td><?php echo htmlspecialchars($category['category']); ?></td>
+                        <td><?php echo htmlspecialchars($new['title']); ?></td>
+                        <td><?php echo htmlspecialchars($new['author']); ?></td>
+                        <td style="max-width: 151px !important;"><img src="../images/blog/<?php echo htmlspecialchars($new['image']); ?>" alt="<?php echo htmlspecialchars($new['title']); ?>" style="width"></td>
                         <td>
-                            <button type="submit" class="btn btn-primary btn-sm" onclick="editCat('<?php echo htmlspecialchars($category['id']); ?>')">
+                        <?php
+                          $button_id = ($new['publicAt'] !== $new['createdAt'] ) ? 'btn-show' : 'btn-show-fade';
+                          $button_2 = ($new['publicAt'] === $new['createdAt'] ) ? 'btn-hide' : 'btn-hide-fade';
+                        ?>
+                            <button id="<?php echo $button_id ?>" type="button" class="btn btn-info btn-sm" onclick="showBook('<?php echo htmlspecialchars($new['id']); ?>', '<?php echo htmlspecialchars($new['title']); ?>', '<?php echo $button_id; ?>')">
+                                <i class="fa fa-eye"></i> Hiện
+                            </button>
+                            <button id="<?php echo $button_2 ?>" type="button" class="btn btn-danger btn-sm" onclick="hideBook('<?php echo htmlspecialchars($new['id']); ?>', '<?php echo htmlspecialchars($new['title']); ?>', '<?php echo $button_2; ?>')">
+                                <i class="fa fa-eye-slash"></i> Ẩn
+                            </button>
+                        </td>
+                        <td>
+                            <button type="submit" class="btn btn-primary btn-sm" onclick="editNew('<?php echo htmlspecialchars($new['id']); ?>')">
                                 <i class="fa fa-eraser"></i> Sửa
                             </button>
-                            <button type="button" class="btn btn-danger btn-sm"  onclick="deleteCategory('<?php echo htmlspecialchars($category['id']); ?>', '<?php echo htmlspecialchars($category['category']); ?>')">
+                            <button type="button" class="btn btn-danger btn-sm"  onclick="deleteNew('<?php echo htmlspecialchars($new['id']); ?>', '<?php echo htmlspecialchars($new['title']); ?>')">
                                 <i class="fa fa-ban"></i> Xoá
                             </button>
                         </td>
@@ -230,9 +251,6 @@ if ($data === null) {
                 </div>
             </div><!-- .animated -->
         </div><!-- .content -->
-        <div id="editor">
-	   <p>This is the editor content.</p>
-        </div>
     </div><!-- /#right-panel -->
 
     <!-- Right Panel -->
@@ -255,10 +273,10 @@ if ($data === null) {
     <script src="assets/js/init-scripts/data-table/datatables-init.js"></script>
 </body>
 <script>
-    const editCat = async (id) => {
+    const editNew = async (id) => {
 try {
     // Chuyển đến trang HTML khác với query parameter id
-    window.location.href = `edit-category.html?id=${id}`;
+    window.location.href = `edit-content.html?id=${id}`;
 } catch (error) {
     console.error('Error occurred:', error);
 }
@@ -271,7 +289,7 @@ try {
         localStorage.removeItem('jwtToken')
     }
 
-    const deleteCategory = async (id,name) => {
+    const deleteNew = async (id,name) => {
 try {
     // Lấy giá trị ID từ thuộc tính data-id của phần tử
     // Hiển thị hộp thoại xác nhận
