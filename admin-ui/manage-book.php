@@ -93,6 +93,9 @@ if ($data === null) {
             align-items: center;
             z-index: 999;
         }
+        .table.dataTable td{
+            min-width: 123px !important;
+        }
     </style>
 </head>
 
@@ -295,9 +298,9 @@ if ($data === null) {
                 foreach ($data['data'] as $book) {
                     ?>
                     <tr>
-                        <td style="max-width: 232px !important;"><?php echo htmlspecialchars($book['bookName']); ?></td>
+                        <td ><?php echo htmlspecialchars($book['bookName']); ?></td>
                         <td ><?php echo htmlspecialchars($book['bookCode']); ?></td>
-                        <td style="max-width: 151px !important;"><img src="../images/books/<?php echo htmlspecialchars($book['image']); ?>" alt="<?php echo htmlspecialchars($book['bookName']); ?>" style="width"></td>
+                        <td ><img src="../images/books/<?php echo htmlspecialchars($book['image']); ?>" alt="<?php echo htmlspecialchars($book['bookName']); ?>" style="width"></td>
                         <td><?php echo htmlspecialchars($book['author']); ?></td>
                         <td><?php echo htmlspecialchars($book['category']); ?></td>
                         <td>

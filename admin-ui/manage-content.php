@@ -293,7 +293,7 @@ try {
 try {
     // Lấy giá trị ID từ thuộc tính data-id của phần tử
     // Hiển thị hộp thoại xác nhận
-    const userConfirmed = confirm(`Bạn có chắc là muốn xoá danh mục ${name} ?`);
+    const userConfirmed = confirm(`Bạn có chắc là muốn xoá bài viết ${name} ?`);
     if (!userConfirmed) {
         // Người dùng chọn không xóa
         return;
@@ -305,7 +305,7 @@ try {
     }
 
     const xhr = new XMLHttpRequest();
-    xhr.open('DELETE', `http://localhost:8000/api/delete-category`, true);
+    xhr.open('DELETE', `http://localhost:8000/api/delete-news`, true);
     xhr.setRequestHeader('Content-Type', 'application/json');
     const token = localStorage.getItem('jwtToken');
     xhr.setRequestHeader('Authorization', `Bearer ${token}`);
@@ -317,7 +317,7 @@ try {
                 var responseData = JSON.parse(xhr.responseText);
                 if (xhr.status === 200 && responseData.errCode === 0) { // Kiểm tra nếu mã trạng thái là 201 (Created)
                     alert('Xoá thành công')
-                    window.location.href = "manage-category.php";
+                    window.location.href = "manage-content.php";
             } else {
                 alert(responseData.errMessage)
             }

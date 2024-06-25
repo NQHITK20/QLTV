@@ -194,7 +194,7 @@
                                 <div class="col col-md-3"><label for="text-input" class=" form-control-label">Ảnh chính bài viết</label></div>
                                 <div class="col-12 col-md-6">
                                     <input type="file" id="image" name="image" onchange="onchangeImage()">
-                                    <img id="displayedImage" alt="image" class="mt-1" style="display: none;">
+                                    <img id="displayedImage" alt="image" class="mt-1">
                                 </div>
                             </div>
                             <div class="row form-group">
@@ -336,12 +336,12 @@ ClassicEditor
 document.addEventListener("DOMContentLoaded", async function() {
     try {
         const responseData = await fetchData();
-        console.log('check resdata' ,responseData)
         if (responseData) {
             document.getElementById("titleNew").value = responseData.data.title;
             editor.setData( responseData.data.content);
             document.getElementById("author").value = responseData.data.author;
             document.getElementById("displayedImage").src = '../images/blog/' + responseData.data.image;
+            document.getElementById("displayedImage").display = "block"
         }
     } catch (error) {
         console.error(error);
@@ -364,22 +364,31 @@ document.addEventListener("DOMContentLoaded", async function() {
             img.style.display = 'block';  // Thay đổi 'flex' thành 'block' nếu cần
         }
 
+        function extractFilename(imageUrl) {
+  // Handle potential invalid URLs or missing file extensions gracefully
+  if (!imageUrl || !imageUrl.includes('.')) {
+    return '';
+  }
+
+  // Split the URL path using the last forward slash (/)
+  const pathParts = imageUrl.split('/');
+  const filename = pathParts[pathParts.length - 1];
+
+  return filename;
+}
+
         function submitForm() {
 
 
             let title = document.getElementById('titleNew').value;
             let author = document.getElementById('author').value;
             let content =editor.getData();
-            let fileInput = document.getElementById('image');
-            let file = fileInput.files[0]; // Lấy đối tượng file từ input
+            let fileInput = document.getElementById('displayedImage').src;
 
             if (!title) {
                 alert("Vui lòng tiêu đề.");
                 return ;
-            }else if (!file) {
-                alert("Vui lòng chọn ảnh đại diện tin tức.");
-                return ;
-            } 
+            }
             else if (!author) {
                 alert("Vui lòng nhập tên tác giả.");
                 return ;
@@ -388,19 +397,23 @@ document.addEventListener("DOMContentLoaded", async function() {
                 return ;
             }
             
-            // Tách tên file từ đối tượng file
-            let fileName = file.name;
+
+            let urlParams = new URLSearchParams(window.location.search);
+            let newsId = urlParams.get('id');
+
+            let fileName = extractFilename(fileInput);
             
             // Tạo đường dẫn mới
             let newsData = {
+                id:newsId,
                 title: title,
                 image: fileName,
                 author: author,
                 content: content,
             };
-
+           
             const xhr = new XMLHttpRequest(); // Tạo đối tượng XMLHttpRequest
-            xhr.open('POST', 'http://localhost:8000/api/create-news',true); // Gửi yêu cầu POST đến đường dẫn '/api/users'
+            xhr.open('POST', 'http://localhost:8000/api/edit-news',true); // Gửi yêu cầu POST đến đường dẫn '/api/users'
             xhr.setRequestHeader("Content-Type", "application/json"); // Thiết lập tiêu đề 'Content-Type'
             const token = localStorage.getItem('jwtToken');
             xhr.setRequestHeader('Authorization', `Bearer ${token}`);
@@ -410,7 +423,7 @@ document.addEventListener("DOMContentLoaded", async function() {
                 try {
                     var responseData = JSON.parse(xhr.responseText);
                     if (xhr.status === 200 && responseData.errCode === 0) { // Kiểm tra nếu mã trạng thái là 201 (Created)
-                        alert('Bạn đã tạo bài viết thành công')
+                        alert('Bạn đã sửa viết thành công')
                         window.location.href = "manage-content.php";
                 } else {
                     alert(responseData.errMessage)

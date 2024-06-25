@@ -12,18 +12,6 @@
     <title>Quản lý thư viện</title>
     <meta name="description" content="Quản lý thư viện - HTML5 Admin Template">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <script>
-        //check vai trò hiện tên các thứ
-     document.addEventListener('DOMContentLoaded', function() {
-        // check role
-        let userData = JSON.parse(localStorage.getItem('userData'))
-        if (userData.roleId !== "3") {
-            window.location.href ="../web-ui/index.html"
-        }
-        //load data ra page
-        document.getElementById("span-avatar").innerText = 'Hi ' + userData.lastName;
-    });
-    </script>
     <link rel="apple-touch-icon" href="apple-icon.png">
     <link rel="shortcut icon" href="favicon.ico">
 
@@ -112,6 +100,13 @@
                         </ul>
                     </li>
                     <li class="menu-item-has-children dropdown">
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"> <i class="menu-icon fa fa fa-file-text-o"></i>Bài viết</a>
+                        <ul class="sub-menu children dropdown-menu">
+                            <li><i class="fa fa-file-text-o"></i><a href="manage-content.php">Quản lý bài viết</a></li>
+                            <li><i class="fa fa-plus"></i><a href="add-content.html">Thêm bài viết</a></li>
+                        </ul>
+                    </li>
+                    <li class="menu-item-has-children dropdown">
                         <a href="#" class="dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"> <i class="menu-icon fa fa-book"></i>Sách</a>
                         <ul class="sub-menu children dropdown-menu">
                             <li><i class="fa fa-book"></i><a href="manage-book.php">Quản lý sách</a></li>
@@ -123,13 +118,6 @@
                         <ul class="sub-menu children dropdown-menu">
                             <li><i class="fa fa-book"></i><a href="manage-category.php">Quản lý danh mục</a></li>
                             <li><i class="fa fa-plus"></i><a href="add-category.html">Thêm danh mục</a></li>
-                        </ul>
-                    </li>
-                    <li class="menu-item-has-children dropdown">
-                        <a href="#" class="dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"> <i class="menu-icon fa fa fa-file-text-o"></i>Bài viết</a>
-                        <ul class="sub-menu children dropdown-menu">
-                            <li><i class="fa fa-file-text-o"></i><a href="manage-content.php">Quản lý bài viết</a></li>
-                            <li><i class="fa fa-plus"></i><a href="add-content.html">Thêm bài viết</a></li>
                         </ul>
                     </li>
                 </ul>
@@ -225,6 +213,32 @@
 
                 </div>
             </div>
+
+            <div class="col-sm-6 col-lg-3">
+                <div class="card text-white bg-flat-color-4">
+                    <div class="card-body pb-0">
+                        <div class="dropdown float-right">
+                            <button class="btn bg-transparent dropdown-toggle theme-toggle text-light" type="button" id="dropdownMenuButton4" data-toggle="dropdown">
+                                <i class="fa fa-cog"></i>
+                            </button>
+                            <div class="dropdown-menu" aria-labelledby="dropdownMenuButton4">
+                                <div class="dropdown-menu-content">
+                                    <a class="dropdown-item" href="#">Xem thêm</a>
+                                </div>
+                            </div>
+                        </div>
+                        <h4 class="mb-0">
+                            <span class="count">10468</span>
+                        </h4>
+                        <p class="text-light">Bài viết</p>
+
+                        <div class="chart-wrapper px-3" style="height:70px;" height="70">
+                            <canvas id="widgetChart4"></canvas>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
             <!--/.col-->
 
             <div class="col-sm-6 col-lg-3">
@@ -276,33 +290,6 @@
 
                     <div class="chart-wrapper px-0" style="height:70px;" height="70">
                         <canvas id="widgetChart3"></canvas>
-                    </div>
-                </div>
-            </div>
-            <!--/.col-->
-
-            <div class="col-sm-6 col-lg-3">
-                <div class="card text-white bg-flat-color-4">
-                    <div class="card-body pb-0">
-                        <div class="dropdown float-right">
-                            <button class="btn bg-transparent dropdown-toggle theme-toggle text-light" type="button" id="dropdownMenuButton4" data-toggle="dropdown">
-                                <i class="fa fa-cog"></i>
-                            </button>
-                            <div class="dropdown-menu" aria-labelledby="dropdownMenuButton4">
-                                <div class="dropdown-menu-content">
-                                    <a class="dropdown-item" href="#">Xem thêm</a>
-                                </div>
-                            </div>
-                        </div>
-                        <h4 class="mb-0">
-                            <span class="count">10468</span>
-                        </h4>
-                        <p class="text-light">Bài viết</p>
-
-                        <div class="chart-wrapper px-3" style="height:70px;" height="70">
-                            <canvas id="widgetChart4"></canvas>
-                        </div>
-
                     </div>
                 </div>
             </div>
@@ -408,6 +395,7 @@ document.getElementById('loadingOverlay').style.display = 'none';
         localStorage.removeItem('userData')
         localStorage.removeItem('jwtToken')
     }
+    document.getElementById('span-avatar').innerText = JSON.parse(localStorage.getItem('userData')).lastName
 </script>
 
 </body>

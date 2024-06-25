@@ -426,7 +426,6 @@ fetch('http://localhost:8000/api/get-all-category', {
                 soLuong:soLuong,
                 description:description,
             };
-            console.log('check userDataa',userData)
 
             const xhr = new XMLHttpRequest(); // Tạo đối tượng XMLHttpRequest
             xhr.open('POST', 'http://localhost:8000/api/edit-book',true); // Gửi yêu cầu POST đến đường dẫn '/api/users'
