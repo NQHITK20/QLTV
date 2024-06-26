@@ -37,7 +37,7 @@
         <div class="container">
             <div class="login-content">
                 <div class="login-logo">
-                    <a href="../web-ui/index.html">
+                    <a href="../index.php">
                         <img class="align-content" src="images/logo.png" alt="">
                     </a>
                 </div>
@@ -60,19 +60,13 @@
                                 <input type="checkbox" id="rememberMe" name="rememberMe"> Nhớ tài khoản
                             </label>
                                     <label class="pull-right">
-                                <a href="#">Quên mật khẩu</a>
+                                <a href="pages-forget.html">Quên mật khẩu</a>
                             </label>
 
                                 </div>
                                 <button type="button" class="btn btn-success btn-flat m-b-30 m-t-30" onclick="handleLogin()">Đăng nhập</button>
-                                <div class="social-login-content">
-                                    <div class="social-button">
-                                        <button type="button" class="btn social facebook btn-flat btn-addon mb-3"><i class="ti-facebook"></i>Tiếp tục với facebook</button>
-                                        <button type="button" class="btn social twitter btn-flat btn-addon mt-2"><i class="ti-google"></i>tiếp tục với Google</button>
-                                    </div>
-                                </div>
                                 <div class="register-link m-t-15 text-center">
-                                    <p>Chưa có tài khoản ? <a href="#"> Đăng kí ở đây</a></p>
+                                    <p>Chưa có tài khoản ? <a href="page-register.html"> Đăng kí ở đây</a></p>
                                 </div>
                     </form>
                 </div>
@@ -124,7 +118,7 @@
         window.location.href="index.html"
     }
     if (data.roleId ==="1") {
-        window.location.href="../web-ui/index.html"
+        window.location.href="../index.php"
     }
 };
 
@@ -208,7 +202,7 @@
                        // Lưu dữ liệu vào Local Storage
                         // Redirect to dashboard or other page
                         if (data.user.roleId == 1) {
-                            window.location.href = '../web-ui/index.html'
+                            window.location.href = '../index.php'
                         }else if (data.user.roleId == 2) {
                             window.location.href = 'index.html'
                         } else{

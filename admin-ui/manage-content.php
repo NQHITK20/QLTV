@@ -112,7 +112,7 @@ if ($data === null) {
                 <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#main-menu" aria-controls="main-menu" aria-expanded="false" aria-label="Toggle navigation">
                     <i class="fa fa-bars"></i>
                 </button>
-                <a class="navbar-brand" href="../index.html"><img src="images/logo.png" alt="Logo"></a>
+                <a class="navbar-brand" href="../index.php"><img src="images/logo.png" alt="Logo"></a>
                 <a class="navbar-brand hidden" href="./"><img src="images/logo2.png" alt="Logo"></a>
             </div>
 
@@ -121,12 +121,33 @@ if ($data === null) {
                     <li class="active">
                         <a href="index.html"> <i class="menu-icon fa fa-dashboard"></i>Dashboard </a>
                     </li>
-                    <h3 class="menu-title">Thanh chức năng</h3><!-- /.menu-title -->
-                    <li class="menu-item-has-children dropdown">
+                    <h3 class="menu-title">Các mục chính</h3><!-- /.menu-title -->
+                    <li class="menu-item-has-children dropdown hidden-user">
                         <a href="#" class="dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"> <i class="menu-icon fa fa-user"></i>Tài khoản</a>
                         <ul class="sub-menu children dropdown-menu">
                             <li><i class="fa fa-user"></i><a href="manage-user.php">Quản lý tài khoản</a></li>
                             <li><i class="fa fa-plus"></i><a href="add-user.html">Thêm tài khoản</a></li>
+                        </ul>
+                    </li>
+                    <li class="menu-item-has-children dropdown hidden-user">
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"> <i class="menu-icon fa fa fa-file-text-o"></i>Bài viết</a>
+                        <ul class="sub-menu children dropdown-menu">
+                            <li><i class="fa fa-file-text-o"></i><a href="manage-content.php">Quản lý bài viết</a></li>
+                            <li><i class="fa fa-plus"></i><a href="add-content.html">Thêm bài viết</a></li>
+                        </ul>
+                    </li>
+                    <li class="menu-item-has-children dropdown">
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"> <i class="menu-icon fa fa-book"></i>Sách</a>
+                        <ul class="sub-menu children dropdown-menu">
+                            <li><i class="fa fa-book"></i><a href="manage-book.php">Quản lý sách</a></li>
+                            <li><i class="fa fa-plus"></i><a href="add-book.html">Thêm sách</a></li>
+                        </ul>
+                    </li>
+                    <li class="menu-item-has-children dropdown">
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"> <i class="menu-icon fa fa-tags"></i>Danh mục sách</a>
+                        <ul class="sub-menu children dropdown-menu">
+                            <li><i class="fa fa-book"></i><a href="manage-category.php">Quản lý danh mục</a></li>
+                            <li><i class="fa fa-plus"></i><a href="add-category.html">Thêm danh mục</a></li>
                         </ul>
                     </li>
                 </ul>
@@ -141,28 +162,24 @@ if ($data === null) {
         
         <!-- Header-->
         <header id="header" class="header">
-
             <div class="header-menu">
-
-                <div class="col-sm-7">
+                <div class="col-sm-7" >
                     <a id="menuToggle" class="menutoggle pull-left"><i class="fa fa fa-tasks"></i></a>
-                    
                 </div>
 
                 <div class="col-sm-5">
                     <div class="user-area dropdown float-right">
-                        <span id="span-avatar">Hi, John </span>
+                        <span id="span-avatar"></span>
                         <a href="#" class="dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                             <img class="user-avatar rounded-circle" src="images/admin.jpg" alt="User Avatar">
                         </a>
                         <div class="user-menu dropdown-menu">
-                            <a class="nav-link" href="#"><i class="fa fa-user"></i> Đăng kí </a>
-                            <a class="nav-link" href="#"><i class="fa fa-power-off"></i> Đăng nhập </a>
+                            <a class="nav-link" href="page-login.html" onclick="logout()"><i class="fa fa-sign-out"></i> Đăng xuất </a>
+                            <a class="nav-link" href="../index.php"><i class="fa fa-newspaper-o"></i> Về trang chủ </a>
                         </div>
                     </div>
                 </div>
             </div>
-
         </header><!-- /header -->
         <!-- Header-->
 
@@ -283,11 +300,6 @@ try {
     }
 </script>
 <script>
-    function logout()
-    {
-        localStorage.removeItem('userData')
-        localStorage.removeItem('jwtToken')
-    }
 
     const deleteNew = async (id,name) => {
 try {
@@ -338,6 +350,17 @@ try {
     console.error('An error occurred while trying to delete the user:', error);
 }
 };
+function logout()
+    {
+        localStorage.removeItem('userData')
+        localStorage.removeItem('jwtToken')
+    }
+    document.getElementById('span-avatar').innerText = 'Hi ' + JSON.parse(localStorage.getItem('userData')).lastName
+    if (JSON.parse(localStorage.getItem('userData')).roleId !== "3") {
+    document.querySelectorAll('.hidden-user').forEach(element => {
+        element.style.display = "none";
+    });
+}
 </script>
 
 </html>
