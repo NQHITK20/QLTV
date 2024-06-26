@@ -83,31 +83,31 @@ if ($data === null) {
 						<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
 							<ul class="tg-addnav">
 								<li>
-									<a href="javascript:void(0);">
+									<a href="index.php">
 										<i class="icon-home"></i>
 										<em>Trang chủ</em>
 									</a>
 								</li>
 								<li>
-									<a href="javascript:void(0);">
+									<a href="contactus.html">
 										<i class="icon-envelope"></i>
 										<em>Liên hệ</em>
 									</a>
 								</li>
 								<li>
-									<a href="javascript:void(0);">
+									<a href="aboutus.html">
 										<i class="icon-user"></i>
 										<em>Về chúng tôi</em>
 									</a>
 								</li>
 							</ul>
 							<div class="tg-userlogin">
-								<figure><a href="javascript:void(0);"><img src="images/author/imag-10.jpg" alt="image description"></a></figure>
-								<span onclick="profileBar()" class="dropbtn">Hi, John</span>
+								<figure><a href="javascript:void(0);"><img src="images/blank-avatar.jpg" alt="image description"></a></figure>
+								<span onclick="profileBar()" class="dropbtn">Welcome</span>
 								<div id="myDropdown" class="dropdown-content">
-									
-									<a href="admin-ui/page-login.html"><b><i class="icon-exit" ></i> Đăng xuất</b></a>
-								  </div>
+									<a href="admin-ui/page-login.html"><b></i> Đăng nhập</b></a>
+									<a href="admin-ui/page-register.html"><b></i> Đăng ký</b></a>
+								</div>
 							</div>
 						</div>
 					</div>
@@ -117,7 +117,7 @@ if ($data === null) {
 				<div class="container">
 					<div class="row">
 						<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
-							<strong class="tg-logo"><a href="index.html"><img src="images/flogo.png" alt="company name here"></a></strong>
+							<strong class="tg-logo"><a href="index.php"><img src="images/flogo.png" alt="company name here"></a></strong>
 							<div class="tg-searchbox">
 								<form class="tg-formtheme tg-formsearch">
 									<fieldset>
@@ -194,7 +194,7 @@ if ($data === null) {
 																		<li><a href="products.html">Nguyễn Ngọc Ánh</a></li>
 																		<li><a href="products.html">Nguyễn Ngọc Ánh</a></li>
 																	</ul>
-																	<a class="tg-btnviewall" href="products.html">Xem thêm</a>
+																	
 																</li>
 																<li>
 																	<div class="tg-linkstitle">
@@ -207,7 +207,7 @@ if ($data === null) {
 																		<li><a href="products.html">Tôi thấy hoa vàng trên cỏ xanh</a></li>
 																		<li><a href="products.html">Tôi thấy hoa vàng trên cỏ xanh</a></li>
 																	</ul>
-																	<a class="tg-btnviewall" href="products.html">Xem thêm</a>
+																	
 																</li>
 																<li>
 																	<div class="tg-linkstitle">
@@ -220,17 +220,14 @@ if ($data === null) {
 																		<li><a href="products.html">Dế mèn phươu lưu ký</a></li>
 																		<li><a href="products.html">Dế mèn phươu lưu ký</a></li>
 																	</ul>
-																	<a class="tg-btnviewall" href="products.html">Xem thêm</a>
 																</li>
 															</ul>
 															<ul>
 																<li>
 																	<figure><img src="images/img-01.png" alt="image description"></figure>
 																	<div class="tg-textbox">
-																		<h3>More Than<span>12,0657,53</span>Books Collection</h3>
-																		<div class="tg-description">
-																			<p>Consectetur adipisicing elit sed doe eiusmod tempor incididunt laebore toloregna aliqua enim.</p>
-																		</div>
+																		<h3>Hơn <span>10,000</span>cuốn sách chờ bạn khám phá</h3>
+																		
 																		<a class="tg-btn" href="products.html">Xem thêm</a>
 																	</div>
 																</li>
@@ -249,7 +246,7 @@ if ($data === null) {
 																		<li><a href="products.html">Commodo conseat</a></li>
 																		<li><a href="products.html">Duis aute irure</a></li>
 																	</ul>
-																	<a class="tg-btnviewall" href="products.html">Xem thêm</a>
+																	
 																</li>
 																<li>
 																	<div class="tg-linkstitle">
@@ -262,7 +259,7 @@ if ($data === null) {
 																		<li><a href="products.html">Bulldozer Boyz</a></li>
 																		<li><a href="products.html">Build Or Leave On Us</a></li>
 																	</ul>
-																	<a class="tg-btnviewall" href="products.html">Xem thêm</a>
+																	
 																</li>
 																<li>
 																	<div class="tg-linkstitle">
@@ -275,17 +272,14 @@ if ($data === null) {
 																		<li><a href="products.html">Dolore magna aliqua</a></li>
 																		<li><a href="products.html">Ut enim ad minim</a></li>
 																	</ul>
-																	<a class="tg-btnviewall" href="products.html">Xem thêm</a>
+																	
 																</li>
 															</ul>
 															<ul>
 																<li>
 																	<figure><img src="images/img-01.png" alt="image description"></figure>
 																	<div class="tg-textbox">
-																		<h3>More Than<span>12,0657,53</span>Books Collection</h3>
-																		<div class="tg-description">
-																			<p>Consectetur adipisicing elit sed doe eiusmod tempor incididunt laebore toloregna aliqua enim.</p>
-																		</div>
+																		<h3>Hơn <span>10,000</span>cuốn sách chờ bạn khám phá</h3>
 																		<a class="tg-btn" href="products.html">Xem thêm</a>
 																	</div>
 																</li>
@@ -304,7 +298,7 @@ if ($data === null) {
 																		<li><a href="products.html">Bulldozer Boyz</a></li>
 																		<li><a href="products.html">Build Or Leave On Us</a></li>
 																	</ul>
-																	<a class="tg-btnviewall" href="products.html">Xem thêm</a>
+																	
 																</li>
 																<li>
 																	<div class="tg-linkstitle">
@@ -317,7 +311,7 @@ if ($data === null) {
 																		<li><a href="products.html">Dolore magna aliqua</a></li>
 																		<li><a href="products.html">Ut enim ad minim</a></li>
 																	</ul>
-																	<a class="tg-btnviewall" href="products.html">Xem thêm</a>
+																	
 																</li>
 																<li>
 																	<div class="tg-linkstitle">
@@ -330,17 +324,14 @@ if ($data === null) {
 																		<li><a href="products.html">Commodo conseat</a></li>
 																		<li><a href="products.html">Duis aute irure</a></li>
 																	</ul>
-																	<a class="tg-btnviewall" href="products.html">Xem thêm</a>
+																	
 																</li>
 															</ul>
 															<ul>
 																<li>
 																	<figure><img src="images/img-01.png" alt="image description"></figure>
 																	<div class="tg-textbox">
-																		<h3>More Than<span>12,0657,53</span>Books Collection</h3>
-																		<div class="tg-description">
-																			<p>Consectetur adipisicing elit sed doe eiusmod tempor incididunt laebore toloregna aliqua enim.</p>
-																		</div>
+																		<h3>Hơn <span>10,000</span>cuốn sách chờ bạn khám phá</h3>
 																		<a class="tg-btn" href="products.html">Xem thêm</a>
 																	</div>
 																</li>
@@ -359,7 +350,7 @@ if ($data === null) {
 																		<li><a href="products.html">Commodo conseat</a></li>
 																		<li><a href="products.html">Duis aute irure</a></li>
 																	</ul>
-																	<a class="tg-btnviewall" href="products.html">Xem thêm</a>
+																	
 																</li>
 																<li>
 																	<div class="tg-linkstitle">
@@ -372,7 +363,7 @@ if ($data === null) {
 																		<li><a href="products.html">Bulldozer Boyz</a></li>
 																		<li><a href="products.html">Build Or Leave On Us</a></li>
 																	</ul>
-																	<a class="tg-btnviewall" href="products.html">Xem thêm</a>
+																	
 																</li>
 																<li>
 																	<div class="tg-linkstitle">
@@ -385,17 +376,14 @@ if ($data === null) {
 																		<li><a href="products.html">Dolore magna aliqua</a></li>
 																		<li><a href="products.html">Ut enim ad minim</a></li>
 																	</ul>
-																	<a class="tg-btnviewall" href="products.html">Xem thêm</a>
+																	
 																</li>
 															</ul>
 															<ul>
 																<li>
 																	<figure><img src="images/img-01.png" alt="image description"></figure>
 																	<div class="tg-textbox">
-																		<h3>More Than<span>12,0657,53</span>Books Collection</h3>
-																		<div class="tg-description">
-																			<p>Consectetur adipisicing elit sed doe eiusmod tempor incididunt laebore toloregna aliqua enim.</p>
-																		</div>
+																		<h3>Hơn <span>10,000</span>cuốn sách chờ bạn khám phá</h3>
 																		<a class="tg-btn" href="products.html">Xem thêm</a>
 																	</div>
 																</li>
@@ -414,7 +402,7 @@ if ($data === null) {
 																		<li><a href="products.html">Bulldozer Boyz</a></li>
 																		<li><a href="products.html">Build Or Leave On Us</a></li>
 																	</ul>
-																	<a class="tg-btnviewall" href="products.html">Xem thêm</a>
+																	
 																</li>
 																<li>
 																	<div class="tg-linkstitle">
@@ -427,7 +415,7 @@ if ($data === null) {
 																		<li><a href="products.html">Dolore magna aliqua</a></li>
 																		<li><a href="products.html">Ut enim ad minim</a></li>
 																	</ul>
-																	<a class="tg-btnviewall" href="products.html">Xem thêm</a>
+																	
 																</li>
 																<li>
 																	<div class="tg-linkstitle">
@@ -440,17 +428,14 @@ if ($data === null) {
 																		<li><a href="products.html">Commodo conseat</a></li>
 																		<li><a href="products.html">Duis aute irure</a></li>
 																	</ul>
-																	<a class="tg-btnviewall" href="products.html">Xem thêm</a>
+																	
 																</li>
 															</ul>
 															<ul>
 																<li>
 																	<figure><img src="images/img-01.png" alt="image description"></figure>
 																	<div class="tg-textbox">
-																		<h3>More Than<span>12,0657,53</span>Books Collection</h3>
-																		<div class="tg-description">
-																			<p>Consectetur adipisicing elit sed doe eiusmod tempor incididunt laebore toloregna aliqua enim.</p>
-																		</div>
+																		<h3>Hơn <span>10,000</span>cuốn sách chờ bạn khám phá</h3>
 																		<a class="tg-btn" href="products.html">Xem thêm</a>
 																	</div>
 																</li>
@@ -469,7 +454,7 @@ if ($data === null) {
 																		<li><a href="products.html">Commodo conseat</a></li>
 																		<li><a href="products.html">Duis aute irure</a></li>
 																	</ul>
-																	<a class="tg-btnviewall" href="products.html">Xem thêm</a>
+																	
 																</li>
 																<li>
 																	<div class="tg-linkstitle">
@@ -482,7 +467,7 @@ if ($data === null) {
 																		<li><a href="products.html">Bulldozer Boyz</a></li>
 																		<li><a href="products.html">Build Or Leave On Us</a></li>
 																	</ul>
-																	<a class="tg-btnviewall" href="products.html">Xem thêm</a>
+																	
 																</li>
 																<li>
 																	<div class="tg-linkstitle">
@@ -495,17 +480,14 @@ if ($data === null) {
 																		<li><a href="products.html">Dolore magna aliqua</a></li>
 																		<li><a href="products.html">Ut enim ad minim</a></li>
 																	</ul>
-																	<a class="tg-btnviewall" href="products.html">Xem thêm</a>
+																	
 																</li>
 															</ul>
 															<ul>
 																<li>
 																	<figure><img src="images/img-01.png" alt="image description"></figure>
 																	<div class="tg-textbox">
-																		<h3>More Than<span>12,0657,53</span>Books Collection</h3>
-																		<div class="tg-description">
-																			<p>Consectetur adipisicing elit sed doe eiusmod tempor incididunt laebore toloregna aliqua enim.</p>
-																		</div>
+																		<h3>Hơn <span>10,000</span>cuốn sách chờ bạn khám phá</h3>
 																		<a class="tg-btn" href="products.html">Xem thêm</a>
 																	</div>
 																</li>
@@ -524,7 +506,7 @@ if ($data === null) {
 																		<li><a href="products.html">Bulldozer Boyz</a></li>
 																		<li><a href="products.html">Build Or Leave On Us</a></li>
 																	</ul>
-																	<a class="tg-btnviewall" href="products.html">Xem thêm</a>
+																	
 																</li>
 																<li>
 																	<div class="tg-linkstitle">
@@ -537,7 +519,7 @@ if ($data === null) {
 																		<li><a href="products.html">Dolore magna aliqua</a></li>
 																		<li><a href="products.html">Ut enim ad minim</a></li>
 																	</ul>
-																	<a class="tg-btnviewall" href="products.html">Xem thêm</a>
+																	
 																</li>
 																<li>
 																	<div class="tg-linkstitle">
@@ -550,17 +532,14 @@ if ($data === null) {
 																		<li><a href="products.html">Commodo conseat</a></li>
 																		<li><a href="products.html">Duis aute irure</a></li>
 																	</ul>
-																	<a class="tg-btnviewall" href="products.html">Xem thêm</a>
+																	
 																</li>
 															</ul>
 															<ul>
 																<li>
 																	<figure><img src="images/img-01.png" alt="image description"></figure>
 																	<div class="tg-textbox">
-																		<h3>More Than<span>12,0657,53</span>Books Collection</h3>
-																		<div class="tg-description">
-																			<p>Consectetur adipisicing elit sed doe eiusmod tempor incididunt laebore toloregna aliqua enim.</p>
-																		</div>
+																		<h3>Hơn <span>10,000</span>cuốn sách chờ bạn khám phá</h3>
 																		<a class="tg-btn" href="products.html">Xem thêm</a>
 																	</div>
 																</li>
@@ -579,7 +558,7 @@ if ($data === null) {
 																		<li><a href="products.html">Commodo conseat</a></li>
 																		<li><a href="products.html">Duis aute irure</a></li>
 																	</ul>
-																	<a class="tg-btnviewall" href="products.html">Xem thêm</a>
+																	
 																</li>
 																<li>
 																	<div class="tg-linkstitle">
@@ -592,7 +571,7 @@ if ($data === null) {
 																		<li><a href="products.html">Bulldozer Boyz</a></li>
 																		<li><a href="products.html">Build Or Leave On Us</a></li>
 																	</ul>
-																	<a class="tg-btnviewall" href="products.html">Xem thêm</a>
+																	
 																</li>
 																<li>
 																	<div class="tg-linkstitle">
@@ -605,17 +584,14 @@ if ($data === null) {
 																		<li><a href="products.html">Dolore magna aliqua</a></li>
 																		<li><a href="products.html">Ut enim ad minim</a></li>
 																	</ul>
-																	<a class="tg-btnviewall" href="products.html">Xem thêm</a>
+																	
 																</li>
 															</ul>
 															<ul>
 																<li>
 																	<figure><img src="images/img-01.png" alt="image description"></figure>
 																	<div class="tg-textbox">
-																		<h3>More Than<span>12,0657,53</span>Books Collection</h3>
-																		<div class="tg-description">
-																			<p>Consectetur adipisicing elit sed doe eiusmod tempor incididunt laebore toloregna aliqua enim.</p>
-																		</div>
+																		<h3>Hơn <span>10,000</span>cuốn sách chờ bạn khám phá</h3>
 																		<a class="tg-btn" href="products.html">Xem thêm</a>
 																	</div>
 																</li>
@@ -634,7 +610,7 @@ if ($data === null) {
 																		<li><a href="products.html">Bulldozer Boyz</a></li>
 																		<li><a href="products.html">Build Or Leave On Us</a></li>
 																	</ul>
-																	<a class="tg-btnviewall" href="products.html">Xem thêm</a>
+																	
 																</li>
 																<li>
 																	<div class="tg-linkstitle">
@@ -647,7 +623,7 @@ if ($data === null) {
 																		<li><a href="products.html">Dolore magna aliqua</a></li>
 																		<li><a href="products.html">Ut enim ad minim</a></li>
 																	</ul>
-																	<a class="tg-btnviewall" href="products.html">Xem thêm</a>
+																	
 																</li>
 																<li>
 																	<div class="tg-linkstitle">
@@ -660,17 +636,14 @@ if ($data === null) {
 																		<li><a href="products.html">Commodo conseat</a></li>
 																		<li><a href="products.html">Duis aute irure</a></li>
 																	</ul>
-																	<a class="tg-btnviewall" href="products.html">Xem thêm</a>
+																	
 																</li>
 															</ul>
 															<ul>
 																<li>
 																	<figure><img src="images/img-01.png" alt="image description"></figure>
 																	<div class="tg-textbox">
-																		<h3>More Than<span>12,0657,53</span>Books Collection</h3>
-																		<div class="tg-description">
-																			<p>Consectetur adipisicing elit sed doe eiusmod tempor incididunt laebore toloregna aliqua enim.</p>
-																		</div>
+																		<h3>Hơn <span>10,000</span>cuốn sách chờ bạn khám phá</h3>
 																		<a class="tg-btn" href="products.html">Xem thêm</a>
 																	</div>
 																</li>
@@ -689,7 +662,7 @@ if ($data === null) {
 																		<li><a href="products.html">Commodo conseat</a></li>
 																		<li><a href="products.html">Duis aute irure</a></li>
 																	</ul>
-																	<a class="tg-btnviewall" href="products.html">Xem thêm</a>
+																	
 																</li>
 																<li>
 																	<div class="tg-linkstitle">
@@ -702,7 +675,7 @@ if ($data === null) {
 																		<li><a href="products.html">Bulldozer Boyz</a></li>
 																		<li><a href="products.html">Build Or Leave On Us</a></li>
 																	</ul>
-																	<a class="tg-btnviewall" href="products.html">Xem thêm</a>
+																	
 																</li>
 																<li>
 																	<div class="tg-linkstitle">
@@ -715,17 +688,14 @@ if ($data === null) {
 																		<li><a href="products.html">Dolore magna aliqua</a></li>
 																		<li><a href="products.html">Ut enim ad minim</a></li>
 																	</ul>
-																	<a class="tg-btnviewall" href="products.html">Xem thêm</a>
+																	
 																</li>
 															</ul>
 															<ul>
 																<li>
 																	<figure><img src="images/img-01.png" alt="image description"></figure>
 																	<div class="tg-textbox">
-																		<h3>More Than<span>12,0657,53</span>Books Collection</h3>
-																		<div class="tg-description">
-																			<p>Consectetur adipisicing elit sed doe eiusmod tempor incididunt laebore toloregna aliqua enim.</p>
-																		</div>
+																		<h3>Hơn <span>10,000</span>cuốn sách chờ bạn khám phá</h3>
 																		<a class="tg-btn" href="products.html">Xem thêm</a>
 																	</div>
 																</li>
@@ -851,7 +821,7 @@ if ($data === null) {
 						<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
 							<div class="tg-sectionhead">
 								<h2><span>Độc giả chọn</span>Sách đang hot</h2>
-								<a class="tg-btn" href="javascript:void(0);">Xem thêm</a>
+								<a class="tg-btn" href="products.html">Xem thêm</a>
 							</div>
 						</div>
 						<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
