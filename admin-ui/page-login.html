@@ -104,14 +104,14 @@
     <script>
         //Xử lí check box
         window.onload = function() {
-    var rememberedEmail = localStorage.getItem('rememberedEmail');
+    let rememberedEmail = localStorage.getItem('rememberedEmail');
     if (rememberedEmail) {
         document.getElementById('email').value = rememberedEmail;
-        var rememberMe = localStorage.getItem('rememberMe') === 'true';
+        let rememberMe = localStorage.getItem('rememberMe') === 'true';
         document.getElementById('rememberMe').checked = rememberMe; // Set trạng thái checkbox dựa trên giá trị đã lưu
     }
 
-    var rememberedPassword = localStorage.getItem('rememberedPassword');
+    let rememberedPassword = localStorage.getItem('rememberedPassword');
     if (rememberedPassword) {
         document.getElementById('password').value = rememberedPassword;
     }
@@ -130,8 +130,8 @@
 
 //Ẩn hiện mật khẩu
        function togglePasswordVisibility() {
-            var passwordInput = document.getElementById('passwordInput');
-            var eyeIcon = document.getElementById('eyeIcon');
+            let passwordInput = document.getElementById('passwordInput');
+            let eyeIcon = document.getElementById('eyeIcon');
 
             if (passwordInput.type === "password") {
                 passwordInput.type = "text";
@@ -147,9 +147,9 @@
 
         //set coockies
         function setCookie(name, value, days) {
-            var expires = "";
+            let expires = "";
             if (days) {
-                var date = new Date();
+                let date = new Date();
                 date.setTime(date.getTime() + (days * 24 * 60 * 60 * 1000));
                 expires = "; expires=" + date.toUTCString();
             }
@@ -158,9 +158,9 @@
 
 //Sự kiện ấn nút login
         async function handleLogin () {
-            var email = document.getElementById('email').value;
-            var password = document.getElementById('passwordInput').value;
-            var rememberMe = document.getElementById('rememberMe').checked;
+            let email = document.getElementById('email').value;
+            let password = document.getElementById('passwordInput').value;
+            let rememberMe = document.getElementById('rememberMe').checked;
 
             // Validate email
             if (!email) {
