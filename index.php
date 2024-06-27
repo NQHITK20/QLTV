@@ -1,3 +1,25 @@
+<!doctype html>
+<html class="no-js" lang="zxx">
+
+<head>
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	 <title>Book Library</title>
+	<meta name="description" content="">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<link rel="apple-touch-icon" href="apple-touch-icon.png">
+	<link rel="stylesheet" href="css/bootstrap.min.css">
+	<link rel="stylesheet" href="css/normalize.css">
+	<link rel="stylesheet" href="css/font-awesome.min.css">
+	<link rel="stylesheet" href="css/icomoon.css">
+	<link rel="stylesheet" href="css/jquery-ui.css">
+	<link rel="stylesheet" href="css/owl.carousel.css">
+	<link rel="stylesheet" href="css/transitions.css">
+	<link rel="stylesheet" href="css/main.css">
+	<link rel="stylesheet" href="css/color.css">
+	<link rel="stylesheet" href="css/responsive.css">
+	<script src="js/vendor/modernizr-2.8.3-respond-1.4.2.min.js"></script>
+</head>
 <?php
 ini_set('display_errors', 1);
 ini_set('display_startup_errors', 1);
@@ -6,10 +28,10 @@ error_reporting(E_ALL);
 $url = 'http://localhost:8000/api/get-all-book'; // URL của API backend
 
 // Dữ liệu gửi đi
-$data = array('id' => 'ALL');
+$databook = array('id' => 'ALL');
 
 // Chuyển đổi mảng dữ liệu thành JSON
-$jsonData = json_encode($data);
+$jsonData = json_encode($databook);
 
 // Lấy token từ localStorage
 $token = isset($_COOKIE['jwtToken']) ? $_COOKIE['jwtToken'] : null; // Lấy token từ cookie
@@ -46,31 +68,51 @@ $data = json_decode($response, true);
 if ($data === null) {
     die('Lỗi khi chuyển đổi JSON');
 }
+
+$url = 'http://localhost:8000/api/get-category-by-id'; // URL của API backend
+
+// Dữ liệu gửi đi
+$datacat = array('id' => 'F8');
+
+// Chuyển đổi mảng dữ liệu thành JSON
+$jsonData = json_encode($datacat);
+
+// Lấy token từ localStorage
+$token = isset($_COOKIE['jwtToken']) ? $_COOKIE['jwtToken'] : null; // Lấy token từ cookie
+
+if (!$token) {
+    die('Không tìm thấy token trong localStorage');
+}
+
+// Cấu hình cURL
+$ch = curl_init($url);
+curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+curl_setopt($ch, CURLOPT_HTTPHEADER, array(
+    'Content-Type: application/json',
+    'Authorization: Bearer ' . $token // Thêm token vào header Authorization
+));
+curl_setopt($ch, CURLOPT_POST, true);
+curl_setopt($ch, CURLOPT_POSTFIELDS, $jsonData);
+
+// Thực hiện yêu cầu POST và nhận phản hồi
+$response2 = curl_exec($ch);
+
+// Kiểm tra nếu có lỗi khi gửi yêu cầu
+if ($response2 === FALSE) {
+    die('Lỗi khi gửi yêu cầu: ' . curl_error($ch));
+}
+
+// Đóng cURL
+curl_close($ch);
+
+// Chuyển đổi JSON thành mảng dữ liệu trong PHP
+$data2 = json_decode($response2, true);
+
+// Kiểm tra nếu có lỗi khi chuyển đổi JSON
+if ($data2 === null) {
+    die('Lỗi khi chuyển đổi JSON');
+}
 ?>
-
-
-<!doctype html>
-<html class="no-js" lang="zxx">
-
-<head>
-	<meta charset="utf-8">
-	<meta http-equiv="X-UA-Compatible" content="IE=edge">
-	 <title>Book Library</title>
-	<meta name="description" content="">
-	<meta name="viewport" content="width=device-width, initial-scale=1">
-	<link rel="apple-touch-icon" href="apple-touch-icon.png">
-	<link rel="stylesheet" href="css/bootstrap.min.css">
-	<link rel="stylesheet" href="css/normalize.css">
-	<link rel="stylesheet" href="css/font-awesome.min.css">
-	<link rel="stylesheet" href="css/icomoon.css">
-	<link rel="stylesheet" href="css/jquery-ui.css">
-	<link rel="stylesheet" href="css/owl.carousel.css">
-	<link rel="stylesheet" href="css/transitions.css">
-	<link rel="stylesheet" href="css/main.css">
-	<link rel="stylesheet" href="css/color.css">
-	<link rel="stylesheet" href="css/responsive.css">
-	<script src="js/vendor/modernizr-2.8.3-respond-1.4.2.min.js"></script>
-</head>
 <body class="tg-home tg-homevtwo">
 	
 	<div id="tg-wrapper" class="tg-wrapper tg-haslayout">
@@ -151,38 +193,24 @@ if ($data === null) {
 												<a href="javascript:void(0);">Danh mục</a>
 												<div class="mega-menu">
 													<ul class="tg-themetabnav" role="tablist">
-														<li role="presentation" class="active">
-															<a href="#artandphotography" aria-controls="artandphotography" role="tab" data-toggle="tab">Art &amp; Photography</a>
-														</li>
-														<li role="presentation">
-															<a href="#biography" aria-controls="biography" role="tab" data-toggle="tab">Biography</a>
-														</li>
-														<li role="presentation">
-															<a href="#childrensbook" aria-controls="childrensbook" role="tab" data-toggle="tab">Children’s Book</a>
-														</li>
-														<li role="presentation">
-															<a href="#craftandhobbies" aria-controls="craftandhobbies" role="tab" data-toggle="tab">Craft &amp; Hobbies</a>
-														</li>
-														<li role="presentation">
-															<a href="#crimethriller" aria-controls="crimethriller" role="tab" data-toggle="tab">Crime &amp; Thriller</a>
-														</li>
-														<li role="presentation">
-															<a href="#fantasyhorror" aria-controls="fantasyhorror" role="tab" data-toggle="tab">Fantasy &amp; Horror</a>
-														</li>
-														<li role="presentation">
-															<a href="#fiction" aria-controls="fiction" role="tab" data-toggle="tab">Fiction</a>
-														</li>
-														<li role="presentation">
-															<a href="#fooddrink" aria-controls="fooddrink" role="tab" data-toggle="tab">Food &amp; Drink</a>
-														</li><li role="presentation">
-															<a href="#graphicanimemanga" aria-controls="graphicanimemanga" role="tab" data-toggle="tab">Graphic, Anime &amp; Manga</a>
-														</li>
-														<li role="presentation">
-															<a href="#sciencefiction" aria-controls="sciencefiction" role="tab" data-toggle="tab">Science Fiction</a>
-														</li>
+													<?php
+													// Kiểm tra nếu $data2 chứa các danh mục
+                                                    if (isset($data2['categories']) && is_array($data2['categories'])) {
+                                                     foreach ($data2['categories'] as $category) {
+                                                    // Giả sử mỗi mục danh mục có thuộc tính 'category'
+                                                    if (isset($category['category'])) {
+                                                    echo '<li role="presentation">';
+                                                    echo '<a href="#' . htmlspecialchars($category['id']) . '" aria-controls="' . htmlspecialchars($category['id']) . '" role="tab" data-toggle="tab">' . htmlspecialchars($category['category']) . '</a>';
+                                                    echo '</li>';
+                                                                      }
+                                                             }
+                                                    } else {
+                                                        echo 'Không có danh mục nào để hiển thị.';
+                                                        }
+                                                    ?>
 													</ul>
 													<div class="tab-content tg-themetabcontent">
-														<div role="tabpanel" class="tab-pane active" id="artandphotography">
+														<div role="tabpanel" class="tab-pane active" id="2">
 															<ul>
 																<li>
 																	<div class="tg-linkstitle">
@@ -234,7 +262,7 @@ if ($data === null) {
 																</li>
 															</ul>
 														</div>
-														<div role="tabpanel" class="tab-pane" id="biography">
+														<div role="tabpanel" class="tab-pane" id="3">
 															<ul>
 																<li>
 																	<div class="tg-linkstitle">
@@ -286,7 +314,7 @@ if ($data === null) {
 																</li>
 															</ul>
 														</div>
-														<div role="tabpanel" class="tab-pane" id="childrensbook">
+														<div role="tabpanel" class="tab-pane" id="4">
 															<ul>
 																<li>
 																	<div class="tg-linkstitle">
@@ -338,7 +366,7 @@ if ($data === null) {
 																</li>
 															</ul>
 														</div>
-														<div role="tabpanel" class="tab-pane" id="craftandhobbies">
+														<div role="tabpanel" class="tab-pane" id="11">
 															<ul>
 																<li>
 																	<div class="tg-linkstitle">
@@ -390,7 +418,7 @@ if ($data === null) {
 																</li>
 															</ul>
 														</div>
-														<div role="tabpanel" class="tab-pane" id="crimethriller">
+														<div role="tabpanel" class="tab-pane" id="12">
 															<ul>
 																<li>
 																	<div class="tg-linkstitle">
@@ -442,7 +470,7 @@ if ($data === null) {
 																</li>
 															</ul>
 														</div>
-														<div role="tabpanel" class="tab-pane" id="fantasyhorror">
+														<div role="tabpanel" class="tab-pane" id="13">
 															<ul>
 																<li>
 																	<div class="tg-linkstitle">
@@ -494,7 +522,7 @@ if ($data === null) {
 																</li>
 															</ul>
 														</div>
-														<div role="tabpanel" class="tab-pane" id="fiction">
+														<div role="tabpanel" class="tab-pane" id="14">
 															<ul>
 																<li>
 																	<div class="tg-linkstitle">
@@ -546,7 +574,7 @@ if ($data === null) {
 																</li>
 															</ul>
 														</div>
-														<div role="tabpanel" class="tab-pane" id="fooddrink">
+														<div role="tabpanel" class="tab-pane" id="15">
 															<ul>
 																<li>
 																	<div class="tg-linkstitle">
@@ -598,7 +626,7 @@ if ($data === null) {
 																</li>
 															</ul>
 														</div>
-														<div role="tabpanel" class="tab-pane" id="graphicanimemanga">
+														<div role="tabpanel" class="tab-pane" id="16">
 															<ul>
 																<li>
 																	<div class="tg-linkstitle">
@@ -650,58 +678,7 @@ if ($data === null) {
 																</li>
 															</ul>
 														</div>
-														<div role="tabpanel" class="tab-pane" id="sciencefiction">
-															<ul>
-																<li>
-																	<div class="tg-linkstitle">
-																		<h2>History</h2>
-																	</div>
-																	<ul>
-																		<li><a href="products.html">Veniam quis nostrud</a></li>
-																		<li><a href="products.html">Exercitation</a></li>
-																		<li><a href="products.html">Laboris nisi ut aliuip</a></li>
-																		<li><a href="products.html">Commodo conseat</a></li>
-																		<li><a href="products.html">Duis aute irure</a></li>
-																	</ul>
-																	
-																</li>
-																<li>
-																	<div class="tg-linkstitle">
-																		<h2>Tác giả</h2>
-																	</div>
-																	<ul>
-																		<li><a href="products.html">Tough As Nails</a></li>
-																		<li><a href="products.html">Pro Grease Monkey</a></li>
-																		<li><a href="products.html">Building Memories</a></li>
-																		<li><a href="products.html">Bulldozer Boyz</a></li>
-																		<li><a href="products.html">Build Or Leave On Us</a></li>
-																	</ul>
-																	
-																</li>
-																<li>
-																	<div class="tg-linkstitle">
-																		<h2>Art Forms</h2>
-																	</div>
-																	<ul>
-																		<li><a href="products.html">Consectetur adipisicing</a></li>
-																		<li><a href="products.html">Aelit sed do eiusmod</a></li>
-																		<li><a href="products.html">Tempor incididunt labore</a></li>
-																		<li><a href="products.html">Dolore magna aliqua</a></li>
-																		<li><a href="products.html">Ut enim ad minim</a></li>
-																	</ul>
-																	
-																</li>
-															</ul>
-															<ul>
-																<li>
-																	<figure><img src="images/img-01.png" alt="image description"></figure>
-																	<div class="tg-textbox">
-																		<h3>Hơn <span>10,000</span>cuốn sách chờ bạn khám phá</h3>
-																		<a class="tg-btn" href="products.html">Xem thêm</a>
-																	</div>
-																</li>
-															</ul>
-														</div>
+														
 													</div>
 												</div>
 											</li>

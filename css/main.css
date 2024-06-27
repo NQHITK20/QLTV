@@ -600,7 +600,7 @@ li.tg-rss a { background:#ff6600; }
 	padding: 0 20px;
 }
 .tg-themetabnav li.active a,
-.tg-themetabnav li:hover a { background: #fafafa }
+.tg-themetabnav li:hover a { background: #ddd9d9 }
 .tg-themetabcontent {
 	width: 100%;
 	float: left;
