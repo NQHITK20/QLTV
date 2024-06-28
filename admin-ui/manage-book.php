@@ -11,19 +11,13 @@ $data = array('id' => 'ALL');
 // Chuyển đổi mảng dữ liệu thành JSON
 $jsonData = json_encode($data);
 
-// Lấy token từ localStorage
-$token = isset($_COOKIE['jwtToken']) ? $_COOKIE['jwtToken'] : null; // Lấy token từ cookie
-
-if (!$token) {
-    die('Không tìm thấy token trong localStorage');
-}
 
 // Cấu hình cURL
 $ch = curl_init($url);
 curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
 curl_setopt($ch, CURLOPT_HTTPHEADER, array(
     'Content-Type: application/json',
-    'Authorization: Bearer ' . $token // Thêm token vào header Authorization
+    'Authorization: Bearer' // Thêm token vào header Authorization
 ));
 curl_setopt($ch, CURLOPT_POST, true);
 curl_setopt($ch, CURLOPT_POSTFIELDS, $jsonData);

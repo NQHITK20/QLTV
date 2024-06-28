@@ -256,16 +256,14 @@ document.addEventListener("DOMContentLoaded", async function() {
     <script>
         //Load và onchane cái option
     document.getElementById('loadingOverlay').style.display = 'flex';
-    const token = localStorage.getItem('jwtToken');
 
-// Nếu không tìm thấy token trong localStorage, xử lý tại đây
 
 // Cấu hình yêu cầu fetch
 fetch('http://localhost:8000/api/get-all-category', {
     method: 'GET',
     headers: {
         'Content-Type': 'application/json',
-        'Authorization': `Bearer ${token}` // Thêm token vào header Authorization
+        'Authorization': `Bearer` // Thêm token vào header Authorization
     }
 })
         .then(response => {
