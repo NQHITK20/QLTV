@@ -238,10 +238,10 @@ if ($data === null) {
                           $button_id = ($new['publicAt'] !== $new['createdAt'] ) ? 'btn-show' : 'btn-show-fade';
                           $button_2 = ($new['publicAt'] === $new['createdAt'] ) ? 'btn-hide' : 'btn-hide-fade';
                         ?>
-                            <button id="<?php echo $button_id ?>" type="button" class="btn btn-info btn-sm" onclick="showBook('<?php echo htmlspecialchars($new['id']); ?>', '<?php echo htmlspecialchars($new['title']); ?>', '<?php echo $button_id; ?>')">
+                            <button id="<?php echo $button_id ?>" type="button" class="btn btn-info btn-sm" onclick="showNew('<?php echo htmlspecialchars($new['id']); ?>', '<?php echo htmlspecialchars($new['title']); ?>', '<?php echo $button_id; ?>')">
                                 <i class="fa fa-eye"></i> Hiện
                             </button>
-                            <button id="<?php echo $button_2 ?>" type="button" class="btn btn-danger btn-sm" onclick="hideBook('<?php echo htmlspecialchars($new['id']); ?>', '<?php echo htmlspecialchars($new['title']); ?>', '<?php echo $button_2; ?>')">
+                            <button id="<?php echo $button_2 ?>" type="button" class="btn btn-danger btn-sm" onclick="hideNew('<?php echo htmlspecialchars($new['id']); ?>', '<?php echo htmlspecialchars($new['title']); ?>', '<?php echo $button_2; ?>')">
                                 <i class="fa fa-eye-slash"></i> Ẩn
                             </button>
                         </td>
@@ -300,7 +300,6 @@ try {
     }
 </script>
 <script>
-
     const deleteNew = async (id,name) => {
 try {
     // Lấy giá trị ID từ thuộc tính data-id của phần tử
@@ -361,6 +360,79 @@ function logout()
         element.style.display = "none";
     });
 }
+let showNew = async (id, name , buttonId) => {
+        if (buttonId === "btn-show-fade") {
+        try {
+        // Lấy JWT từ localStorage
+        const token = localStorage.getItem('jwtToken');
+        if (!token) {
+            alert('JWT token not found!');
+            return;
+        }
+
+        // Gọi API để xác thực JWT
+        const response = await fetch('http://localhost:8000/api/show-hide-new', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${token}`
+            },
+            body: JSON.stringify({ id })
+        });
+
+        const result = await response.json();
+
+        // Kiểm tra mã lỗi từ phản hồi API
+        if (result.errCode === 0) {
+            // Tìm phần tử sách bằng ID và đổi tên
+            alert(`Đã hiện tin tức ' ${name} 'Thành công `);
+            window.location.reload();
+        } else {
+            alert(`Error: ${result.errMessage}`);
+        }
+    } catch (error) {
+        console.error(`Error in showHideBook: ${error}`);
+        alert('An error occurred while updating the book name.');
+    }   
+  }
+}    
+
+let hideNew = async (id, name , buttonId) => {
+        if (buttonId === "btn-hide-fade") {
+        try {
+        // Lấy JWT từ localStorage
+        const token = localStorage.getItem('jwtToken');
+        if (!token) {
+            alert('JWT token not found!');
+            return;
+        }
+
+        // Gọi API để xác thực JWT
+        const response = await fetch('http://localhost:8000/api/show-hide-new', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${token}`
+            },
+            body: JSON.stringify({ id })
+        });
+
+        const result = await response.json();
+
+        // Kiểm tra mã lỗi từ phản hồi API
+        if (result.errCode === 0) {
+            // Tìm phần tử sách bằng ID và đổi tên
+            alert(`Đã ẩn tin tức ' ${name} 'Thành công `);
+            window.location.reload();
+        } else {
+            alert(`Error: ${result.errMessage}`);
+        }
+    } catch (error) {
+        console.error(`Error in showHideBook: ${error}`);
+        alert('An error occurred while updating the book name.');
+    }   
+  }
+}    
 </script>
 
 </html>
