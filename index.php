@@ -176,11 +176,11 @@ if ($data3 === null) {
 								</li>
 							</ul>
 							<div class="tg-userlogin">
-								<figure><a href="javascript:void(0);"><img src="images/blank-avatar.jpg" alt="image description"></a></figure>
-								<span onclick="profileBar()" class="dropbtn">Welcome</span>
+								<figure><a><img src="images/blank-avatar.jpg" alt="image description"></a></figure>
+								<span onclick="profileBar()" class="dropbtn"></span>
 								<div id="myDropdown" class="dropdown-content">
-									<a href="admin-ui/page-login.html"><b></i> Đăng nhập</b></a>
-									<a href="admin-ui/page-register.html"><b></i> Đăng ký</b></a>
+									<a class="dropdown-1" href="admin-ui/page-login.html" onclick="logout()"></i></a>
+									<a class="dropdown-2" href="admin-ui/page-register.html"></i> Đăng ký</a>
 								</div>
 							</div>
 						</div>
@@ -310,7 +310,7 @@ if ($data3 === null) {
 																	<figure><img src="images/img-01.png" alt="image description"></figure>
 																	<div class="tg-textbox">
 																		<h3>Hơn <span>10,000</span>cuốn sách chờ bạn khám phá</h3>
-																		<a class="tg-btn" href="products.html">Xem thêm</a>
+																		<a class="tg-btn" href="products.php">Xem thêm</a>
 																	</div>
 																</li>
 															</ul>
@@ -436,12 +436,12 @@ if ($data3 === null) {
 						<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
 							<div class="tg-sectionhead">
 								<h2><span>Độc giả chọn</span>Sách đang hot</h2>
-								<a class="tg-btn" href="products.html">Xem thêm</a>
+								<a class="tg-btn" href="products.php">Xem thêm</a>
 							</div>
 						</div>
 						<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
 							<div id="tg-bestsellingbooksslider" class="tg-bestsellingbooksslider tg-bestsellingbooks owl-carousel">
-								<?php
+<?php
 // Kiểm tra nếu dữ liệu có chứa key 'data'
 if (isset($data['data'])) {
     // Lặp qua dữ liệu và hiển thị trong các div item
@@ -466,7 +466,7 @@ if (isset($data['data'])) {
                         </ul>
                         <div class="tg-themetagbox"><span class="tg-themetag">mới</span></div>
                         <div class="tg-booktitle">
-                            <h3><a href="productdetail.html"><?php echo htmlspecialchars($book['bookName']); ?></a></h3>
+                            <h3><a href="productdetail.html"><?php echo htmlspecialchars($book['author	']); ?></a></h3>
                         </div>
                         <span class="tg-bookwriter">Tác giả : <?php echo htmlspecialchars($book['author']); ?></span>
                     </div>
@@ -633,8 +633,8 @@ if (isset($data3['data'])) {
 											<li><a href="aboutus.html">Về chúng tôi</a></li>
 										</ul>
 										<ul>
-											<li><a href="products.html">Sách hay</a></li>
-											<li><a href="aboutus.html">Về chúng tôi</a></li>
+											<li><a href="products.php">Sách</a></li>
+											<li><a href="aboutus.html">Tin tức</a></li>
 										</ul>
 									</div>
 								</div>
@@ -703,12 +703,25 @@ if (isset($data3['data'])) {
 			}
 		  }
 		}
-	</script>
-	<style>
-		#menu-tin-tuc{
+	function logout()
+    {
+        localStorage.removeItem('userData')
+        localStorage.removeItem('jwtToken')
+    }
+	let data = localStorage.getItem('userData');
 
-		}
-	</style>
+if (data) {
+    data = JSON.parse(data); // Parse the JSON string into an object
+    document.querySelector('.dropbtn').innerHTML = 'Hi ' + data.lastName;
+    document.querySelector('.dropdown-1').innerHTML = 'Đăng xuất';
+    document.querySelector('.dropdown-2').style.display = 'none';
+} else {
+    document.querySelector('.dropbtn').innerHTML = 'Welcome';
+    document.querySelector('.dropdown-1').innerHTML = 'Đăng nhập';
+    document.querySelector('.dropdown-2').style.display = 'block';
+}
+
+	</script>
 </body>
 
 </html>
