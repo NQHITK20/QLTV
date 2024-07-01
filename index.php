@@ -310,7 +310,7 @@ if ($data3 === null) {
 																	<figure><img src="images/img-01.png" alt="image description"></figure>
 																	<div class="tg-textbox">
 																		<h3>Hơn <span>10,000</span>cuốn sách chờ bạn khám phá</h3>
-																		<a class="tg-btn" href="products.php">Xem thêm</a>
+																		<a class="tg-btn" href="products.php?pageIndex=1">Xem thêm</a>
 																	</div>
 																</li>
 															</ul>
@@ -436,7 +436,7 @@ if ($data3 === null) {
 						<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
 							<div class="tg-sectionhead">
 								<h2><span>Độc giả chọn</span>Sách đang hot</h2>
-								<a class="tg-btn" href="products.php">Xem thêm</a>
+								<a class="tg-btn" href="products.php?pageIndex=1">Xem thêm</a>
 							</div>
 						</div>
 						<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
@@ -633,7 +633,7 @@ if (isset($data3['data'])) {
 											<li><a href="aboutus.html">Về chúng tôi</a></li>
 										</ul>
 										<ul>
-											<li><a href="products.php">Sách</a></li>
+											<li><a href="products.php?pageIndex=1">Sách</a></li>
 											<li><a href="aboutus.html">Tin tức</a></li>
 										</ul>
 									</div>
@@ -707,6 +707,7 @@ if (isset($data3['data'])) {
     {
         localStorage.removeItem('userData')
         localStorage.removeItem('jwtToken')
+        
     }
 	let data = localStorage.getItem('userData');
 

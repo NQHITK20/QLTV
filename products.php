@@ -846,11 +846,13 @@ $jsonData = json_encode($data);
 											<div class="tg-refinesearch">
 												<span>Sách hay mới nhất</span>
 											</div>
-											<?php
+											<?php			
 // Kiểm tra nếu dữ liệu có chứa key 'data'
-if (isset($data['data'])) {
+if (isset($_COOKIE['listing_table'])) {
+	$cookie_value = $_COOKIE['listing_table'];
+	$listing_table = json_decode($cookie_value, true);
     // Lặp qua dữ liệu và hiển thị trong các div item
-    foreach ($data['data'] as $book) {
+    foreach ($listing_table as $book) {
         // Chỉ hiển thị sách nếu showing = 1
         if ($book['showing'] == 1) {
             ?>
@@ -886,7 +888,7 @@ if (isset($data['data'])) {
 										</div>
 									</div>
 									<div class="pagination">
-										<a onclick="prevPage()" id="btn_prev">&laquo;</a>
+										<a onclick="prevPage()" id="btn_prev" style="cursor: pointer;">&laquo;</a>
 										<a href="#">1</a>
 										<a href="#">2</a>
 										<a href="#">3</a>
@@ -897,7 +899,7 @@ if (isset($data['data'])) {
 										<a href="#">8</a>
 										<a href="#">9</a>
 										<a href="#">10</a>
-										<a onclick="nextPage()" id="btn_next">&raquo;</a>
+										<a onclick="nextPage()" id="btn_next" style="cursor: pointer;">&raquo;</a>
 									</div>
 								</div>
 							</div>
@@ -1117,20 +1119,21 @@ if (isset($data['data'])) {
 			}
 		  }
 		}
-
-let current_page = 1;
+let urlParams = new URLSearchParams(window.location.search);
+let current_page = urlParams.get('pageIndex');
 let records_per_page = 12;
 
 let objJson = <?php echo $jsonData; ?>;
-console.log('chekc data ',objJson)
 	 // Can be obtained from another source, such as your objJson variable
 
 function prevPage()
 {
     if (current_page > 1) {
-        current_page--;
-        changePage(current_page);
-    }
+    current_page--;
+    changePage(current_page);
+    window.location.href = "products.php?pageIndex=" + current_page;
+	
+}
 }
 
 function nextPage()
@@ -1138,25 +1141,35 @@ function nextPage()
     if (current_page < numPages()) {
         current_page++;
         changePage(current_page);
+		window.location.href = "products.php?pageIndex=" + current_page;
     }
 }
     
 function changePage(page)
 {
-    var btn_next = document.getElementById("btn_next");
-    var btn_prev = document.getElementById("btn_prev");
-    var listing_table = document.getElementById("listingTable");
-    var page_span = document.getElementById("page");
+    let btn_next = document.getElementById("btn_next");
+    let btn_prev = document.getElementById("btn_prev");
+    let page_span = document.getElementById("page");
  
     // Validate page
     if (page < 1) page = 1;
     if (page > numPages()) page = numPages();
 
-    listing_table.innerHTML = "";
+    listing_table = [];
+	document.cookie = 'listing_table=' + '' + '; expires=Fri, 31 Dec 9999 23:59:59 GMT; path=/;';
 
-    for (var i = (page-1) * records_per_page; i < (page * records_per_page) && i < objJson.length; i++) {
-        listing_table.innerHTML += objJson[i].adName + "<br>";
+	let startIndex = (page - 1) * records_per_page;
+    let endIndex = startIndex + records_per_page;
+    
+    // Xóa các đối tượng hiện có trong listing_table
+    listing_table = [];
+
+    // Lấy 12 đối tượng từ objJson.data và gán vào listing_table
+    for (let i = startIndex; i < endIndex && i < objJson.data.length; i++) {
+        listing_table.push(objJson.data[i]);
     }
+	document.cookie = 'listing_table=' + JSON.stringify(listing_table) + '; expires=Fri, 31 Dec 9999 23:59:59 GMT; path=/;';
+
     page_span.innerHTML = page;
 
     if (page == 1) {
@@ -1170,28 +1183,18 @@ function changePage(page)
     } else {
         btn_next.style.visibility = "visible";
     }
-	let targetDiv = document.getElementById('tg-main');
-            targetDiv.scrollIntoView({
-                behavior: 'smooth', // Tùy chọn: 'auto' hoặc 'smooth'
-                block: 'start' // Tùy chọn: 'start', 'center', 'end', hoặc 'nearest'
-    });
 }
 
 function numPages()
 {
-    return Math.ceil(objJson.length / records_per_page);
+    return Math.ceil(objJson.data.length / records_per_page);
 }
 
-changePage(1);
 
+window.onload = function() {
+    changePage(current_page);
+};
 </script>
 		
 </body>
-<style>
-/* #threedot-a:hover{
-	background-color: none;
-	cursor: none !important;
-} */
-</style>
-
 </html>

@@ -287,6 +287,7 @@ try {
     {
         localStorage.removeItem('userData')
         localStorage.removeItem('jwtToken')
+        
     }
 
     const deleteCategory = async (id,name) => {
@@ -342,6 +343,7 @@ function logout()
     {
         localStorage.removeItem('userData')
         localStorage.removeItem('jwtToken')
+        
     }
     document.getElementById('span-avatar').innerText = 'Hi ' + JSON.parse(localStorage.getItem('userData')).lastName
     if (JSON.parse(localStorage.getItem('userData')).roleId !== "3") {
