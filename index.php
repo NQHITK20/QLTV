@@ -466,7 +466,7 @@ if (isset($data['data'])) {
                         </ul>
                         <div class="tg-themetagbox"><span class="tg-themetag">mới</span></div>
                         <div class="tg-booktitle">
-                            <h3><a href="productdetail.html"><?php echo htmlspecialchars($book['author	']); ?></a></h3>
+                            <h3><a href="productdetail.html"><?php echo htmlspecialchars($book['bookName']); ?></a></h3>
                         </div>
                         <span class="tg-bookwriter">Tác giả : <?php echo htmlspecialchars($book['author']); ?></span>
                     </div>

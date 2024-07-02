@@ -889,16 +889,27 @@ if (isset($_COOKIE['listing_table'])) {
 									</div>
 									<div class="pagination">
 										<a onclick="prevPage()" id="btn_prev" style="cursor: pointer;">&laquo;</a>
-										<a href="#">1</a>
-										<a href="#">2</a>
-										<a href="#">3</a>
-										<a href="#">4</a>
-										<a href="#">5</a>
-										<a href="#">6</a>
-										<a href="#">7</a>
-										<a href="#">8</a>
-										<a href="#">9</a>
-										<a href="#">10</a>
+										<?php
+
+										if (isset($_COOKIE['last_page']) && isset($_COOKIE['page_index'])) {
+										$last_page = isset($_COOKIE['last_page']) ? $_COOKIE['last_page'] : 0;
+										$page_index = isset($_COOKIE['page_index']) ? $_COOKIE['page_index'] : 0;
+										for ($i = 1;$i <= min($page_index + 9, $last_page); $i++) {
+												if ($i == $page_index) {
+												?>
+                                                <a href="products.php?pageIndex=<?php echo $i ?>" class="active" ><?php echo $i ?></a>
+												<?php
+												 }
+												 else{
+													?>
+                                                    <a href="products.php?pageIndex=<?php echo $i ?>"><?php echo $i ?></a>
+													<?php
+												 }
+										}
+											?>
+										<?php } else {
+                                          echo '<p>Không có dữ liệu tổng số trang và trang hiện tại</p>';
+                                            }?>
 										<a onclick="nextPage()" id="btn_next" style="cursor: pointer;">&raquo;</a>
 									</div>
 								</div>
@@ -978,8 +989,6 @@ if (isset($_COOKIE['listing_table'])) {
 											</ul>
 										</div>
 									</div>
-									<div id="listingTable"></div>
-                                     page: <span id="page"></span>
 								</aside>
 							</div>
 						</div>
@@ -1089,7 +1098,7 @@ if (isset($_COOKIE['listing_table'])) {
 	*************************************-->
 	<script src="js/vendor/jquery-library.js"></script>
 	<script src="js/vendor/bootstrap.min.js"></script>
-	<script src="https://maps.google.com/maps/api/js?key=AIzaSyCR-KEWAVCn52mSdeVeTqZjtqbmVJyfSus&amp;language=en"></script>
+	<script src="https://maps.google.com/maps/api/js?key=AIzaSyCR-KEWAVCn52mSdeVeTqZjtqbmVJyfSus&amp;language=vi"></script>
 	<script src="js/owl.carousel.min.js"></script>
 	<script src="js/jquery.vide.min.js"></script>
 	<script src="js/countdown.js"></script>
@@ -1121,7 +1130,7 @@ if (isset($_COOKIE['listing_table'])) {
 		}
 let urlParams = new URLSearchParams(window.location.search);
 let current_page = urlParams.get('pageIndex');
-let records_per_page = 12;
+let records_per_page = 1;
 
 let objJson = <?php echo $jsonData; ?>;
 	 // Can be obtained from another source, such as your objJson variable
@@ -1131,9 +1140,8 @@ function prevPage()
     if (current_page > 1) {
     current_page--;
     changePage(current_page);
-    window.location.href = "products.php?pageIndex=" + current_page;
-	
-}
+    window.location.href = "products.php?pageIndex=" + current_page;	
+    }
 }
 
 function nextPage()
@@ -1149,7 +1157,6 @@ function changePage(page)
 {
     let btn_next = document.getElementById("btn_next");
     let btn_prev = document.getElementById("btn_prev");
-    let page_span = document.getElementById("page");
  
     // Validate page
     if (page < 1) page = 1;
@@ -1157,6 +1164,8 @@ function changePage(page)
 
     listing_table = [];
 	document.cookie = 'listing_table=' + '' + '; expires=Fri, 31 Dec 9999 23:59:59 GMT; path=/;';
+	document.cookie = 'page_index=' + '' + '; expires=Fri, 31 Dec 9999 23:59:59 GMT; path=/;';
+
 
 	let startIndex = (page - 1) * records_per_page;
     let endIndex = startIndex + records_per_page;
@@ -1169,8 +1178,7 @@ function changePage(page)
         listing_table.push(objJson.data[i]);
     }
 	document.cookie = 'listing_table=' + JSON.stringify(listing_table) + '; expires=Fri, 31 Dec 9999 23:59:59 GMT; path=/;';
-
-    page_span.innerHTML = page;
+	document.cookie = 'page_index=' + current_page + '; expires=Fri, 31 Dec 9999 23:59:59 GMT; path=/;';
 
     if (page == 1) {
         btn_prev.style.visibility = "hidden";
@@ -1187,13 +1195,11 @@ function changePage(page)
 
 function numPages()
 {
+	document.cookie = 'last_page=' + Math.ceil(objJson.data.length / records_per_page) + '; expires=Fri, 31 Dec 9999 23:59:59 GMT; path=/;';
     return Math.ceil(objJson.data.length / records_per_page);
 }
-
-
-window.onload = function() {
-    changePage(current_page);
-};
+ 
+changePage(current_page);
 </script>
 		
 </body>
