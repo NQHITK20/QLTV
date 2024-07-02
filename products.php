@@ -33,7 +33,6 @@ $databook = array('id' => 'ALL');
 // Chuyển đổi mảng dữ liệu thành JSON
 $jsonData = json_encode($databook);
 
-
 // Cấu hình cURL
 $ch = curl_init($url);
 curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
@@ -878,7 +877,7 @@ if (isset($_COOKIE['listing_table'])) {
 													</div>
 												</div>
 											</div>
-            <?php
+                                            <?php
         }
     }
 } else {
@@ -890,21 +889,27 @@ if (isset($_COOKIE['listing_table'])) {
 									<div class="pagination">
 										<a onclick="prevPage()" id="btn_prev" style="cursor: pointer;">&laquo;</a>
 										<?php
-
 										if (isset($_COOKIE['last_page']) && isset($_COOKIE['page_index'])) {
 										$last_page = isset($_COOKIE['last_page']) ? $_COOKIE['last_page'] : 0;
 										$page_index = isset($_COOKIE['page_index']) ? $_COOKIE['page_index'] : 0;
-										for ($i = 1;$i <= min($page_index + 9, $last_page); $i++) {
-												if ($i == $page_index) {
+										if ($page_index < 5 ) {
+										    $count1 = 0;
+											for ($i = 1;$i <= min($page_index + 8, $last_page) && $count1 < 10; $i++) {
 												?>
-                                                <a href="products.php?pageIndex=<?php echo $i ?>" class="active" ><?php echo $i ?></a>
+												<a class="pag-child" onclick="changePageClick(<?php echo $i ?>)" style="cursor:pointer"><?php echo $i ?></a>
 												<?php
-												 }
-												 else{
+												$count1++;
+											}
+										}else{
+											if ($page_index >= 5) {
+												$count2 = 0;
+												for ($i = $page_index-4;$i <= min($page_index + 4, $last_page) && $count2 < 10; $i++) {
 													?>
-                                                    <a href="products.php?pageIndex=<?php echo $i ?>"><?php echo $i ?></a>
+													<a class="pag-child" onclick="changePageClick(<?php echo $i ?>)" style="cursor:pointer"><?php echo $i ?></a>
 													<?php
-												 }
+													$count2++;
+												}	
+											}
 										}
 											?>
 										<?php } else {
@@ -1118,10 +1123,10 @@ if (isset($_COOKIE['listing_table'])) {
 		// Close the dropdown if the user clicks outside of it
 		window.onclick = function(event) {
 		  if (!event.target.matches('.dropbtn')) {
-			var dropdowns = document.getElementsByClassName("dropdown-content");
-			var i;
+			let dropdowns = document.getElementsByClassName("dropdown-content");
+			let i;
 			for (i = 0; i < dropdowns.length; i++) {
-			  var openDropdown = dropdowns[i];
+			  let openDropdown = dropdowns[i];
 			  if (openDropdown.classList.contains('show')) {
 				openDropdown.classList.remove('show');
 			  }
@@ -1130,18 +1135,18 @@ if (isset($_COOKIE['listing_table'])) {
 		}
 let urlParams = new URLSearchParams(window.location.search);
 let current_page = urlParams.get('pageIndex');
-let records_per_page = 1;
+let records_per_page = 3;
 
 let objJson = <?php echo $jsonData; ?>;
-	 // Can be obtained from another source, such as your objJson variable
+	 // Can be obtained from another source, such as your objJson letiable
 
 function prevPage()
 {
     if (current_page > 1) {
     current_page--;
     changePage(current_page);
-    window.location.href = "products.php?pageIndex=" + current_page;	
-    }
+    window.location.href = "products.php?pageIndex=" + current_page;
+	}
 }
 
 function nextPage()
@@ -1150,6 +1155,7 @@ function nextPage()
         current_page++;
         changePage(current_page);
 		window.location.href = "products.php?pageIndex=" + current_page;
+		
     }
 }
     
@@ -1170,10 +1176,10 @@ function changePage(page)
 	let startIndex = (page - 1) * records_per_page;
     let endIndex = startIndex + records_per_page;
     
-    // Xóa các đối tượng hiện có trong listing_table
+    
     listing_table = [];
 
-    // Lấy 12 đối tượng từ objJson.data và gán vào listing_table
+    
     for (let i = startIndex; i < endIndex && i < objJson.data.length; i++) {
         listing_table.push(objJson.data[i]);
     }
@@ -1191,6 +1197,25 @@ function changePage(page)
     } else {
         btn_next.style.visibility = "visible";
     }
+	let pagChild = document.querySelectorAll('.pag-child');
+
+    pagChild.forEach(function(pag) {
+    if (pag.innerText === current_page) {
+        pag.className = "active";
+    }
+	let targetDiv = document.getElementById('tg-main');
+        if (targetDiv) {
+        // Cuộn đến thẻ div
+        targetDiv.scrollIntoView({ behavior: 'smooth' });
+        }
+
+});
+}
+
+function changePageClick(page){
+	current_page = page;
+	changePage(current_page);
+	window.location.href = "products.php?pageIndex=" + current_page;
 }
 
 function numPages()
@@ -1198,8 +1223,7 @@ function numPages()
 	document.cookie = 'last_page=' + Math.ceil(objJson.data.length / records_per_page) + '; expires=Fri, 31 Dec 9999 23:59:59 GMT; path=/;';
     return Math.ceil(objJson.data.length / records_per_page);
 }
- 
-changePage(current_page);
+changePage(current_page)
 </script>
 		
 </body>
