@@ -1,6 +1,5 @@
 <!doctype html>
 <html class="no-js" lang="">
-
 <head>
 	<meta charset="utf-8">
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -61,7 +60,92 @@ $data = json_decode($response, true);
 if ($data === null) {
     die('Lỗi khi chuyển đổi JSON');
 }
-$jsonData = json_encode($data);
+$jsonDatabook = json_encode($data);
+
+
+ini_set('display_errors', 1);
+ini_set('display_startup_errors', 1);
+error_reporting(E_ALL);
+
+$url = 'http://localhost:8000/api/get-category-by-id'; // URL của API backend
+
+// Dữ liệu gửi đi
+$datacat = array('id' => 'CatAndCount');
+
+// Chuyển đổi mảng dữ liệu thành JSON
+$jsonData = json_encode($datacat);
+
+// Cấu hình cURL
+$ch = curl_init($url);
+curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+curl_setopt($ch, CURLOPT_HTTPHEADER, array(
+    'Content-Type: application/json',
+    'Authorization: Bearer' // Thêm token vào header Authorization
+));
+curl_setopt($ch, CURLOPT_POST, true);
+curl_setopt($ch, CURLOPT_POSTFIELDS, $jsonData);
+
+// Thực hiện yêu cầu POST và nhận phản hồi
+$response2 = curl_exec($ch);
+
+// Kiểm tra nếu có lỗi khi gửi yêu cầu
+if ($response2 === FALSE) {
+    die('Lỗi khi gửi yêu cầu: ' . curl_error($ch));
+}
+
+// Đóng cURL
+curl_close($ch);
+
+// Chuyển đổi JSON thành mảng dữ liệu trong PHP
+$data2 = json_decode($response2, true);
+
+// Kiểm tra nếu có lỗi khi chuyển đổi JSON
+if ($data2 === null) {
+    die('Lỗi khi chuyển đổi JSON');
+}
+
+
+ini_set('display_errors', 1);
+ini_set('display_startup_errors', 1);
+error_reporting(E_ALL);
+
+$url = 'http://localhost:8000/api/get-news'; // URL của API backend
+
+// Dữ liệu gửi đi
+$datanew = array('id' => 'F7');
+
+// Chuyển đổi mảng dữ liệu thành JSON
+$jsonData = json_encode($datanew);
+
+// Cấu hình cURL
+$ch = curl_init($url);
+curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+curl_setopt($ch, CURLOPT_HTTPHEADER, array(
+    'Content-Type: application/json',
+    'Authorization: Bearer' // Thêm token vào header Authorization
+));
+curl_setopt($ch, CURLOPT_POST, true);
+curl_setopt($ch, CURLOPT_POSTFIELDS, $jsonData);
+
+// Thực hiện yêu cầu POST và nhận phản hồi
+$response3 = curl_exec($ch);
+
+// Kiểm tra nếu có lỗi khi gửi yêu cầu
+if ($response3 === FALSE) {
+    die('Lỗi khi gửi yêu cầu: ' . curl_error($ch));
+}
+
+// Đóng cURL
+curl_close($ch);
+
+// Chuyển đổi JSON thành mảng dữ liệu trong PHP
+$data3 = json_decode($response3, true);
+
+// Kiểm tra nếu có lỗi khi chuyển đổi JSON
+if ($data3 === null) {
+    die('Lỗi khi chuyển đổi JSON');
+}
+
 
 ?>
 <body>
@@ -180,7 +264,6 @@ $jsonData = json_encode($data);
 																	<li><a href="products.php">Bulldozer Boyz</a></li>
 																	<li><a href="products.php">Build Or Leave On Us</a></li>
 																</ul>
-																<a class="tg-btnviewall" href="products.php">View All</a>
 															</li>
 															<li>
 																<div class="tg-linkstitle">
@@ -927,17 +1010,10 @@ if (isset($_COOKIE['listing_table'])) {
 										</div>
 										<div class="tg-widgetcontent">
 											<ul>
-												<li><a href="javascript:void(0);"><span>Art &amp; Photography</span><em>28245</em></a></li>
-												<li><a href="javascript:void(0);"><span>Biography</span><em>4856</em></a></li>
-												<li><a href="javascript:void(0);"><span>Children’s Book</span><em>8654</em></a></li>
-												<li><a href="javascript:void(0);"><span>Craft &amp; Hobbies</span><em>6247</em></a></li>
-												<li><a href="javascript:void(0);"><span>Crime &amp; Thriller</span><em>888654</em></a></li>
-												<li><a href="javascript:void(0);"><span>Fantasy &amp; Horror</span><em>873144</em></a></li>
-												<li><a href="javascript:void(0);"><span>Fiction</span><em>18465</em></a></li>
-												<li><a href="javascript:void(0);"><span>Fod &amp; Drink</span><em>3148</em></a></li>
-												<li><a href="javascript:void(0);"><span>Graphic, Anime &amp; Manga</span><em>77531</em></a></li>
-												<li><a href="javascript:void(0);"><span>Science Fiction</span><em>9247</em></a></li>
-												<li><a href="javascript:void(0);"><span>View All</span></a></li>
+												<?php 
+												foreach($data2['data'] as $cat) {?>
+												<li><a href="<?php echo $cat['category'] ?>"><span> <?php echo $cat['category'] ?></span><em><?php echo $cat['booksCount'] ?></em></a></li>
+												<?php }?>
 											</ul>
 										</div>
 									</div>
@@ -947,50 +1023,19 @@ if (isset($_COOKIE['listing_table'])) {
 										</div>
 										<div class="tg-widgetcontent">
 											<ul>
+												<?php foreach($data3['data'] as $new){?>
 												<li>
 													<article class="tg-post">
-														<figure><a href="javascript:void(0);"><img src="images/products/img-04.jpg" alt="image description"></a></figure>
+														<figure style="width:112px;"><a style="width:100px;" href="newsdetail.html?id=<?php echo $new['id']?>" alt="<?php echo $new['image']?>"><img src="images/blog/<?php echo $new['image'] ?>" alt="<?php echo $new['image'] ?>"></a></figure>
 														<div class="tg-postcontent">
 															<div class="tg-posttitle">
-																<h3><a href="javascript:void(0);">Where The Wild Things Are</a></h3>
+																<h3><a href="newsdetail.html?id=<?php echo $new['id']?>"><?php echo $new['title']?></a></h3>
 															</div>
-															<span class="tg-bookwriter">By: <a href="javascript:void(0);">Kathrine Culbertson</a></span>
+															<span class="tg-bookwriter">By: <a><?php echo $new['author'] ?></a></span>
 														</div>
 													</article>
 												</li>
-												<li>
-													<article class="tg-post">
-														<figure><a href="javascript:void(0);"><img src="images/products/img-05.jpg" alt="image description"></a></figure>
-														<div class="tg-postcontent">
-															<div class="tg-posttitle">
-																<h3><a href="javascript:void(0);">Where The Wild Things Are</a></h3>
-															</div>
-															<span class="tg-bookwriter">By: <a href="javascript:void(0);">Kathrine Culbertson</a></span>
-														</div>
-													</article>
-												</li>
-												<li>
-													<article class="tg-post">
-														<figure><a href="javascript:void(0);"><img src="images/products/img-06.jpg" alt="image description"></a></figure>
-														<div class="tg-postcontent">
-															<div class="tg-posttitle">
-																<h3><a href="javascript:void(0);">Where The Wild Things Are</a></h3>
-															</div>
-															<span class="tg-bookwriter">By: <a href="javascript:void(0);">Kathrine Culbertson</a></span>
-														</div>
-													</article>
-												</li>
-												<li>
-													<article class="tg-post">
-														<figure><a href="javascript:void(0);"><img src="images/products/img-07.jpg" alt="image description"></a></figure>
-														<div class="tg-postcontent">
-															<div class="tg-posttitle">
-																<h3><a href="javascript:void(0);">Where The Wild Things Are</a></h3>
-															</div>
-															<span class="tg-bookwriter">By: <a href="javascript:void(0);">Kathrine Culbertson</a></span>
-														</div>
-													</article>
-												</li>
+												<?php }?>
 											</ul>
 										</div>
 									</div>
@@ -1135,9 +1180,9 @@ if (isset($_COOKIE['listing_table'])) {
 		}
 let urlParams = new URLSearchParams(window.location.search);
 let current_page = urlParams.get('pageIndex');
-let records_per_page = 3;
+let records_per_page = 12;
 
-let objJson = <?php echo $jsonData; ?>;
+let objJson = <?php echo $jsonDatabook; ?>;
 	 // Can be obtained from another source, such as your objJson letiable
 
 function prevPage()
@@ -1155,7 +1200,6 @@ function nextPage()
         current_page++;
         changePage(current_page);
 		window.location.href = "products.php?pageIndex=" + current_page;
-		
     }
 }
     
@@ -1220,10 +1264,13 @@ function changePageClick(page){
 
 function numPages()
 {
+	console.log('checkk shiitt',objJson)
 	document.cookie = 'last_page=' + Math.ceil(objJson.data.length / records_per_page) + '; expires=Fri, 31 Dec 9999 23:59:59 GMT; path=/;';
     return Math.ceil(objJson.data.length / records_per_page);
 }
+
 changePage(current_page)
+
 </script>
 		
 </body>

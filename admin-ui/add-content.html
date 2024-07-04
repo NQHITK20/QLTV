@@ -156,6 +156,10 @@
                                 <div class="col-12 col-md-6"><input type="text" id="titleNew" name="titleNew" placeholder="Nhập tiêu đề bài viết" class="form-control"></div>
                             </div>
                             <div class="row form-group">
+                                <div class="col col-md-3"><label for="text-input" class=" form-control-label">Nội dung chính bài viết</label></div>
+                                <div class="col-12 col-md-9"><input type="text" id="description" name="description" placeholder="Nhập description" class="form-control"></div>
+                            </div>
+                            <div class="row form-group">
                                 <div class="col col-md-3"><label for="text-input" class=" form-control-label">Ảnh chính bài viết</label></div>
                                 <div class="col-12 col-md-6">
                                     <input type="file" id="image" name="image" onchange="onchangeImage()">
@@ -324,15 +328,20 @@ ClassicEditor
         function submitForm() {
 
             let title = document.getElementById('titleNew').value;
+            let description = document.getElementById('description').value;
             let author = document.getElementById('author').value;
             let content = editor.getData();
             let fileInput = document.getElementById('image');
             let file = fileInput.files[0]; // Lấy đối tượng file từ input
 
             if (!title) {
-                alert("Vui lòng tiêu đề.");
+                alert("Vui lòng nhập tiêu đề.");
                 return ;
-            }else if (!file) {
+            }else if (!description) {
+                alert("Vui lòng nhập nội dung chính.");
+                return ;
+            }
+            else if (!file) {
                 alert("Vui lòng chọn ảnh đại diện tin tức.");
                 return ;
             } 
@@ -350,6 +359,7 @@ ClassicEditor
             // Tạo đường dẫn mới
             let newsData = {
                 title: title,
+                description: description,
                 image: fileName,
                 author: author,
                 content: content,

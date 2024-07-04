@@ -4177,7 +4177,6 @@ body.tg-comingsoonpage .tg-footerbar{position:static;}
 	display: inline-block;
     justify-content: center; /* Căn giữa theo chiều ngang */
     align-items: center; /* Căn giữa theo chiều dọc */
-	padding: 30px 0 !important;
 	margin-left: 255px;
   }
   

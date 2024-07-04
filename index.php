@@ -495,7 +495,7 @@ if (isset($data['data'])) {
 						<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
 							<div class="tg-sectionhead">
 								<h2><span>Mới &amp; Đang hot</span>Tin tức mới nhất</h2>
-								<a class="tg-btn" href="newsgrid.html">Xem thêm</a>
+								<a class="tg-btn" href="newslist.php">Xem thêm</a>
 							</div>
 						</div>
 						<div id="tg-postslider" class="tg-postslider tg-blogpost owl-carousel">
@@ -507,7 +507,7 @@ if (isset($data3['data'])) {
         // Chỉ hiển thị sách nếu showing = 1
         if ($new['showing'] == 1) {
 
-			$dateString = $new['publicAt'];
+		   $dateString = $new['publicAt'];
 
            // Tạo một đối tượng DateTime từ chuỗi ngày giờ
            $datetime = new DateTime($dateString);

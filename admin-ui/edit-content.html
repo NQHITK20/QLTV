@@ -159,6 +159,10 @@
                                 <div class="col-12 col-md-6"><input type="text" id="titleNew" name="titleNew" placeholder="Nhập tiêu đề bài viết" class="form-control"></div>
                             </div>
                             <div class="row form-group">
+                                <div class="col col-md-3"><label for="text-input" class=" form-control-label">Nội dung chính bài viết</label></div>
+                                <div class="col-12 col-md-9"><input type="text" id="description" name="description" placeholder="Nhập description" class="form-control"></div>
+                            </div>
+                            <div class="row form-group">
                                 <div class="col col-md-3"><label for="text-input" class=" form-control-label">Ảnh chính bài viết</label></div>
                                 <div class="col-12 col-md-6">
                                     <input type="file" id="image" name="image" onchange="onchangeImage()">
@@ -306,6 +310,7 @@ document.addEventListener("DOMContentLoaded", async function() {
         const responseData = await fetchData();
         if (responseData) {
             document.getElementById("titleNew").value = responseData.data.title;
+            document.getElementById("description").value = responseData.data.description;
             editor.setData( responseData.data.content);
             document.getElementById("author").value = responseData.data.author;
             document.getElementById("displayedImage").src = '../images/blog/' + responseData.data.image;
@@ -349,12 +354,17 @@ document.addEventListener("DOMContentLoaded", async function() {
 
 
             let title = document.getElementById('titleNew').value;
+            let description = document.getElementById('titleNew').description;
             let author = document.getElementById('author').value;
             let content =editor.getData();
             let fileInput = document.getElementById('displayedImage').src;
 
             if (!title) {
                 alert("Vui lòng tiêu đề.");
+                return ;
+            }
+            if (!description) {
+                alert("Vui lòng nội dung chính.");
                 return ;
             }
             else if (!author) {
@@ -375,6 +385,7 @@ document.addEventListener("DOMContentLoaded", async function() {
             let newsData = {
                 id:newsId,
                 title: title,
+                description: description,
                 image: fileName,
                 author: author,
                 content: content,

@@ -20,6 +20,134 @@
 	<link rel="stylesheet" href="css/responsive.css">
 	<script src="js/vendor/modernizr-2.8.3-respond-1.4.2.min.js"></script>
 </head>
+<?php
+
+ini_set('display_errors', 1);
+ini_set('display_startup_errors', 1);
+error_reporting(E_ALL);
+
+$url = 'http://localhost:8000/api/get-category-by-id'; // URL của API backend
+
+// Dữ liệu gửi đi
+$datacat = array('id' => 'CatAndCount');
+
+// Chuyển đổi mảng dữ liệu thành JSON
+$jsonData = json_encode($datacat);
+
+// Cấu hình cURL
+$ch = curl_init($url);
+curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+curl_setopt($ch, CURLOPT_HTTPHEADER, array(
+    'Content-Type: application/json',
+    'Authorization: Bearer' // Thêm token vào header Authorization
+));
+curl_setopt($ch, CURLOPT_POST, true);
+curl_setopt($ch, CURLOPT_POSTFIELDS, $jsonData);
+
+// Thực hiện yêu cầu POST và nhận phản hồi
+$response2 = curl_exec($ch);
+
+// Kiểm tra nếu có lỗi khi gửi yêu cầu
+if ($response2 === FALSE) {
+    die('Lỗi khi gửi yêu cầu: ' . curl_error($ch));
+}
+
+// Đóng cURL
+curl_close($ch);
+
+// Chuyển đổi JSON thành mảng dữ liệu trong PHP
+$data2 = json_decode($response2, true);
+
+// Kiểm tra nếu có lỗi khi chuyển đổi JSON
+if ($data2 === null) {
+    die('Lỗi khi chuyển đổi JSON');
+}
+
+
+ini_set('display_errors', 1);
+ini_set('display_startup_errors', 1);
+error_reporting(E_ALL);
+
+$url = 'http://localhost:8000/api/get-news'; // URL của API backend
+
+// Dữ liệu gửi đi
+$datanew = array('id' => 'F7');
+
+// Chuyển đổi mảng dữ liệu thành JSON
+$jsonData = json_encode($datanew);
+
+// Cấu hình cURL
+$ch = curl_init($url);
+curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+curl_setopt($ch, CURLOPT_HTTPHEADER, array(
+    'Content-Type: application/json',
+    'Authorization: Bearer' // Thêm token vào header Authorization
+));
+curl_setopt($ch, CURLOPT_POST, true);
+curl_setopt($ch, CURLOPT_POSTFIELDS, $jsonData);
+
+// Thực hiện yêu cầu POST và nhận phản hồi
+$response3 = curl_exec($ch);
+
+// Kiểm tra nếu có lỗi khi gửi yêu cầu
+if ($response3 === FALSE) {
+    die('Lỗi khi gửi yêu cầu: ' . curl_error($ch));
+}
+
+// Đóng cURL
+curl_close($ch);
+
+// Chuyển đổi JSON thành mảng dữ liệu trong PHP
+$data3 = json_decode($response3, true);
+
+// Kiểm tra nếu có lỗi khi chuyển đổi JSON
+if ($data3 === null) {
+    die('Lỗi khi chuyển đổi JSON');
+}
+
+ini_set('display_errors', 1);
+ini_set('display_startup_errors', 1);
+error_reporting(E_ALL);
+
+$url = 'http://localhost:8000/api/get-news'; // URL của API backend
+
+// Dữ liệu gửi đi
+$allnew = array('id' => 'ALL');
+
+// Chuyển đổi mảng dữ liệu thành JSON
+$jsonData4 = json_encode($allnew);
+
+// Cấu hình cURL
+$ch = curl_init($url);
+curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+curl_setopt($ch, CURLOPT_HTTPHEADER, array(
+    'Content-Type: application/json',
+    'Authorization: Bearer' // Thêm token vào header Authorization
+));
+curl_setopt($ch, CURLOPT_POST, true);
+curl_setopt($ch, CURLOPT_POSTFIELDS, $jsonData4);
+
+// Thực hiện yêu cầu POST và nhận phản hồi
+$response4 = curl_exec($ch);
+
+// Kiểm tra nếu có lỗi khi gửi yêu cầu
+if ($response4 === FALSE) {
+    die('Lỗi khi gửi yêu cầu: ' . curl_error($ch));
+}
+
+// Đóng cURL
+curl_close($ch);
+
+// Chuyển đổi JSON thành mảng dữ liệu trong PHP
+$data4 = json_decode($response4, true);
+
+// Kiểm tra nếu có lỗi khi chuyển đổi JSON
+if ($data4 === null) {
+    die('Lỗi khi chuyển đổi JSON');
+}
+
+?>
+
 <body>
 	<div id="tg-wrapper" class="tg-wrapper tg-haslayout">
 		<!--************************************
@@ -768,10 +896,10 @@
 				<div class="row">
 					<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
 						<div class="tg-innerbannercontent">
-							<h1>Sách</h1>
+							<h1>Tin tức</h1>
 							<ol class="tg-breadcrumb">
-								<li><a href="javascript:void(0);">home</a></li>
-								<li class="tg-active">Sách</li>
+								<li><a href="index.php">home</a></li>
+								<li class="tg-active">Tin tức</li>
 							</ol>
 						</div>
 					</div>
@@ -794,465 +922,35 @@
 						<div id="tg-twocolumns" class="tg-twocolumns">
 							<div class="col-xs-12 col-sm-8 col-md-8 col-lg-9 pull-right">
 								<div id="tg-content" class="tg-content">
-									<div class="tg-products">
+									<div class="tg-newslist">
 										<div class="tg-sectionhead">
-											<h2><span>Độc giả chọn</span>Sách đang hot</h2>
+											<h2><span>Mới &amp; Hot</span>Tin tức mới nhất</h2>
 										</div>
-										<div class="tg-featurebook alert" role="alert">
-											<button type="button" class="close" data-dismiss="alert" aria-label="Close">
-												<span aria-hidden="true">&times;</span>
-											</button>
-											<div class="tg-featureditm">
-												<div class="row">
-													<div class="col-xs-12 col-sm-12 col-md-4 col-lg-4 hidden-sm hidden-xs">
-														<figure><img src="images/img-04.png" alt="image description"></figure>
+										<div class="row">
+											<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+										        <?php foreach($data3['data'] as $new) {
+													 $dateString = $new['publicAt'];
+
+													 // Tạo một đối tượng DateTime từ chuỗi ngày giờ
+													 $datetime = new DateTime($dateString);
+										  
+													 // Định dạng lại ngày giờ theo định dạng mong muốn
+													 $formattedDatetime = $datetime->format('d/m/Y - H:i');
+													?>
+												<article class="tg-post">
+													<figure style="width: 80%;"><a href="newsdetail.html?id=<?php echo $new['id'] ?>"><img src="images/blog/<?php echo $new['image'] ?>" alt="<?php echo $new['image'] ?>"></a></figure>
+													<div class="tg-postcontent">
+														<div class="tg-posttitle">
+															<h3><a href="newsdetail.html?id=<?php echo $new['id'] ?>"><?php echo $new['title'] ?></a></h3>
+														</div>
+														<a><?php echo $formattedDatetime ?></a>
+														<div class="tg-description">
+															<p><?php echo $new['description'] ?></p>
+														</div>
+														<span class="tg-bookwriter">By: <a><?php echo $new['author'] ?></a></span>
 													</div>
-													<div class="col-xs-12 col-sm-12 col-md-8 col-lg-8">
-														<div class="tg-featureditmcontent">
-															<div class="tg-themetagbox"><span class="tg-themetag">featured</span></div>
-															<div class="tg-booktitle">
-																<h3><a href="javascript:void(0);">Things To Know About Green Flat Design</a></h3>
-															</div>
-															<span class="tg-bookwriter">By: <a href="javascript:void(0);">Farrah Whisenhunt</a></span>
-															<span class="tg-stars"><span></span></span>
-															<div class="tg-priceandbtn">
-																<span class="tg-bookprice">
-																	<ins>$23.18</ins>
-																	<del>$30.20</del>
-																</span>
-																<a class="tg-btn tg-btnstyletwo tg-active" href="javascript:void(0);">
-																	<i class="fa fa-heart"></i>
-																	<em>Thêm vào</em>
-																</a>
-															</div>
-														</div>
-													</div>
-												</div>
-											</div>
-										</div>
-										<div class="tg-productgrid">
-											<div class="tg-refinesearch">
-												<span>showing 1 to 8 of 20 total</span>
-												<form class="tg-formtheme formsortshowitems">
-													<fieldset>
-														<div class="form-group">
-															<label>sort by:</label>
-															<span class="tg-select">
-																<select>
-																	<option>name</option>
-																	<option>name</option>
-																	<option>name</option>
-																</select>
-															</span>
-														</div>
-														<div class="form-group">
-															<label>show:</label>
-															<span class="tg-select">
-																<select>
-																	<option>8</option>
-																	<option>16</option>
-																	<option>20</option>
-																</select>
-															</span>
-														</div>
-													</fieldset>
-												</form>
-											</div>
-											<div class="col-xs-6 col-sm-6 col-md-4 col-lg-3">
-												<div class="tg-postbook">
-													<figure class="tg-featureimg">
-														<div class="tg-bookimg">
-															<div class="tg-frontcover"><img src="images/books/img-01.jpg" alt="image description"></div>
-															<div class="tg-backcover"><img src="images/books/img-01.jpg" alt="image description"></div>
-														</div>
-														<a class="tg-btnaddtowishlist" href="javascript:void(0);">
-															<i class="icon-heart"></i>
-															<span>Thêm vào yêu thích</span>
-														</a>
-													</figure>
-													<div class="tg-postbookcontent">
-														<ul class="tg-bookscategories">
-															<li><a href="javascript:void(0);">Art &amp; Photography</a></li>
-														</ul>
-														<div class="tg-themetagbox"><span class="tg-themetag">sale</span></div>
-														<div class="tg-booktitle">
-															<h3><a href="javascript:void(0);">Help Me Find My Stomach</a></h3>
-														</div>
-														<span class="tg-bookwriter">By: <a href="javascript:void(0);">Angela Gunning</a></span>
-														<span class="tg-stars"><span></span></span>
-														<span class="tg-bookprice">
-															<ins>$25.18</ins>
-															<del>$27.20</del>
-														</span>
-														<a class="tg-btn tg-btnstyletwo" href="javascript:void(0);">
-															<i class="fa fa-heart"></i>
-															<em>Thêm vào</em>
-														</a>
-													</div>
-												</div>
-											</div>
-											<div class="col-xs-6 col-sm-6 col-md-4 col-lg-3">
-												<div class="tg-postbook">
-													<figure class="tg-featureimg">
-														<div class="tg-bookimg">
-															<div class="tg-frontcover"><img src="images/books/img-02.jpg" alt="image description"></div>
-															<div class="tg-backcover"><img src="images/books/img-02.jpg" alt="image description"></div>
-														</div>
-														<a class="tg-btnaddtowishlist" href="javascript:void(0);">
-															<i class="icon-heart"></i>
-															<span>Thêm vào yêu thích</span>
-														</a>
-													</figure>
-													<div class="tg-postbookcontent">
-														<ul class="tg-bookscategories">
-															<li><a href="javascript:void(0);">Children’s Book</a></li>
-														</ul>
-														<div class="tg-themetagbox"><span class="tg-themetag">sale</span></div>
-														<div class="tg-booktitle">
-															<h3><a href="javascript:void(0);">Help Me Find My Stomach</a></h3>
-														</div>
-														<span class="tg-bookwriter">By: <a href="javascript:void(0);">Angela Gunning</a></span>
-														<span class="tg-stars"><span></span></span>
-														<span class="tg-bookprice">
-															<ins>$25.18</ins>
-															<del>$27.20</del>
-														</span>
-														<a class="tg-btn tg-btnstyletwo" href="javascript:void(0);">
-															<i class="fa fa-heart"></i>
-															<em>Thêm vào</em>
-														</a>
-													</div>
-												</div>
-											</div>
-											<div class="col-xs-6 col-sm-6 col-md-4 col-lg-3">
-												<div class="tg-postbook">
-													<figure class="tg-featureimg">
-														<div class="tg-bookimg">
-															<div class="tg-frontcover"><img src="images/books/img-03.jpg" alt="image description"></div>
-															<div class="tg-backcover"><img src="images/books/img-03.jpg" alt="image description"></div>
-														</div>
-														<a class="tg-btnaddtowishlist" href="javascript:void(0);">
-															<i class="icon-heart"></i>
-															<span>Thêm vào yêu thích</span>
-														</a>
-													</figure>
-													<div class="tg-postbookcontent">
-														<ul class="tg-bookscategories">
-															<li><a href="javascript:void(0);">Comic</a></li>
-															<li><a href="javascript:void(0);">Adventure</a></li>
-														</ul>
-														<div class="tg-themetagbox"><span class="tg-themetag">sale</span></div>
-														<div class="tg-booktitle">
-															<h3><a href="javascript:void(0);">Help Me Find My Stomach</a></h3>
-														</div>
-														<span class="tg-bookwriter">By: <a href="javascript:void(0);">Angela Gunning</a></span>
-														<span class="tg-stars"><span></span></span>
-														<span class="tg-bookprice">
-															<ins>$25.18</ins>
-														</span>
-														<a class="tg-btn tg-btnstyletwo" href="javascript:void(0);">
-															<i class="fa fa-heart"></i>
-															<em>Thêm vào</em>
-														</a>
-													</div>
-												</div>
-											</div>
-											<div class="col-xs-6 col-sm-6 col-md-4 col-lg-3">
-												<div class="tg-postbook">
-													<figure class="tg-featureimg">
-														<div class="tg-bookimg">
-															<div class="tg-frontcover"><img src="images/books/img-04.jpg" alt="image description"></div>
-															<div class="tg-backcover"><img src="images/books/img-04.jpg" alt="image description"></div>
-														</div>
-														<a class="tg-btnaddtowishlist" href="javascript:void(0);">
-															<i class="icon-heart"></i>
-															<span>Thêm vào yêu thích</span>
-														</a>
-													</figure>
-													<div class="tg-postbookcontent">
-														<ul class="tg-bookscategories">
-															<li><a href="javascript:void(0);">Fantacy &amp; Horor</a></li>
-														</ul>
-														<div class="tg-themetagbox"><span class="tg-themetag">sale</span></div>
-														<div class="tg-booktitle">
-															<h3><a href="javascript:void(0);">Help Me Find My Stomach</a></h3>
-														</div>
-														<span class="tg-bookwriter">By: <a href="javascript:void(0);">Angela Gunning</a></span>
-														<span class="tg-stars"><span></span></span>
-														<span class="tg-bookprice">
-															<ins>$25.18</ins>
-														</span>
-														<a class="tg-btn tg-btnstyletwo" href="javascript:void(0);">
-															<i class="fa fa-heart"></i>
-															<em>Thêm vào</em>
-														</a>
-													</div>
-												</div>
-											</div>
-											<div class="col-xs-6 col-sm-6 col-md-4 col-lg-3">
-												<div class="tg-postbook">
-													<figure class="tg-featureimg">
-														<div class="tg-bookimg">
-															<div class="tg-frontcover"><img src="images/books/img-05.jpg" alt="image description"></div>
-															<div class="tg-backcover"><img src="images/books/img-05.jpg" alt="image description"></div>
-														</div>
-														<a class="tg-btnaddtowishlist" href="javascript:void(0);">
-															<i class="icon-heart"></i>
-															<span>Thêm vào yêu thích</span>
-														</a>
-													</figure>
-													<div class="tg-postbookcontent">
-														<ul class="tg-bookscategories">
-															<li><a href="javascript:void(0);">Children’s Book</a></li>
-														</ul>
-														<div class="tg-themetagbox"><span class="tg-themetag">sale</span></div>
-														<div class="tg-booktitle">
-															<h3><a href="javascript:void(0);">Help Me Find My Stomach</a></h3>
-														</div>
-														<span class="tg-bookwriter">By: <a href="javascript:void(0);">Angela Gunning</a></span>
-														<span class="tg-stars"><span></span></span>
-														<span class="tg-bookprice">
-															<ins>$25.18</ins>
-															<del>$27.20</del>
-														</span>
-														<a class="tg-btn tg-btnstyletwo" href="javascript:void(0);">
-															<i class="fa fa-heart"></i>
-															<em>Thêm vào</em>
-														</a>
-													</div>
-												</div>
-											</div>
-											<div class="col-xs-6 col-sm-6 col-md-4 col-lg-3">
-												<div class="tg-postbook">
-													<figure class="tg-featureimg">
-														<div class="tg-bookimg">
-															<div class="tg-frontcover"><img src="images/books/img-06.jpg" alt="image description"></div>
-															<div class="tg-backcover"><img src="images/books/img-06.jpg" alt="image description"></div>
-														</div>
-														<a class="tg-btnaddtowishlist" href="javascript:void(0);">
-															<i class="icon-heart"></i>
-															<span>Thêm vào yêu thích</span>
-														</a>
-													</figure>
-													<div class="tg-postbookcontent">
-														<ul class="tg-bookscategories">
-															<li><a href="javascript:void(0);">Comic</a></li>
-															<li><a href="javascript:void(0);">Adventure</a></li>
-														</ul>
-														<div class="tg-themetagbox"><span class="tg-themetag">sale</span></div>
-														<div class="tg-booktitle">
-															<h3><a href="javascript:void(0);">Help Me Find My Stomach</a></h3>
-														</div>
-														<span class="tg-bookwriter">By: <a href="javascript:void(0);">Angela Gunning</a></span>
-														<span class="tg-stars"><span></span></span>
-														<span class="tg-bookprice">
-															<ins>$25.18</ins>
-														</span>
-														<a class="tg-btn tg-btnstyletwo" href="javascript:void(0);">
-															<i class="fa fa-heart"></i>
-															<em>Thêm vào</em>
-														</a>
-													</div>
-												</div>
-											</div>
-											<div class="col-xs-6 col-sm-6 col-md-4 col-lg-3">
-												<div class="tg-postbook">
-													<figure class="tg-featureimg">
-														<div class="tg-bookimg">
-															<div class="tg-frontcover"><img src="images/books/img-07.jpg" alt="image description"></div>
-															<div class="tg-backcover"><img src="images/books/img-07.jpg" alt="image description"></div>
-														</div>
-														<a class="tg-btnaddtowishlist" href="javascript:void(0);">
-															<i class="icon-heart"></i>
-															<span>Thêm vào yêu thích</span>
-														</a>
-													</figure>
-													<div class="tg-postbookcontent">
-														<ul class="tg-bookscategories">
-															<li><a href="javascript:void(0);">Adventure</a></li>
-															<li><a href="javascript:void(0);">Fiction</a></li>
-														</ul>
-														<div class="tg-themetagbox"><span class="tg-themetag">sale</span></div>
-														<div class="tg-booktitle">
-															<h3><a href="javascript:void(0);">Help Me Find My Stomach</a></h3>
-														</div>
-														<span class="tg-bookwriter">By: <a href="javascript:void(0);">Angela Gunning</a></span>
-														<span class="tg-stars"><span></span></span>
-														<span class="tg-bookprice">
-															<ins>$25.18</ins>
-															<del>$27.20</del>
-														</span>
-														<a class="tg-btn tg-btnstyletwo" href="javascript:void(0);">
-															<i class="fa fa-heart"></i>
-															<em>Thêm vào</em>
-														</a>
-													</div>
-												</div>
-											</div>
-											<div class="col-xs-6 col-sm-6 col-md-4 col-lg-3">
-												<div class="tg-postbook">
-													<figure class="tg-featureimg">
-														<div class="tg-bookimg">
-															<div class="tg-frontcover"><img src="images/books/img-08.jpg" alt="image description"></div>
-															<div class="tg-backcover"><img src="images/books/img-08.jpg" alt="image description"></div>
-														</div>
-														<a class="tg-btnaddtowishlist" href="javascript:void(0);">
-															<i class="icon-heart"></i>
-															<span>Thêm vào yêu thích</span>
-														</a>
-													</figure>
-													<div class="tg-postbookcontent">
-														<ul class="tg-bookscategories">
-															<li><a href="javascript:void(0);">Fantacy &amp; Horor</a></li>
-														</ul>
-														<div class="tg-themetagbox"><span class="tg-themetag">sale</span></div>
-														<div class="tg-booktitle">
-															<h3><a href="javascript:void(0);">Help Me Find My Stomach</a></h3>
-														</div>
-														<span class="tg-bookwriter">By: <a href="javascript:void(0);">Angela Gunning</a></span>
-														<span class="tg-stars"><span></span></span>
-														<span class="tg-bookprice">
-															<ins>$25.18</ins>
-														</span>
-														<a class="tg-btn tg-btnstyletwo" href="javascript:void(0);">
-															<i class="fa fa-heart"></i>
-															<em>Thêm vào</em>
-														</a>
-													</div>
-												</div>
-											</div>
-											<div class="col-xs-6 col-sm-6 col-md-4 col-lg-3">
-												<div class="tg-postbook">
-													<figure class="tg-featureimg">
-														<div class="tg-bookimg">
-															<div class="tg-frontcover"><img src="images/books/img-09.jpg" alt="image description"></div>
-															<div class="tg-backcover"><img src="images/books/img-09.jpg" alt="image description"></div>
-														</div>
-														<a class="tg-btnaddtowishlist" href="javascript:void(0);">
-															<i class="icon-heart"></i>
-															<span>Thêm vào yêu thích</span>
-														</a>
-													</figure>
-													<div class="tg-postbookcontent">
-														<ul class="tg-bookscategories">
-															<li><a href="javascript:void(0);">Children’s Book</a></li>
-														</ul>
-														<div class="tg-themetagbox"><span class="tg-themetag">sale</span></div>
-														<div class="tg-booktitle">
-															<h3><a href="javascript:void(0);">Help Me Find My Stomach</a></h3>
-														</div>
-														<span class="tg-bookwriter">By: <a href="javascript:void(0);">Angela Gunning</a></span>
-														<span class="tg-stars"><span></span></span>
-														<span class="tg-bookprice">
-															<ins>$25.18</ins>
-															<del>$27.20</del>
-														</span>
-														<a class="tg-btn tg-btnstyletwo" href="javascript:void(0);">
-															<i class="fa fa-heart"></i>
-															<em>Thêm vào</em>
-														</a>
-													</div>
-												</div>
-											</div>
-											<div class="col-xs-6 col-sm-6 col-md-4 col-lg-3">
-												<div class="tg-postbook">
-													<figure class="tg-featureimg">
-														<div class="tg-bookimg">
-															<div class="tg-frontcover"><img src="images/books/img-10.jpg" alt="image description"></div>
-															<div class="tg-backcover"><img src="images/books/img-10.jpg" alt="image description"></div>
-														</div>
-														<a class="tg-btnaddtowishlist" href="javascript:void(0);">
-															<i class="icon-heart"></i>
-															<span>Thêm vào yêu thích</span>
-														</a>
-													</figure>
-													<div class="tg-postbookcontent">
-														<ul class="tg-bookscategories">
-															<li><a href="javascript:void(0);">Comic</a></li>
-															<li><a href="javascript:void(0);">Adventure</a></li>
-														</ul>
-														<div class="tg-themetagbox"><span class="tg-themetag">sale</span></div>
-														<div class="tg-booktitle">
-															<h3><a href="javascript:void(0);">Help Me Find My Stomach</a></h3>
-														</div>
-														<span class="tg-bookwriter">By: <a href="javascript:void(0);">Angela Gunning</a></span>
-														<span class="tg-stars"><span></span></span>
-														<span class="tg-bookprice">
-															<ins>$25.18</ins>
-														</span>
-														<a class="tg-btn tg-btnstyletwo" href="javascript:void(0);">
-															<i class="fa fa-heart"></i>
-															<em>Thêm vào</em>
-														</a>
-													</div>
-												</div>
-											</div>
-											<div class="col-xs-6 col-sm-6 col-md-4 col-lg-3">
-												<div class="tg-postbook">
-													<figure class="tg-featureimg">
-														<div class="tg-bookimg">
-															<div class="tg-frontcover"><img src="images/books/img-11.jpg" alt="image description"></div>
-															<div class="tg-backcover"><img src="images/books/img-11.jpg" alt="image description"></div>
-														</div>
-														<a class="tg-btnaddtowishlist" href="javascript:void(0);">
-															<i class="icon-heart"></i>
-															<span>Thêm vào yêu thích</span>
-														</a>
-													</figure>
-													<div class="tg-postbookcontent">
-														<ul class="tg-bookscategories">
-															<li><a href="javascript:void(0);">Adventure</a></li>
-															<li><a href="javascript:void(0);">Fiction</a></li>
-														</ul>
-														<div class="tg-themetagbox"><span class="tg-themetag">sale</span></div>
-														<div class="tg-booktitle">
-															<h3><a href="javascript:void(0);">Help Me Find My Stomach</a></h3>
-														</div>
-														<span class="tg-bookwriter">By: <a href="javascript:void(0);">Angela Gunning</a></span>
-														<span class="tg-stars"><span></span></span>
-														<span class="tg-bookprice">
-															<ins>$25.18</ins>
-															<del>$27.20</del>
-														</span>
-														<a class="tg-btn tg-btnstyletwo" href="javascript:void(0);">
-															<i class="fa fa-heart"></i>
-															<em>Thêm vào</em>
-														</a>
-													</div>
-												</div>
-											</div>
-											<div class="col-xs-6 col-sm-6 col-md-4 col-lg-3">
-												<div class="tg-postbook">
-													<figure class="tg-featureimg">
-														<div class="tg-bookimg">
-															<div class="tg-frontcover"><img src="images/books/img-12.jpg" alt="image description"></div>
-															<div class="tg-backcover"><img src="images/books/img-12.jpg" alt="image description"></div>
-														</div>
-														<a class="tg-btnaddtowishlist" href="javascript:void(0);">
-															<i class="icon-heart"></i>
-															<span>Thêm vào yêu thích</span>
-														</a>
-													</figure>
-													<div class="tg-postbookcontent">
-														<ul class="tg-bookscategories">
-															<li><a href="javascript:void(0);">Adventure</a></li>
-															<li><a href="javascript:void(0);">Fun</a></li>
-														</ul>
-														<div class="tg-themetagbox"><span class="tg-themetag">sale</span></div>
-														<div class="tg-booktitle">
-															<h3><a href="javascript:void(0);">Help Me Find My Stomach</a></h3>
-														</div>
-														<span class="tg-bookwriter">By: <a href="javascript:void(0);">Angela Gunning</a></span>
-														<span class="tg-stars"><span></span></span>
-														<span class="tg-bookprice">
-															<ins>$25.18</ins>
-														</span>
-														<a class="tg-btn tg-btnstyletwo" href="javascript:void(0);">
-															<i class="fa fa-heart"></i>
-															<em>Thêm vào</em>
-														</a>
-													</div>
-												</div>
+												</article>
+												<?php }?>
 											</div>
 										</div>
 									</div>
@@ -1266,17 +964,10 @@
 										</div>
 										<div class="tg-widgetcontent">
 											<ul>
-												<li><a href="javascript:void(0);"><span>Art &amp; Photography</span><em>28245</em></a></li>
-												<li><a href="javascript:void(0);"><span>Biography</span><em>4856</em></a></li>
-												<li><a href="javascript:void(0);"><span>Children’s Book</span><em>8654</em></a></li>
-												<li><a href="javascript:void(0);"><span>Craft &amp; Hobbies</span><em>6247</em></a></li>
-												<li><a href="javascript:void(0);"><span>Crime &amp; Thriller</span><em>888654</em></a></li>
-												<li><a href="javascript:void(0);"><span>Fantasy &amp; Horror</span><em>873144</em></a></li>
-												<li><a href="javascript:void(0);"><span>Fiction</span><em>18465</em></a></li>
-												<li><a href="javascript:void(0);"><span>Fod &amp; Drink</span><em>3148</em></a></li>
-												<li><a href="javascript:void(0);"><span>Graphic, Anime &amp; Manga</span><em>77531</em></a></li>
-												<li><a href="javascript:void(0);"><span>Science Fiction</span><em>9247</em></a></li>
-												<li><a href="javascript:void(0);"><span>View All</span></a></li>
+												<?php 
+												foreach($data2['data'] as $cat) {?>
+												<li><a href="<?php echo $cat['category'] ?>"><span> <?php echo $cat['category'] ?></span><em><?php echo $cat['booksCount'] ?></em></a></li>
+												<?php }?>
 											</ul>
 										</div>
 									</div>
@@ -1286,50 +977,19 @@
 										</div>
 										<div class="tg-widgetcontent">
 											<ul>
+												<?php foreach($data3['data'] as $new){?>
 												<li>
 													<article class="tg-post">
-														<figure><a href="javascript:void(0);"><img src="images/products/img-04.jpg" alt="image description"></a></figure>
+														<figure style="width:112px;"><a style="width:100px;" href="newsdetail.html?id=<?php echo $new['id']?>" alt="<?php echo $new['image']?>"><img src="images/blog/<?php echo $new['image'] ?>" alt="<?php echo $new['image'] ?>"></a></figure>
 														<div class="tg-postcontent">
 															<div class="tg-posttitle">
-																<h3><a href="javascript:void(0);">Where The Wild Things Are</a></h3>
+																<h3><a href="newsdetail.html?id=<?php echo $new['id']?>"><?php echo $new['title']?></a></h3>
 															</div>
-															<span class="tg-bookwriter">By: <a href="javascript:void(0);">Kathrine Culbertson</a></span>
+															<span class="tg-bookwriter">By: <a><?php echo $new['author'] ?></a></span>
 														</div>
 													</article>
 												</li>
-												<li>
-													<article class="tg-post">
-														<figure><a href="javascript:void(0);"><img src="images/products/img-05.jpg" alt="image description"></a></figure>
-														<div class="tg-postcontent">
-															<div class="tg-posttitle">
-																<h3><a href="javascript:void(0);">Where The Wild Things Are</a></h3>
-															</div>
-															<span class="tg-bookwriter">By: <a href="javascript:void(0);">Kathrine Culbertson</a></span>
-														</div>
-													</article>
-												</li>
-												<li>
-													<article class="tg-post">
-														<figure><a href="javascript:void(0);"><img src="images/products/img-06.jpg" alt="image description"></a></figure>
-														<div class="tg-postcontent">
-															<div class="tg-posttitle">
-																<h3><a href="javascript:void(0);">Where The Wild Things Are</a></h3>
-															</div>
-															<span class="tg-bookwriter">By: <a href="javascript:void(0);">Kathrine Culbertson</a></span>
-														</div>
-													</article>
-												</li>
-												<li>
-													<article class="tg-post">
-														<figure><a href="javascript:void(0);"><img src="images/products/img-07.jpg" alt="image description"></a></figure>
-														<div class="tg-postcontent">
-															<div class="tg-posttitle">
-																<h3><a href="javascript:void(0);">Where The Wild Things Are</a></h3>
-															</div>
-															<span class="tg-bookwriter">By: <a href="javascript:void(0);">Kathrine Culbertson</a></span>
-														</div>
-													</article>
-												</li>
+												<?php }?>
 											</ul>
 										</div>
 									</div>
