@@ -60,8 +60,6 @@ $data = json_decode($response, true);
 if ($data === null) {
     die('Lỗi khi chuyển đổi JSON');
 }
-$jsonDatabook = json_encode($data);
-
 
 ini_set('display_errors', 1);
 ini_set('display_startup_errors', 1);
@@ -146,8 +144,117 @@ if ($data3 === null) {
     die('Lỗi khi chuyển đổi JSON');
 }
 
-
 ?>
+<script>
+let urlParams = new URLSearchParams(window.location.search);
+let current_page = urlParams.get('pageIndex') || 1; // Gán giá trị mặc định nếu pageIndex không tồn tại
+let records_per_page = 12;
+
+let objJson = <?php echo json_encode($data); ?>;
+console.log('check data ',objJson)
+
+// Hàm chuyển sang trang trước
+function prevPage() {
+    if (current_page > 1) {
+        current_page--;
+        changePage(current_page);
+        window.location.href = "products.php?pageIndex=" + current_page;
+    }
+}
+
+// Hàm chuyển sang trang sau
+function nextPage() {
+    if (current_page < numPages()) {
+        current_page++;
+        changePage(current_page);
+        window.location.href = "products.php?pageIndex=" + current_page;
+    }
+}
+
+// Hàm thay đổi trang
+function changePage(page) {
+    let btn_next = document.getElementById("btn_next");
+    let btn_prev = document.getElementById("btn_prev");
+
+    // Kiểm tra tính hợp lệ của trang
+    if (page < 1) page = 1;
+    if (page > numPages()) page = numPages();
+
+    let listing_table = [];
+
+    let startIndex = (page - 1) * records_per_page;
+    let endIndex = startIndex + records_per_page;
+
+    for (let i = startIndex; i < endIndex && i < objJson.data.length; i++) {
+        listing_table.push(objJson.data[i]);
+    }
+	console.log('check listing_table ',listing_table)
+
+
+    if (page == 1) {
+        btn_prev.style.visibility = "hidden";
+    } else {
+        btn_prev.style.visibility = "visible";
+    }
+
+    if (page == numPages()) {
+        btn_next.style.visibility = "hidden";
+    } else {
+        btn_next.style.visibility = "visible";
+    }
+
+    let pagChild = document.querySelectorAll('.pag-child');
+
+    pagChild.forEach(function(pag) {
+        if (pag.innerText === current_page) {
+            pag.className = "active";
+        } else {
+            pag.className = "";
+        }
+    });
+
+    let targetDiv = document.getElementById('tg-main');
+    if (targetDiv) {
+        targetDiv.scrollIntoView({ behavior: 'smooth' });
+    }
+	let data = {
+	listing_table: listing_table,
+    page_index: current_page,
+	last_page : numPages()
+};
+console.log('changePage ')
+}
+
+// Hàm thay đổi trang khi nhấn vào số trang
+function changePageClick(page) {
+    current_page = page;
+    changePage(current_page);
+    window.location.href = "products.php?pageIndex=" + current_page;
+}
+
+// Hàm tính tổng số trang
+function numPages() {
+    return Math.ceil(objJson.data.length / records_per_page);
+}
+
+fetch('', {
+    method: 'POST',
+    headers: {
+        'Content-Type': 'application/json'
+    },
+    body: JSON.stringify(data)
+})
+.then(response => response.json())
+.then(data => {
+    console.log('Fetch API Success');
+})
+.catch((error) => {
+    console.error('Fetch API Error',error);
+});
+
+// Kiểm tra và thay đổi trang hiện tại
+changePage(current_page);
+</script>
 <body>
 	<div id="tg-wrapper" class="tg-wrapper tg-haslayout">
 		<!--************************************
@@ -928,11 +1035,23 @@ if ($data3 === null) {
 											<div class="tg-refinesearch">
 												<span>Sách hay mới nhất</span>
 											</div>
-											<?php			
+											<?php
+											if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+												// Xử lý dữ liệu JSON
+												$data = json_decode(file_get_contents('php://input'), true);
+										
+												if ($data) {
+													$listing_table = $data['listing_table'];
+													$page_index = $data['page_index'];
+													$last_page = $data['last_page'];
+										
+													// Xử lý dữ liệu
+												}else{
+													echo 'lỗi ko có data xuất lên php';
+												}
+											}			
 // Kiểm tra nếu dữ liệu có chứa key 'data'
-if (isset($_COOKIE['listing_table'])) {
-	$cookie_value = $_COOKIE['listing_table'];
-	$listing_table = json_decode($cookie_value, true);
+if ($listing_table) {
     // Lặp qua dữ liệu và hiển thị trong các div item
     foreach ($listing_table as $book) {
         // Chỉ hiển thị sách nếu showing = 1
@@ -972,9 +1091,7 @@ if (isset($_COOKIE['listing_table'])) {
 									<div class="pagination">
 										<a onclick="prevPage()" id="btn_prev" style="cursor: pointer;">&laquo;</a>
 										<?php
-										if (isset($_COOKIE['last_page']) && isset($_COOKIE['page_index'])) {
-										$last_page = isset($_COOKIE['last_page']) ? $_COOKIE['last_page'] : 0;
-										$page_index = isset($_COOKIE['page_index']) ? $_COOKIE['page_index'] : 0;
+										if ($page_index && $last_page ) {
 										if ($page_index < 5 ) {
 										    $count1 = 0;
 											for ($i = 1;$i <= min($page_index + 8, $last_page) && $count1 < 10; $i++) {
@@ -1178,98 +1295,6 @@ if (isset($_COOKIE['listing_table'])) {
 			}
 		  }
 		}
-let urlParams = new URLSearchParams(window.location.search);
-let current_page = urlParams.get('pageIndex');
-let records_per_page = 12;
-
-let objJson = <?php echo $jsonDatabook; ?>;
-	 // Can be obtained from another source, such as your objJson letiable
-
-function prevPage()
-{
-    if (current_page > 1) {
-    current_page--;
-    changePage(current_page);
-    window.location.href = "products.php?pageIndex=" + current_page;
-	}
-}
-
-function nextPage()
-{
-    if (current_page < numPages()) {
-        current_page++;
-        changePage(current_page);
-		window.location.href = "products.php?pageIndex=" + current_page;
-    }
-}
-    
-function changePage(page)
-{
-    let btn_next = document.getElementById("btn_next");
-    let btn_prev = document.getElementById("btn_prev");
- 
-    // Validate page
-    if (page < 1) page = 1;
-    if (page > numPages()) page = numPages();
-
-    listing_table = [];
-	document.cookie = 'listing_table=' + '' + '; expires=Fri, 31 Dec 9999 23:59:59 GMT; path=/;';
-	document.cookie = 'page_index=' + '' + '; expires=Fri, 31 Dec 9999 23:59:59 GMT; path=/;';
-
-
-	let startIndex = (page - 1) * records_per_page;
-    let endIndex = startIndex + records_per_page;
-    
-    
-    listing_table = [];
-
-    
-    for (let i = startIndex; i < endIndex && i < objJson.data.length; i++) {
-        listing_table.push(objJson.data[i]);
-    }
-	document.cookie = 'listing_table=' + JSON.stringify(listing_table) + '; expires=Fri, 31 Dec 9999 23:59:59 GMT; path=/;';
-	document.cookie = 'page_index=' + current_page + '; expires=Fri, 31 Dec 9999 23:59:59 GMT; path=/;';
-
-    if (page == 1) {
-        btn_prev.style.visibility = "hidden";
-    } else {
-        btn_prev.style.visibility = "visible";
-    }
-
-    if (page == numPages()) {
-        btn_next.style.visibility = "hidden";
-    } else {
-        btn_next.style.visibility = "visible";
-    }
-	let pagChild = document.querySelectorAll('.pag-child');
-
-    pagChild.forEach(function(pag) {
-    if (pag.innerText === current_page) {
-        pag.className = "active";
-    }
-	let targetDiv = document.getElementById('tg-main');
-        if (targetDiv) {
-        // Cuộn đến thẻ div
-        targetDiv.scrollIntoView({ behavior: 'smooth' });
-        }
-
-});
-}
-
-function changePageClick(page){
-	current_page = page;
-	changePage(current_page);
-	window.location.href = "products.php?pageIndex=" + current_page;
-}
-
-function numPages()
-{
-	console.log('checkk shiitt',objJson)
-	document.cookie = 'last_page=' + Math.ceil(objJson.data.length / records_per_page) + '; expires=Fri, 31 Dec 9999 23:59:59 GMT; path=/;';
-    return Math.ceil(objJson.data.length / records_per_page);
-}
-
-changePage(current_page)
 
 </script>
 		

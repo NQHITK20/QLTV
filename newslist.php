@@ -146,6 +146,8 @@ if ($data4 === null) {
     die('Lỗi khi chuyển đổi JSON');
 }
 
+$jsonDataNew = json_encode($data4);
+
 ?>
 
 <body>
@@ -928,14 +930,18 @@ if ($data4 === null) {
 										</div>
 										<div class="row">
 											<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
-										        <?php foreach($data3['data'] as $new) {
+										        <?php 
+												if (isset($_COOKIE['listing_table_news'])) {
+													$cookie_value = $_COOKIE['listing_table_news'];
+	                                                $listing_table_news = json_decode($cookie_value, true);
+													foreach($listing_table_news['data'] as $new) {
 													 $dateString = $new['publicAt'];
 
 													 // Tạo một đối tượng DateTime từ chuỗi ngày giờ
 													 $datetime = new DateTime($dateString);
 										  
 													 // Định dạng lại ngày giờ theo định dạng mong muốn
-													 $formattedDatetime = $datetime->format('d/m/Y - H:i');
+													 $formattedDatetime = $datetime->format('d/m/Y - H:i');												
 													?>
 												<article class="tg-post">
 													<figure style="width: 80%;"><a href="newsdetail.html?id=<?php echo $new['id'] ?>"><img src="images/blog/<?php echo $new['image'] ?>" alt="<?php echo $new['image'] ?>"></a></figure>
@@ -950,7 +956,7 @@ if ($data4 === null) {
 														<span class="tg-bookwriter">By: <a><?php echo $new['author'] ?></a></span>
 													</div>
 												</article>
-												<?php }?>
+												<?php }}?>
 											</div>
 										</div>
 									</div>
@@ -997,6 +1003,37 @@ if ($data4 === null) {
 							</div>
 						</div>
 					</div>
+					<div class="pagination">
+										<a onclick="prevPage()" id="btn_prev" style="cursor: pointer;">&laquo;</a>
+										<?php
+										if (isset($_COOKIE['last_page_news']) && isset($_COOKIE['page_index_news'])) {
+										$last_page_news = isset($_COOKIE['last_page_news']) ? $_COOKIE['last_page_news'] : 0;
+										$page_index_news = isset($_COOKIE['page_index_news']) ? $_COOKIE['page_index_news'] : 0;
+										if ($page_index_news < 5 ) {
+										    $count1 = 0;
+											for ($i = 1;$i <= min($page_index_news + 8, $last_page_news) && $count1 < 10; $i++) {
+												?>
+												<a class="pag-child" onclick="changePageClick(<?php echo $i ?>)" style="cursor:pointer"><?php echo $i ?></a>
+												<?php
+												$count1++;
+											}
+										}else{
+											if ($page_index_news >= 5) {
+												$count2 = 0;
+												for ($i = $page_index_news-4;$i <= min($page_index_news + 4, $last_page_news) && $count2 < 10; $i++) {
+													?>
+													<a class="pag-child" onclick="changePageClick(<?php echo $i ?>)" style="cursor:pointer"><?php echo $i ?></a>
+													<?php
+													$count2++;
+												}	
+											}
+										}
+											?>
+										<?php } else {
+                                          echo '<p>Không có dữ liệu tổng số trang và trang hiện tại</p>';
+                                            }?>
+										<a onclick="nextPage()" id="btn_next" style="cursor: pointer;">&raquo;</a>
+									</div>
 				</div>
 			</div>
 			<!--************************************
@@ -1132,7 +1169,106 @@ if ($data4 === null) {
 			}
 		  }
 		}
+
+let urlParams = new URLSearchParams(window.location.search);
+let current_page = urlParams.get('pageIndex');
+let records_per_page = 4;
+
+let objJson = <?php echo $jsonDataNew; ?>;
+console.log('check data ',objJson)
+	 // Can be obtained from another source, such as your objJson letiable
+
+function prevPage()
+{
+    if (current_page > 1) {
+    current_page--;
+    changePage(current_page);
+    window.location.href = "newslist.php?pageIndex=" + current_page;
+	}
+}
+
+function nextPage()
+{
+    if (current_page < numPages()) {
+        current_page++;
+        changePage(current_page);
+		window.location.href = "newslist.php?pageIndex=" + current_page;
+    }
+}
+    
+function changePage(page)
+{
+    let btn_next = document.getElementById("btn_next");
+    let btn_prev = document.getElementById("btn_prev");
+ 
+    // Validate page
+    if (page < 1) page = 1;
+    if (page > numPages()) page = numPages();
+
+    listing_table_news = [];
+	document.cookie = 'listing_table_news=' + '' + '; expires=Fri, 31 Dec 9999 23:59:59 GMT; path=/;';
+	document.cookie = 'page_index_news=' + '' + '; expires=Fri, 31 Dec 9999 23:59:59 GMT; path=/;';
+
+
+	let startIndex = (page - 1) * records_per_page;
+    let endIndex = startIndex + records_per_page;
+    
+    
+    listing_table_news = [];
+
+    
+    for (let i = startIndex; i < endIndex && i < objJson.data.length; i++) {
+        listing_table_news.push(objJson.data[i]);
+    }
+	document.cookie = 'listing_table_news=' + JSON.stringify(listing_table_news) + '; expires=Fri, 31 Dec 9999 23:59:59 GMT; path=/;';
+	document.cookie = 'page_index_news=' + current_page + '; expires=Fri, 31 Dec 9999 23:59:59 GMT; path=/;';
+
+    if (page == 1) {
+        btn_prev.style.visibility = "hidden";
+    } else {
+        btn_prev.style.visibility = "visible";
+    }
+
+    if (page == numPages()) {
+        btn_next.style.visibility = "hidden";
+    } else {
+        btn_next.style.visibility = "visible";
+    }
+	let pagChild = document.querySelectorAll('.pag-child');
+
+    pagChild.forEach(function(pag) {
+    if (pag.innerText === current_page) {
+        pag.className = "active";
+    }
+	let targetDiv = document.getElementById('tg-main');
+        if (targetDiv) {
+        // Cuộn đến thẻ div
+        targetDiv.scrollIntoView({ behavior: 'smooth' });
+        }
+
+});
+}
+
+function changePageClick(page){
+	current_page = page;
+	changePage(current_page);
+	window.location.href = "newslist.php?pageIndex=" + current_page;
+}
+
+function numPages()
+{
+	document.cookie = 'last_page_news=' + Math.ceil(objJson.data.length / records_per_page) + '; expires=Fri, 31 Dec 9999 23:59:59 GMT; path=/;';
+    return Math.ceil(objJson.data.length / records_per_page);
+}
+
+changePage(current_page)
+
 		</script>
+<script>
+document.cookie = 'listing_table=; expires=Fri, 31 Dec 9999 23:59:59 GMT; path=/;';
+document.cookie = 'page_index=; expires=Fri, 31 Dec 9999 23:59:59 GMT; path=/;';
+document.cookie = 'last_page=; expires=Fri, 31 Dec 9999 23:59:59 GMT; path=/;';
+</script>
 </body>
 
 </html>

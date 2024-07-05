@@ -495,7 +495,7 @@ if (isset($data['data'])) {
 						<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
 							<div class="tg-sectionhead">
 								<h2><span>Mới &amp; Đang hot</span>Tin tức mới nhất</h2>
-								<a class="tg-btn" href="newslist.php">Xem thêm</a>
+								<a class="tg-btn" href="newslist.php?pageIndex=1">Xem thêm</a>
 							</div>
 						</div>
 						<div id="tg-postslider" class="tg-postslider tg-blogpost owl-carousel">
