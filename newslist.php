@@ -98,10 +98,10 @@ if ($response3 === FALSE) {
 curl_close($ch);
 
 // Chuyển đổi JSON thành mảng dữ liệu trong PHP
-$data3 = json_decode($response3, true);
+$data4 = json_decode($response3, true);
 
 // Kiểm tra nếu có lỗi khi chuyển đổi JSON
-if ($data3 === null) {
+if ($data4 === null) {
     die('Lỗi khi chuyển đổi JSON');
 }
 
@@ -112,7 +112,7 @@ error_reporting(E_ALL);
 $url = 'http://localhost:8000/api/get-news'; // URL của API backend
 
 // Dữ liệu gửi đi
-$allnew = array('id' => 'ALL');
+$allnew = array('id' => 'ALLSHOW');
 
 // Chuyển đổi mảng dữ liệu thành JSON
 $jsonData4 = json_encode($allnew);
@@ -931,10 +931,10 @@ $jsonDataNew = json_encode($data4);
 										<div class="row">
 											<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
 										        <?php 
-												if (isset($_COOKIE['listing_table_news'])) {
-													$cookie_value = $_COOKIE['listing_table_news'];
+												if (isset($_COOKIE['listing_new'])) {
+													$cookie_value = $_COOKIE['listing_new'];
 	                                                $listing_table_news = json_decode($cookie_value, true);
-													foreach($listing_table_news['data'] as $new) {
+													foreach($listing_table_news as $new) {
 													 $dateString = $new['publicAt'];
 
 													 // Tạo một đối tượng DateTime từ chuỗi ngày giờ
@@ -983,7 +983,7 @@ $jsonDataNew = json_encode($data4);
 										</div>
 										<div class="tg-widgetcontent">
 											<ul>
-												<?php foreach($data3['data'] as $new){?>
+												<?php foreach($data4['data'] as $new){?>
 												<li>
 													<article class="tg-post">
 														<figure style="width:112px;"><a style="width:100px;" href="newsdetail.html?id=<?php echo $new['id']?>" alt="<?php echo $new['image']?>"><img src="images/blog/<?php echo $new['image'] ?>" alt="<?php echo $new['image'] ?>"></a></figure>
@@ -1003,24 +1003,24 @@ $jsonDataNew = json_encode($data4);
 							</div>
 						</div>
 					</div>
-					<div class="pagination">
+					<div class="pagination" style="margin-left: 25vw;">
 										<a onclick="prevPage()" id="btn_prev" style="cursor: pointer;">&laquo;</a>
 										<?php
-										if (isset($_COOKIE['last_page_news']) && isset($_COOKIE['page_index_news'])) {
-										$last_page_news = isset($_COOKIE['last_page_news']) ? $_COOKIE['last_page_news'] : 0;
-										$page_index_news = isset($_COOKIE['page_index_news']) ? $_COOKIE['page_index_news'] : 0;
-										if ($page_index_news < 5 ) {
+										if (isset($_COOKIE['page_index_new']) && isset($_COOKIE['last_page_new'])) {
+										$last_page_new = isset($_COOKIE['last_page_new']) ? $_COOKIE['last_page_new'] : 0;
+										$page_index_new = isset($_COOKIE['page_index_new']) ? $_COOKIE['page_index_new'] : 0;
+										if ($page_index_new < 5 ) {
 										    $count1 = 0;
-											for ($i = 1;$i <= min($page_index_news + 8, $last_page_news) && $count1 < 10; $i++) {
+											for ($i = 1;$i <= min($page_index_new + 8, $last_page_new) && $count1 < 10; $i++) {
 												?>
 												<a class="pag-child" onclick="changePageClick(<?php echo $i ?>)" style="cursor:pointer"><?php echo $i ?></a>
 												<?php
 												$count1++;
 											}
 										}else{
-											if ($page_index_news >= 5) {
+											if ($page_index_new >= 5) {
 												$count2 = 0;
-												for ($i = $page_index_news-4;$i <= min($page_index_news + 4, $last_page_news) && $count2 < 10; $i++) {
+												for ($i = $page_index_new-4;$i <= min($page_index_new + 4, $last_page_new) && $count2 < 10; $i++) {
 													?>
 													<a class="pag-child" onclick="changePageClick(<?php echo $i ?>)" style="cursor:pointer"><?php echo $i ?></a>
 													<?php
@@ -1034,7 +1034,7 @@ $jsonDataNew = json_encode($data4);
                                             }?>
 										<a onclick="nextPage()" id="btn_next" style="cursor: pointer;">&raquo;</a>
 									</div>
-				</div>
+				            </div>
 			</div>
 			<!--************************************
 					News Grid End
@@ -1175,7 +1175,7 @@ let current_page = urlParams.get('pageIndex');
 let records_per_page = 4;
 
 let objJson = <?php echo $jsonDataNew; ?>;
-console.log('check data ',objJson)
+
 	 // Can be obtained from another source, such as your objJson letiable
 
 function prevPage()
@@ -1196,8 +1196,7 @@ function nextPage()
     }
 }
     
-function changePage(page)
-{
+function changePage(page){
     let btn_next = document.getElementById("btn_next");
     let btn_prev = document.getElementById("btn_prev");
  
@@ -1205,23 +1204,23 @@ function changePage(page)
     if (page < 1) page = 1;
     if (page > numPages()) page = numPages();
 
-    listing_table_news = [];
-	document.cookie = 'listing_table_news=' + '' + '; expires=Fri, 31 Dec 9999 23:59:59 GMT; path=/;';
-	document.cookie = 'page_index_news=' + '' + '; expires=Fri, 31 Dec 9999 23:59:59 GMT; path=/;';
+    listing_new = [];
+	document.cookie = 'listing_new=' + '' + '; expires=Fri, 31 Dec 9999 23:59:59 GMT; path=/;';
+	document.cookie = 'page_index_new=' + '' + '; expires=Fri, 31 Dec 9999 23:59:59 GMT; path=/;';
 
 
 	let startIndex = (page - 1) * records_per_page;
     let endIndex = startIndex + records_per_page;
     
     
-    listing_table_news = [];
+    listing_new = [];
 
     
     for (let i = startIndex; i < endIndex && i < objJson.data.length; i++) {
-        listing_table_news.push(objJson.data[i]);
+        listing_new.push(objJson.data[i]);
     }
-	document.cookie = 'listing_table_news=' + JSON.stringify(listing_table_news) + '; expires=Fri, 31 Dec 9999 23:59:59 GMT; path=/;';
-	document.cookie = 'page_index_news=' + current_page + '; expires=Fri, 31 Dec 9999 23:59:59 GMT; path=/;';
+	document.cookie = 'listing_new=' + JSON.stringify(listing_new) + '; expires=Fri, 31 Dec 9999 23:59:59 GMT; path=/;';
+	document.cookie = 'page_index_new=' + current_page + '; expires=Fri, 31 Dec 9999 23:59:59 GMT; path=/;';
 
     if (page == 1) {
         btn_prev.style.visibility = "hidden";
@@ -1257,18 +1256,13 @@ function changePageClick(page){
 
 function numPages()
 {
-	document.cookie = 'last_page_news=' + Math.ceil(objJson.data.length / records_per_page) + '; expires=Fri, 31 Dec 9999 23:59:59 GMT; path=/;';
     return Math.ceil(objJson.data.length / records_per_page);
 }
 
 changePage(current_page)
 
-		</script>
-<script>
-document.cookie = 'listing_table=; expires=Fri, 31 Dec 9999 23:59:59 GMT; path=/;';
-document.cookie = 'page_index=; expires=Fri, 31 Dec 9999 23:59:59 GMT; path=/;';
-document.cookie = 'last_page=; expires=Fri, 31 Dec 9999 23:59:59 GMT; path=/;';
 </script>
+
 </body>
 
 </html>

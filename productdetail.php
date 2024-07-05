@@ -21,46 +21,6 @@
 </head>
 <?php 
 
-ini_set('display_errors', 1);
-ini_set('display_startup_errors', 1);
-error_reporting(E_ALL);
-
-$url = 'http://localhost:8000/api/get-all-book'; // URL của API backend
-
-// Dữ liệu gửi đi
-$databook = array('id' => 'ALLSHOW');
-
-// Chuyển đổi mảng dữ liệu thành JSON
-$jsonData = json_encode($databook);
-
-// Cấu hình cURL
-$ch = curl_init($url);
-curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-curl_setopt($ch, CURLOPT_HTTPHEADER, array(
-    'Content-Type: application/json',
-    'Authorization: Bearer' // Thêm token vào header Authorization
-));
-curl_setopt($ch, CURLOPT_POST, true);
-curl_setopt($ch, CURLOPT_POSTFIELDS, $jsonData);
-
-// Thực hiện yêu cầu POST và nhận phản hồi
-$response = curl_exec($ch);
-
-// Kiểm tra nếu có lỗi khi gửi yêu cầu
-if ($response === FALSE) {
-    die('Lỗi khi gửi yêu cầu: ' . curl_error($ch));
-}
-
-// Đóng cURL
-curl_close($ch);
-
-// Chuyển đổi JSON thành mảng dữ liệu trong PHP
-$data = json_decode($response, true);
-
-// Kiểm tra nếu có lỗi khi chuyển đổi JSON
-if ($data === null) {
-    die('Lỗi khi chuyển đổi JSON');
-}
 
 ini_set('display_errors', 1);
 ini_set('display_startup_errors', 1);
@@ -917,89 +877,74 @@ if ($data3 === null) {
 				<div class="container">
 					<div class="row">
 						<div id="tg-twocolumns" class="tg-twocolumns">
-							<div class="col-xs-12 col-sm-8 col-md-8 col-lg-9 pull-right">
+						<div class="col-xs-12 col-sm-8 col-md-8 col-lg-9 pull-right">
 								<div id="tg-content" class="tg-content">
-									<div class="tg-products">
-										<div class="tg-sectionhead">
-											<h2><span>Độc giả chọn</span>Sách đang hot</h2>
-										</div>
-										<div class="tg-productgrid">
-											<div class="tg-refinesearch">
-												<span>Sách hay mới nhất</span>
-											</div>
-											<?php
-											$listing_book = isset($_COOKIE['listing_book']) ? json_decode($_COOKIE['listing_book'], true) : null; 									
-// Kiểm tra nếu dữ liệu có chứa key 'data'
-if ($listing_book) {
-    // Lặp qua dữ liệu và hiển thị trong các div item
-    foreach ($listing_book as $book) {
-        // Chỉ hiển thị sách nếu showing = 1
-        if ($book['showing'] == 1) {
-            ?>
-			<div class="col-xs-6 col-sm-6 col-md-4 col-lg-3">
+									<div class="tg-productdetail">
+										<div class="row">
+											<div class="col-xs-12 col-sm-12 col-md-4 col-lg-4">
 												<div class="tg-postbook">
-													<figure class="tg-featureimg">
-														<div class="tg-bookimg">
-															<div class="tg-frontcover"><img src="images/books/<?php echo htmlspecialchars($book['image']); ?>" alt="image description"></div>
-															<div class="tg-backcover"><img src="images/books/<?php echo htmlspecialchars($book['image']); ?>" alt="image description"></div>
-														</div>
-														<a class="tg-btnaddtowishlist" href="javascript:void(0);">
-															<span>Xem thêm</span>
-														</a>
-													</figure>
+													<figure class="tg-featureimg"><img src="images/books/img-07.jpg" alt="image description"></figure>
 													<div class="tg-postbookcontent">
-														<ul class="tg-bookscategories">
-															<li><a href="javascript:void(0);"><?php echo htmlspecialchars($book['category']); ?></a></li>
-														</ul>
-														<div class="tg-booktitle">
-															<h3><a href="javascript:void(0);"><?php echo htmlspecialchars($book['bookName']); ?></a></h3>
-														</div>
-														<span class="tg-bookwriter"> <a href="javascript:void(0);"><?php echo htmlspecialchars($book['author']); ?></a></span>
+														<a class="tg-btnaddtowishlist" href="javascript:void(0);">
+															<span>Thêm vào yêu thích</span>
+														</a>
 													</div>
 												</div>
 											</div>
-                                            <?php
-        }
-    }
-} else {
-    echo '<p>Không có dữ liệu</p>';
-}
-?>
+											<div class="col-xs-12 col-sm-12 col-md-8 col-lg-8">
+												<div class="tg-productcontent">
+													<ul class="tg-bookscategories">
+														<li><a href="javascript:void(0);">Art &amp; Photography</a></li>
+													</ul>
+													<div class="tg-booktitle">
+														<h3>Drive Safely, No Bumping</h3>
+													</div>
+													<span class="tg-bookwriter">Tác Giả: <a href="javascript:void(0);">Angela Gunning</a></span>
+													
+													<div class="tg-description">
+														<p>Consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore etdoloreat magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laborisi nisi ut aliquip ex ea commodo consequat aute.</p>
+														<p>Arure dolor in reprehenderit in voluptate velit esse cillum dolore fugiat nulla aetur excepteur sint occaecat cupidatat non proident, sunt in culpa quistan officia serunt mollit anim id est laborum sed ut perspiciatis unde omnis iste natus... <a href="javascript:void(0);">More</a></p>
+													</div>
+												</div>
+											</div>
+											
+											<div class="tg-relatedproducts">
+												<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+													<div class="tg-sectionhead">
+														<h2><span>Sách liên quan</span>Bạn có thể quan tâm</h2>
+													</div>
+												</div>
+												<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+													<div id="tg-relatedproductslider" class="tg-relatedproductslider tg-relatedbooks owl-carousel">
+														<div class="item">
+															<div class="tg-postbook">
+																<figure class="tg-featureimg">
+																	<div class="tg-bookimg">
+																		<div class="tg-frontcover"><img src="images/books/img-01.jpg" alt="image description"></div>
+																		<div class="tg-backcover"><img src="images/books/img-01.jpg" alt="image description"></div>
+																	</div>
+																	<a class="tg-btnaddtowishlist" href="javascript:void(0);">
+																		<span>Xem thêm</span>
+																	</a>
+																</figure>
+																<div class="tg-postbookcontent">
+																	<ul class="tg-bookscategories">
+																		<li><a href="javascript:void(0);">Adventure</a></li>
+																	</ul>
+																	<div class="tg-booktitle">
+																		<h3><a href="javascript:void(0);">Help Me Find My Stomach</a></h3>
+																	</div>
+																	<span class="tg-bookwriter"> <a href="javascript:void(0);">Angela Gunning</a></span>																	
+																</div>
+															</div>
+														</div>
+													</div>
+												</div>
+											</div>
 										</div>
 									</div>
-									<div class="pagination">
-										<a onclick="prevPage()" id="btn_prev" style="cursor: pointer;">&laquo;</a>
-										<?php
-										$page_index_book = isset($_COOKIE['page_index_book']) ? json_decode($_COOKIE['page_index_book'], true) : null;
-										$last_page_book = isset($_COOKIE['last_page_book']) ? json_decode($_COOKIE['last_page_book'], true) : null;
-										if ($page_index_book && $last_page_book ) {
-										if ($page_index_book < 5 ) {
-										    $count1 = 0;
-											for ($i = 1;$i <= min($page_index_book + 8, $last_page_book) && $count1 < 10; $i++) {
-												?>
-												<a class="pag-child" onclick="changePageClick(<?php echo $i ?>)" style="cursor:pointer"><?php echo $i ?></a>
-												<?php
-												$count1++;
-											}
-										}else{
-											if ($page_index_book >= 5) {
-												$count2 = 0;
-												for ($i = $page_index_book-4;$i <= min($page_index_book + 4, $last_page_book) && $count2 < 10; $i++) {
-													?>
-													<a class="pag-child" onclick="changePageClick(<?php echo $i ?>)" style="cursor:pointer"><?php echo $i ?></a>
-													<?php
-													$count2++;
-												}	
-											}
-										}
-											?>
-										<?php } else {
-                                          echo '<p>Không có dữ liệu tổng số trang và trang hiện tại</p>';
-                                            }?>
-										<a onclick="nextPage()" id="btn_next" style="cursor: pointer;">&raquo;</a>
-									</div>
 								</div>
-							</div>
+							</div>							
 							<div class="col-xs-12 col-sm-4 col-md-4 col-lg-3 pull-left">
 								<aside id="tg-sidebar" class="tg-sidebar">
 									<div class="tg-widget tg-catagories">
@@ -1176,93 +1121,6 @@ if ($listing_book) {
 			}
 		  }
 		}
-</script>
-<script>
-let urlParams = new URLSearchParams(window.location.search);
-let current_page = urlParams.get('pageIndex') || 1; // Gán giá trị mặc định nếu pageIndex không tồn tại
-let records_per_page = 12;
-
-let objJson = <?php echo json_encode($data); ?>;
-
-// Hàm chuyển sang trang trước
-function prevPage() {
-    if (current_page > 1) {
-        current_page--;
-        changePage(current_page);
-        window.location.href = "products.php?pageIndex=" + current_page;
-    }
-}
-
-// Hàm chuyển sang trang sau
-function nextPage() {
-    if (current_page < numPages()) {
-        current_page++;
-        changePage(current_page);
-        window.location.href = "products.php?pageIndex=" + current_page;
-    }
-}
-
-// Hàm thay đổi trang
-function changePage(page) {
-    let btn_next = document.getElementById("btn_next");
-    let btn_prev = document.getElementById("btn_prev");
-
-    // Kiểm tra tính hợp lệ của trang
-    if (page < 1) page = 1;
-    if (page > numPages()) page = numPages();
-
-    let listing_book = [];
-
-    let startIndex = (page - 1) * records_per_page;
-    let endIndex = startIndex + records_per_page;
-
-    for (let i = startIndex; i < endIndex && i < objJson.data.length; i++) {
-        listing_book.push(objJson.data[i]);
-    }
-	document.cookie = 'listing_book=' + JSON.stringify(listing_book) + '; expires=Fri, 31 Dec 9999 23:59:59 GMT; path=/;';
-	document.cookie = 'page_index_book=' + current_page + '; expires=Fri, 31 Dec 9999 23:59:59 GMT; path=/;';
-
-    if (page == 1) {
-        btn_prev.style.visibility = "hidden";
-    } else {
-        btn_prev.style.visibility = "visible";
-    }
-
-    if (page == numPages()) {
-        btn_next.style.visibility = "hidden";
-    } else {
-        btn_next.style.visibility = "visible";
-    }
-
-    let pagChild = document.querySelectorAll('.pag-child');
-
-    pagChild.forEach(function(pag) {
-        if (pag.innerText === current_page) {
-            pag.className = "active";
-        } else {
-            pag.className = "";
-        }
-    });
-
-    let targetDiv = document.getElementById('tg-main');
-    if (targetDiv) {
-        targetDiv.scrollIntoView({ behavior: 'smooth' });
-    }
-}
-
-// Hàm thay đổi trang khi nhấn vào số trang
-function changePageClick(page) {
-    current_page = page;
-    changePage(current_page);
-    window.location.href = "products.php?pageIndex=" + current_page;
-}
-
-// Hàm tính tổng số trang
-function numPages() {
-    return Math.ceil(objJson.data.length / records_per_page);
-}
-
-changePage(current_page);
 </script>
 		
 </body>

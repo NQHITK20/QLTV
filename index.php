@@ -20,6 +20,48 @@
 	<script src="js/vendor/modernizr-2.8.3-respond-1.4.2.min.js"></script>
 </head>
 <?php
+
+ini_set('display_errors', 1);
+ini_set('display_startup_errors', 1);
+error_reporting(E_ALL);
+
+$url = 'http://localhost:8000/api/get-all-book'; // URL của API backend
+
+// Dữ liệu gửi đi
+$databook = array('id' => 'ALLSHOW');
+
+// Chuyển đổi mảng dữ liệu thành JSON
+$jsonData10 = json_encode($databook);
+
+// Cấu hình cURL
+$ch = curl_init($url);
+curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+curl_setopt($ch, CURLOPT_HTTPHEADER, array(
+    'Content-Type: application/json',
+    'Authorization: Bearer' // Thêm token vào header Authorization
+));
+curl_setopt($ch, CURLOPT_POST, true);
+curl_setopt($ch, CURLOPT_POSTFIELDS, $jsonData10);
+
+// Thực hiện yêu cầu POST và nhận phản hồi
+$response = curl_exec($ch);
+
+// Kiểm tra nếu có lỗi khi gửi yêu cầu
+if ($response === FALSE) {
+    die('Lỗi khi gửi yêu cầu: ' . curl_error($ch));
+}
+
+// Đóng cURL
+curl_close($ch);
+
+// Chuyển đổi JSON thành mảng dữ liệu trong PHP
+$data = json_decode($response, true);
+
+// Kiểm tra nếu có lỗi khi chuyển đổi JSON
+if ($data === null) {
+    die('Lỗi khi chuyển đổi JSON');
+}
+
 ini_set('display_errors', 1);
 ini_set('display_startup_errors', 1);
 error_reporting(E_ALL);
@@ -44,10 +86,10 @@ curl_setopt($ch, CURLOPT_POST, true);
 curl_setopt($ch, CURLOPT_POSTFIELDS, $jsonData);
 
 // Thực hiện yêu cầu POST và nhận phản hồi
-$response = curl_exec($ch);
+$response9 = curl_exec($ch);
 
 // Kiểm tra nếu có lỗi khi gửi yêu cầu
-if ($response === FALSE) {
+if ($response9 === FALSE) {
     die('Lỗi khi gửi yêu cầu: ' . curl_error($ch));
 }
 
@@ -55,10 +97,10 @@ if ($response === FALSE) {
 curl_close($ch);
 
 // Chuyển đổi JSON thành mảng dữ liệu trong PHP
-$data = json_decode($response, true);
+$data9 = json_decode($response9, true);
 
 // Kiểm tra nếu có lỗi khi chuyển đổi JSON
-if ($data === null) {
+if ($data9 === null) {
     die('Lỗi khi chuyển đổi JSON');
 }
 
@@ -100,6 +142,7 @@ if ($data2 === null) {
     die('Lỗi khi chuyển đổi JSON');
 }
 
+
 $url = 'http://localhost:8000/api/get-news'; // URL của API backend
 
 // Dữ liệu gửi đi
@@ -140,6 +183,49 @@ $data3 = json_decode($response3, true);
 
 // Kiểm tra và xử lý lỗi khi chuyển đổi JSON
 if ($data3 === null) {
+    die('Lỗi khi chuyển đổi JSON');
+}
+
+$url = 'http://localhost:8000/api/get-news'; // URL của API backend
+
+// Dữ liệu gửi đi
+$datanew2 = array('id' => 'ALLSHOW');
+
+// Chuyển đổi mảng dữ liệu thành JSON
+$jsonData11 = json_encode($datanew2);
+
+// Cấu hình cURL
+$ch = curl_init($url);
+curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+curl_setopt($ch, CURLOPT_HTTPHEADER, array(
+    'Content-Type: application/json',
+    'Authorization: Bearer YOUR_TOKEN_HERE' // Thay YOUR_TOKEN_HERE bằng token thực tế của bạn
+));
+curl_setopt($ch, CURLOPT_POST, true);
+curl_setopt($ch, CURLOPT_POSTFIELDS, $jsonData11);
+
+// Thực hiện yêu cầu POST và nhận phản hồi
+$response33 = curl_exec($ch);
+
+// Kiểm tra và xử lý lỗi khi gửi yêu cầu
+if ($response33 === false) {
+    die('Lỗi khi gửi yêu cầu: ' . curl_error($ch));
+}
+
+// Kiểm tra mã HTTP response
+$http_status = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+if ($http_status !== 200) {
+    die('Lỗi HTTP: ' . $http_status);
+}
+
+// Đóng cURL
+curl_close($ch);
+
+// Chuyển đổi JSON thành mảng dữ liệu trong PHP
+$data33 = json_decode($response33, true);
+
+// Kiểm tra và xử lý lỗi khi chuyển đổi JSON
+if ($data33 === null) {
     die('Lỗi khi chuyển đổi JSON');
 }
 
@@ -456,7 +542,7 @@ if (isset($data['data'])) {
                             <div class="tg-frontcover"><img src="images/books/<?php echo htmlspecialchars($book['image']); ?>" alt="<?php echo htmlspecialchars($book['bookName']); ?>"></div>
                             <div class="tg-backcover"><img src="images/books/<?php echo htmlspecialchars($book['image']); ?>" alt="<?php echo htmlspecialchars($book['bookName']); ?>"></div>
                         </div>
-                        <a class="tg-btnaddtowishlist" href="productdetail.html">
+                        <a class="tg-btnaddtowishlist" href="productdetail.php?id=<?php echo htmlspecialchars($book['id']); ?>">
                             <span>Xem thêm</span>
                         </a>
                     </figure>
@@ -466,7 +552,7 @@ if (isset($data['data'])) {
                         </ul>
                         <div class="tg-themetagbox"><span class="tg-themetag">mới</span></div>
                         <div class="tg-booktitle">
-                            <h3><a href="productdetail.html"><?php echo htmlspecialchars($book['bookName']); ?></a></h3>
+                            <h3><a href="productdetail.php?id=<?php echo htmlspecialchars($book['id']); ?>"><?php echo htmlspecialchars($book['bookName']); ?></a></h3>
                         </div>
                         <span class="tg-bookwriter">Tác giả : <?php echo htmlspecialchars($book['author']); ?></span>
                     </div>
@@ -525,7 +611,7 @@ if (isset($data3['data'])) {
                     <div class="tg-posttitle">
                         <h3><a href="newsdetail.html"><?php echo htmlspecialchars($new['title']); ?></a></h3>
                     </div>
-                    <span class="tg-bookwriter">By: <a><?php echo htmlspecialchars($new['author']); ?></a></span>
+                    <span class="tg-bookwriter"><a><?php echo htmlspecialchars($new['author']); ?></a></span>
                 </div>
             </article>
             <?php
@@ -703,6 +789,7 @@ if (isset($data3['data'])) {
 			}
 		  }
 		}
+		//Sự kiện logout
 	function logout()
     {
         localStorage.removeItem('userData')
@@ -722,7 +809,26 @@ if (data) {
     document.querySelector('.dropdown-2').style.display = 'block';
 }
 
+function loadcookies(objJson,records_per_page) {
+    let listing_data = [];
+    for (let i = 0; i < records_per_page && i < objJson.data.length; i++) {
+        listing_data.push(objJson.data[i]);
+    }
+	return listing_data;
+}
+
+let databook = <?php echo json_encode($data) ?>;
+let datanews = <?php echo json_encode($data33) ?>;
+
+document.cookie = 'listing_book=' + JSON.stringify(loadcookies(databook,12)) + '; expires=Fri, 31 Dec 9999 23:59:59 GMT; path=/;';
+document.cookie = 'page_index_book=' + 1 + '; expires=Fri, 31 Dec 9999 23:59:59 GMT; path=/;';
+document.cookie = 'last_page_book=' + Math.ceil(databook.data.length / 12) + '; expires=Fri, 31 Dec 9999 23:59:59 GMT; path=/;';
+document.cookie = 'listing_new=' + JSON.stringify(loadcookies(datanews,4)) + '; expires=Fri, 31 Dec 9999 23:59:59 GMT; path=/;';
+document.cookie = 'page_index_new=' + 1 + '; expires=Fri, 31 Dec 9999 23:59:59 GMT; path=/;';
+document.cookie = 'last_page_new=' + Math.ceil(datanews.data.length / 4) + '; expires=Fri, 31 Dec 9999 23:59:59 GMT; path=/;';
+
 	</script>
+
 </body>
 
 </html>
