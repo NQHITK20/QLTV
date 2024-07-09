@@ -3112,6 +3112,7 @@ li.menu-item-has-mega-menu { position: static; }
 	margin:0 0 30px;
 }
 .tg-newsdetailimg > img{
+	height: 70vh !important;
 	width:100%;
 	height:auto;
 	display:block;

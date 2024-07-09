@@ -943,18 +943,25 @@ if ($listing_book) {
 															<div class="tg-frontcover"><img src="images/books/<?php echo htmlspecialchars($book['image']); ?>" alt="image description"></div>
 															<div class="tg-backcover"><img src="images/books/<?php echo htmlspecialchars($book['image']); ?>" alt="image description"></div>
 														</div>
-														<a class="tg-btnaddtowishlist" href="javascript:void(0);">
+														<?php
+						$category = $book['category'];
+						$id = $book['id'];
+						// Sử dụng json_encode và htmlspecialchars để đảm bảo chuỗi an toàn cho JavaScript và HTML
+						$categoryJson = htmlspecialchars(json_encode($category), ENT_QUOTES, 'UTF-8');
+						$idJson = htmlspecialchars(json_encode($id), ENT_QUOTES, 'UTF-8');
+						?>
+														<a class="tg-btnaddtowishlist" href="productdetail.php?id=<?php echo $idJson ?>" onClick="setCookiesBook(<?php echo $categoryJson ?>,<?php echo $idJson ?>)">
 															<span>Xem thêm</span>
 														</a>
 													</figure>
 													<div class="tg-postbookcontent">
 														<ul class="tg-bookscategories">
-															<li><a href="javascript:void(0);"><?php echo htmlspecialchars($book['category']); ?></a></li>
+															<li><a><?php echo htmlspecialchars($book['category']); ?></a></li>
 														</ul>
 														<div class="tg-booktitle">
-															<h3><a href="javascript:void(0);"><?php echo htmlspecialchars($book['bookName']); ?></a></h3>
+															<h3><a href="productdetail.php?id=<?php echo $idJson ?>" onClick="setCookiesBook(<?php echo $categoryJson ?>,<?php echo $idJson ?>)"><?php echo htmlspecialchars($book['bookName']); ?></a></h3>
 														</div>
-														<span class="tg-bookwriter"> <a href="javascript:void(0);"><?php echo htmlspecialchars($book['author']); ?></a></span>
+														<span class="tg-bookwriter"> <a><?php echo htmlspecialchars($book['author']); ?></a></span>
 													</div>
 												</div>
 											</div>
@@ -1024,10 +1031,10 @@ if ($listing_book) {
 												<?php foreach($data3['data'] as $new){?>
 												<li>
 													<article class="tg-post">
-														<figure style="width:112px;"><a style="width:100px;" href="newsdetail.html?id=<?php echo $new['id']?>" alt="<?php echo $new['image']?>"><img src="images/blog/<?php echo $new['image'] ?>" alt="<?php echo $new['image'] ?>"></a></figure>
+														<figure style="width:112px;"><a style="width:100px;" href="newsdetail.php?id=<?php echo $new['id']?>" alt="<?php echo $new['image']?>"><img src="images/blog/<?php echo $new['image'] ?>" alt="<?php echo $new['image'] ?>"></a></figure>
 														<div class="tg-postcontent">
 															<div class="tg-posttitle">
-																<h3><a href="newsdetail.html?id=<?php echo $new['id']?>"><?php echo $new['title']?></a></h3>
+																<h3><a href="newsdetail.php?id=<?php echo $new['id']?>"><?php echo $new['title']?></a></h3>
 															</div>
 															<span class="tg-bookwriter"> <a><?php echo $new['author'] ?></a></span>
 														</div>
@@ -1263,6 +1270,36 @@ function numPages() {
 }
 
 changePage(current_page);
+
+function setCookie(name, value, days) {
+	var expires = "";
+	if (days) {
+		var date = new Date();
+		date.setTime(date.getTime() + (days * 24 * 60 * 60 * 1000));
+		expires = "; expires=" + date.toUTCString();
+	}
+	document.cookie = name + "=" + (value || "") + expires + "; path=/";
+}
+
+function getCookie(name) {
+	var nameEQ = name + "=";
+	var ca = document.cookie.split(';');
+	for (var i = 0; i < ca.length; i++) {
+		var c = ca[i];
+		while (c.charAt(0) == ' ') c = c.substring(1, c.length);
+		if (c.indexOf(nameEQ) == 0) return c.substring(nameEQ.length, c.length);
+	}
+	return null;
+}
+
+function eraseCookie(name) {
+	document.cookie = name + '=; Max-Age=-99999999;';
+}
+function setCookiesBook(category,bookId)
+{
+	setCookie('categoryBook', category, 30);
+	setCookie('bookId', bookId, 30);
+}
 </script>
 		
 </body>

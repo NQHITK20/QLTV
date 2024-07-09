@@ -63,7 +63,6 @@ if ($data2 === null) {
 }
 
 
-
 ini_set('display_errors', 1);
 ini_set('display_startup_errors', 1);
 error_reporting(E_ALL);
@@ -111,19 +110,22 @@ error_reporting(E_ALL);
 
 $url = 'http://localhost:8000/api/get-related-book'; // URL của API backend
 
-if(isset($_COOKIE['categoryBook'])) {
-    $categoryBook = $_COOKIE['categoryBook']; // Thêm tham số true để nhận mảng thay vì đối tượng
+if (isset($_COOKIE['categoryBook']) && isset($_COOKIE['bookId'])) {
+    $categoryBook = $_COOKIE['categoryBook'];
+    $bookId = $_COOKIE['bookId'];
 
-    if ($categoryBook === null) {
+    if ($categoryBook === null || $bookId === null) {
         // Xử lý lỗi giải mã JSON nếu cần
-        echo "Lỗi: Không thể giải mã dữ liệu JSON từ cookie 'categoryBook'.";
+        echo "Lỗi: Không thể giải mã dữ liệu JSON từ cookie 'categoryBook' hoặc 'bookId'.";
     } else {
-        // Sử dụng biến $categoryBook
-        $datanew4 = array('categoryBook' => $categoryBook);
+        // Sử dụng biến $categoryBook và $bookId
+        $datanew4 = array('categoryBook' => $categoryBook, 'bookId' => $bookId);
+        // Tiếp tục xử lý với mảng $datanew4
     }
 } else {
-    echo "Cookie 'categoryBook' không tồn tại.";
+    echo "Cookie 'categoryBook' hoặc 'bookId' không tồn tại.";
 }
+
 // Dữ liệu gửi đi
 
 // Chuyển đổi mảng dữ liệu thành JSON
@@ -157,10 +159,6 @@ $data4 = json_decode($response4, true);
 if ($data4 === null) {
     die('Lỗi khi chuyển đổi JSON');
 }
-
-echo "<pre>";
-print_r($data4);
-echo "</pre>";
 
 ?>
 
@@ -945,7 +943,7 @@ echo "</pre>";
 										<div class="row">
 											<div class="col-xs-12 col-sm-12 col-md-4 col-lg-4">
 												<div class="tg-postbook">
-													<figure class="tg-featureimg"><img src="images/books/img-07.jpg" alt="image description"></figure>
+													<figure class="tg-featureimg"><img id="imageBook" alt="image description"></figure>
 													<div class="tg-postbookcontent">
 														<a class="tg-btnaddtowishlist" href="javascript:void(0);">
 															<span>Thêm vào yêu thích</span>
@@ -976,28 +974,39 @@ echo "</pre>";
 												</div>
 												<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
 													<div id="tg-relatedproductslider" class="tg-relatedproductslider tg-relatedbooks owl-carousel">
+													<?php foreach($data4['relatedbook'] as $book){
+														
+														?>
 														<div class="item">
 															<div class="tg-postbook">
 																<figure class="tg-featureimg">
 																	<div class="tg-bookimg">
-																		<div class="tg-frontcover"><img src="images/books/img-01.jpg" alt="image description"></div>
-																		<div class="tg-backcover"><img src="images/books/img-01.jpg" alt="image description"></div>
+																		<div class="tg-frontcover"><img src="images/books/<?php echo $book['image'] ?>" alt="image description"></div>
+																		<div class="tg-backcover"><img src="images/books/<?php echo $book['image'] ?>" alt="image description"></div>
 																	</div>
-																	<a class="tg-btnaddtowishlist" href="javascript:void(0);">
+																	<?php
+						                                            $category = $book['category'];
+						                                            $id = $book['id'];
+						                                            // Sử dụng json_encode và htmlspecialchars để đảm bảo chuỗi an toàn cho JavaScript và HTML
+						                                            $categoryJson = htmlspecialchars(json_encode($category), ENT_QUOTES, 'UTF-8');
+						                                            $idJson = htmlspecialchars(json_encode($id), ENT_QUOTES, 'UTF-8');
+						                                            ?>
+																	<a class="tg-btnaddtowishlist" href="productdetail.php?id=<?php echo $idJson ?>" onClick="setCookiesBook(<?php echo $categoryJson ?>,<?php echo $idJson ?>)">
 																		<span>Xem thêm</span>
 																	</a>
 																</figure>
 																<div class="tg-postbookcontent">
 																	<ul class="tg-bookscategories">
-																		<li><a href="javascript:void(0);">Adventure</a></li>
+																		<li><a><?php echo $book['category'] ?></a></li>
 																	</ul>
 																	<div class="tg-booktitle">
-																		<h3><a href="javascript:void(0);">Help Me Find My Stomach</a></h3>
+																		<h3><a href="productdetail.php?id=<?php echo $idJson ?>" onClick="setCookiesBook(<?php echo $categoryJson ?>,<?php echo $idJson ?>)"><?php echo $book['bookName'] ?></a></h3>
 																	</div>
-																	<span class="tg-bookwriter"> <a href="javascript:void(0);">Angela Gunning</a></span>																	
+																	<span class="tg-bookwriter"> <a><?php echo $book['author'] ?></a></span>																	
 																</div>
 															</div>
 														</div>
+														<?php }?>
 													</div>
 												</div>
 											</div>
@@ -1029,10 +1038,10 @@ echo "</pre>";
 												<?php foreach($data3['data'] as $new){?>
 												<li>
 													<article class="tg-post">
-														<figure style="width:112px;"><a style="width:100px;" href="newsdetail.html?id=<?php echo $new['id']?>" alt="<?php echo $new['image']?>"><img src="images/blog/<?php echo $new['image'] ?>" alt="<?php echo $new['image'] ?>"></a></figure>
+														<figure style="width:112px;"><a style="width:100px;" href="newsdetail.php?id=<?php echo $new['id']?>" alt="<?php echo $new['image']?>"><img src="images/blog/<?php echo $new['image'] ?>" alt="<?php echo $new['image'] ?>"></a></figure>
 														<div class="tg-postcontent">
 															<div class="tg-posttitle">
-																<h3><a href="newsdetail.html?id=<?php echo $new['id']?>"><?php echo $new['title']?></a></h3>
+																<h3><a href="newsdetail.php?id=<?php echo $new['id']?>"><?php echo $new['title']?></a></h3>
 															</div>
 															<span class="tg-bookwriter"> <a><?php echo $new['author'] ?></a></span>
 														</div>
@@ -1236,14 +1245,68 @@ document.addEventListener("DOMContentLoaded", async function() {
         if (responseData) {
             document.getElementById("category").innerText = responseData.data.category;
             document.getElementById("bookName").innerText = responseData.data.bookName;
+            document.getElementById("imageBook").src = "images/books/" + responseData.data.image;
             document.getElementById("author").innerText = responseData.data.author;
             document.getElementById("description").innerText = responseData.data.description;
-        }
-		setCookie('categoryBook', responseData.data.category, 30); 
+        } 
     } catch (error) {
         console.error(error);
     }
 });
+
+function loadcookies(objJson,records_per_page) {
+    let listing_data = [];
+    for (let i = 0; i < records_per_page && i < objJson.data.length; i++) {
+        listing_data.push(objJson.data[i]);
+    }
+	return listing_data;
+}
+
+function setCookie(name, value, days) {
+	var expires = "";
+	if (days) {
+		var date = new Date();
+		date.setTime(date.getTime() + (days * 24 * 60 * 60 * 1000));
+		expires = "; expires=" + date.toUTCString();
+	}
+	document.cookie = name + "=" + (value || "") + expires + "; path=/";
+}
+
+function getCookie(name) {
+	var nameEQ = name + "=";
+	var ca = document.cookie.split(';');
+	for (var i = 0; i < ca.length; i++) {
+		var c = ca[i];
+		while (c.charAt(0) == ' ') c = c.substring(1, c.length);
+		if (c.indexOf(nameEQ) == 0) return c.substring(nameEQ.length, c.length);
+	}
+	return null;
+}
+
+
+function eraseCookie(name) {
+	document.cookie = name + '=; Max-Age=-99999999;';
+}
+
+function getCookieValue(cookieName) {
+    let name = cookieName + "=";
+    let decodedCookie = decodeURIComponent(document.cookie);
+    let cookieArray = decodedCookie.split(';');
+    for(let i = 0; i < cookieArray.length; i++) {
+        let cookie = cookieArray[i].trim();
+        if (cookie.indexOf(name) === 0) {
+            return cookie.substring(name.length, cookie.length);
+        }
+    }
+    return null; // Cookie không tồn tại
+}
+
+function setCookiesBook(category,bookId)
+{
+	setCookie('categoryBook', category, 30);
+	setCookie('bookId', bookId, 30);
+}
+
 
 </script>
 

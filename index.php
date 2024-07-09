@@ -546,10 +546,12 @@ if (isset($data['data'])) {
 						href="productdetail.php?id=<?php echo htmlspecialchars($book['id']); ?>"
 						<?php
 						$category = $book['category'];
+						$id = $book['id'];
 						// Sử dụng json_encode và htmlspecialchars để đảm bảo chuỗi an toàn cho JavaScript và HTML
 						$categoryJson = htmlspecialchars(json_encode($category), ENT_QUOTES, 'UTF-8');
+						$idJson = htmlspecialchars(json_encode($id), ENT_QUOTES, 'UTF-8');
 						?>
-						onClick="setCookiesBook(<?php echo $categoryJson; ?>)">
+						onClick="setCookiesBook(<?php echo $categoryJson; ?>,<?php echo $idJson; ?>)">
                             <span>Xem thêm</span>
                         </a>
                     </figure>
@@ -559,7 +561,7 @@ if (isset($data['data'])) {
                         </ul>
                         <div class="tg-themetagbox"><span class="tg-themetag">mới</span></div>
                         <div class="tg-booktitle">
-                            <h3><a href="productdetail.php?id=<?php echo htmlspecialchars($book['id']); ?>" onClick="setCookiesBook(<?php echo $categoryJson; ?>)"><?php echo htmlspecialchars($book['bookName']); ?></a></h3>
+                            <h3><a href="productdetail.php?id=<?php echo htmlspecialchars($book['id']); ?>" onClick="setCookiesBook(<?php echo $categoryJson; ?>,<?php echo $idJson; ?>))"><?php echo htmlspecialchars($book['bookName']); ?></a></h3>
                         </div>
                         <span class="tg-bookwriter">Tác giả : <?php echo htmlspecialchars($book['author']); ?></span>
                     </div>
@@ -609,14 +611,14 @@ if (isset($data3['data'])) {
            $formattedDatetime = $datetime->format('d/m/Y - H:i');
             ?>
             <article class="item tg-post">
-                <figure><a href="newsdetail.html"><img src="images/blog/<?php echo htmlspecialchars($new['image']); ?>" alt="image description"></a></figure>
+                <figure><a href="newsdetail.php"><img src="images/blog/<?php echo htmlspecialchars($new['image']); ?>" alt="image description"></a></figure>
                 <div class="tg-postcontent">
                     <ul class="tg-bookscategories">
                         <li><p><?php echo htmlspecialchars($formattedDatetime); ?></p></li>
                     </ul>
                     <div class="tg-themetagbox"><span class="tg-themetag">new</span></div>
                     <div class="tg-posttitle">
-                        <h3><a href="newsdetail.html"><?php echo htmlspecialchars($new['title']); ?></a></h3>
+                        <h3><a href="newsdetail.php"><?php echo htmlspecialchars($new['title']); ?></a></h3>
                     </div>
                     <span class="tg-bookwriter"><a><?php echo htmlspecialchars($new['author']); ?></a></span>
                 </div>
@@ -848,12 +850,12 @@ function getCookie(name) {
 
 function eraseCookie(name) {
 	document.cookie = name + '=; Max-Age=-99999999;';
-	console.log('xoá cook thành công')
 }
 
-function setCookiesBook(category)
+function setCookiesBook(category,bookId)
 {
 	setCookie('categoryBook', category, 30);
+	setCookie('bookId', bookId, 30);
 }
 
 function getCookieValue(cookieName) {

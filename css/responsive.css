@@ -1,4 +1,7 @@
 @media (max-width:1600px){
+	.tg-newsdetailimg > img{
+		height: 70vh !important;
+	}
 	.tg-homeslidervthree .tg-slidercontent {padding: 0 12% 0 60px;}
 }
 @media (max-width:1600px){
@@ -6,17 +9,29 @@
 		font-size: 60px;
 		line-height: 55px;
 	}
+	.tg-newsdetailimg > img{
+		height: 70vh !important;
+	}
 }
 @media (max-width:1360px){
 	.tg-homeslidervthree .tg-slidercontent h1 {
 		font-size: 55px;
 		line-height: 50px;
 	}
+	.tg-newsdetailimg > img{
+		height: 70vh !important;
+	}
 }
 @media (max-width:1280px){
+	.tg-newsdetailimg > img{
+		height: 70vh !important;
+	}
 	.tg-homeslidervthree .tg-slidercontent h1 {font-size: 50px;}
 }
 @media (max-width:1199px){
+	.tg-newsdetailimg > img{
+		height: 70vh !important;
+	}
 	.tg-themedropdown {padding: 0 10px;}
 	.tg-searchbox {padding: 0 270px;}
 	.tg-navigation > ul > li > a {padding: 0 15px;}
@@ -127,11 +142,17 @@
 		font-size: 25px;
 		line-height: 25px;
 	}
+	.tg-newsdetailimg > img{
+		height: auto !important;
+	}
 }
 @media (max-width:1080px){
 	.tg-homeslidervthree .tg-slidercontent h1 {
 		font-size: 45px;
 		line-height:45px;
+	}
+	.tg-newsdetailimg > img{
+		height: auto !important;
 	}
 }
 @media (max-width:991px){
@@ -282,6 +303,9 @@
 		font-size: 14px;
 		line-height: 14px;
 	}
+	.tg-newsdetailimg > img{
+		height: auto !important;
+	}
 	.tg-childcomment {padding: 0 0 0 50px;}
 	.tg-map {
 		height: 450px;
@@ -302,7 +326,10 @@
 	.tg-booksfromauthor .tg-postbook {min-height: 535px;}
 	.tg-productgrid .tg-postbook {min-height: 550px;}
 }
-@media (max-width:800px){}
+@media (max-width:800px){	
+	.tg-newsdetailimg > img{
+	height: auto !important;
+}}
 @media (max-width:767px){
 	.tg-homeslider .item{padding:0;}
 	.tg-clientservices li{
@@ -397,6 +424,9 @@
 		float:left;
 		position:static;
 	}
+	.tg-newsdetailimg > img{
+		height: auto !important;
+	}
 	.tg-prevpost,
 	.tg-nextpost{
 		width:100%;
@@ -434,6 +464,9 @@
 	.tg-homeslidervthree .tg-slidercontent h1 {
 		font-size: 25px;
 		line-height: 25px;
+	}
+	.tg-newsdetailimg > img{
+		height: auto !important;
 	}
 	.tg-homeslidervthree .tg-slidercontent .tg-btns .tg-btn{
 		padding:0;
@@ -517,6 +550,9 @@
 	}
 }
 @media (max-width:480px){
+	.tg-newsdetailimg > img{
+		height: auto !important;
+	}
 	.tg-logo{
 		float:none;
 		display:block;

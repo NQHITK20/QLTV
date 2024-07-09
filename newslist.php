@@ -944,10 +944,10 @@ $jsonDataNew = json_encode($data4);
 													 $formattedDatetime = $datetime->format('d/m/Y - H:i');												
 													?>
 												<article class="tg-post">
-													<figure style="width: 80%;"><a href="newsdetail.html?id=<?php echo $new['id'] ?>"><img src="images/blog/<?php echo $new['image'] ?>" alt="<?php echo $new['image'] ?>"></a></figure>
+													<figure style="width: 80%;"><a href="newsdetail.php?id=<?php echo $new['id'] ?>"><img src="images/blog/<?php echo $new['image'] ?>" alt="<?php echo $new['image'] ?>"></a></figure>
 													<div class="tg-postcontent">
 														<div class="tg-posttitle">
-															<h3><a href="newsdetail.html?id=<?php echo $new['id'] ?>"><?php echo $new['title'] ?></a></h3>
+															<h3><a href="newsdetail.php?id=<?php echo $new['id'] ?>"><?php echo $new['title'] ?></a></h3>
 														</div>
 														<a><?php echo $formattedDatetime ?></a>
 														<div class="tg-description">
@@ -986,10 +986,10 @@ $jsonDataNew = json_encode($data4);
 												<?php foreach($data4['data'] as $new){?>
 												<li>
 													<article class="tg-post">
-														<figure style="width:112px;"><a style="width:100px;" href="newsdetail.html?id=<?php echo $new['id']?>" alt="<?php echo $new['image']?>"><img src="images/blog/<?php echo $new['image'] ?>" alt="<?php echo $new['image'] ?>"></a></figure>
+														<figure style="width:112px;"><a style="width:100px;" href="newsdetail.php?id=<?php echo $new['id']?>" alt="<?php echo $new['image']?>"><img src="images/blog/<?php echo $new['image'] ?>" alt="<?php echo $new['image'] ?>"></a></figure>
 														<div class="tg-postcontent">
 															<div class="tg-posttitle">
-																<h3><a href="newsdetail.html?id=<?php echo $new['id']?>"><?php echo $new['title']?></a></h3>
+																<h3><a href="newsdetail.php?id=<?php echo $new['id']?>"><?php echo $new['title']?></a></h3>
 															</div>
 															<span class="tg-bookwriter">By: <a><?php echo $new['author'] ?></a></span>
 														</div>
