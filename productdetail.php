@@ -21,7 +21,6 @@
 </head>
 <?php 
 
-
 ini_set('display_errors', 1);
 ini_set('display_startup_errors', 1);
 error_reporting(E_ALL);
@@ -62,6 +61,7 @@ $data2 = json_decode($response2, true);
 if ($data2 === null) {
     die('Lỗi khi chuyển đổi JSON');
 }
+
 
 
 ini_set('display_errors', 1);
@@ -105,9 +105,71 @@ if ($data3 === null) {
     die('Lỗi khi chuyển đổi JSON');
 }
 
+ini_set('display_errors', 1);
+ini_set('display_startup_errors', 1);
+error_reporting(E_ALL);
+
+$url = 'http://localhost:8000/api/get-related-book'; // URL của API backend
+
+if(isset($_COOKIE['categoryBook'])) {
+    $categoryBook = $_COOKIE['categoryBook']; // Thêm tham số true để nhận mảng thay vì đối tượng
+
+    if ($categoryBook === null) {
+        // Xử lý lỗi giải mã JSON nếu cần
+        echo "Lỗi: Không thể giải mã dữ liệu JSON từ cookie 'categoryBook'.";
+    } else {
+        // Sử dụng biến $categoryBook
+        $datanew4 = array('categoryBook' => $categoryBook);
+    }
+} else {
+    echo "Cookie 'categoryBook' không tồn tại.";
+}
+// Dữ liệu gửi đi
+
+// Chuyển đổi mảng dữ liệu thành JSON
+$jsonData4 = json_encode($datanew4);
+
+// Cấu hình cURL
+$ch = curl_init($url);
+curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+curl_setopt($ch, CURLOPT_HTTPHEADER, array(
+    'Content-Type: application/json',
+    'Authorization: Bearer' // Thêm token vào header Authorization
+));
+curl_setopt($ch, CURLOPT_POST, true);
+curl_setopt($ch, CURLOPT_POSTFIELDS, $jsonData4);
+
+// Thực hiện yêu cầu POST và nhận phản hồi
+$response4 = curl_exec($ch);
+
+// Kiểm tra nếu có lỗi khi gửi yêu cầu
+if ($response4 === FALSE) {
+    die('Lỗi khi gửi yêu cầu: ' . curl_error($ch));
+}
+
+// Đóng cURL
+curl_close($ch);
+
+// Chuyển đổi JSON thành mảng dữ liệu trong PHP
+$data4 = json_decode($response4, true);
+
+// Kiểm tra nếu có lỗi khi chuyển đổi JSON
+if ($data4 === null) {
+    die('Lỗi khi chuyển đổi JSON');
+}
+
+echo "<pre>";
+print_r($data4);
+echo "</pre>";
+
 ?>
 
 <body>
+<div class="overlay" id="loadingOverlay">
+        <div class="spinner-border text-light" role="status">
+            <span class="sr-only">Loading...</span>
+        </div>
+</div>
 	<div id="tg-wrapper" class="tg-wrapper tg-haslayout">
 		<!--************************************
 				Header Start
@@ -180,7 +242,7 @@ if ($data3 === null) {
 											<div class="mega-menu">
 												<ul class="tg-themetabnav" role="tablist">
 													<li role="presentation" class="active">
-														<a href="#artandphotography" aria-controls="artandphotography" role="tab" data-toggle="tab">Art &amp; Photography</a>
+														<a href="#artandphotography" aria-controls="artandphotography" role="tab" data-toggle="tab">Art</a>
 													</li>
 													<li role="presentation">
 														<a href="#biography" aria-controls="biography" role="tab" data-toggle="tab">Biography</a>
@@ -894,20 +956,18 @@ if ($data3 === null) {
 											<div class="col-xs-12 col-sm-12 col-md-8 col-lg-8">
 												<div class="tg-productcontent">
 													<ul class="tg-bookscategories">
-														<li><a href="javascript:void(0);">Art &amp; Photography</a></li>
+														<li><a id="category"></a></li>
 													</ul>
 													<div class="tg-booktitle">
-														<h3>Drive Safely, No Bumping</h3>
+														<h3 id="bookName"></h3>
 													</div>
-													<span class="tg-bookwriter">Tác Giả: <a href="javascript:void(0);">Angela Gunning</a></span>
+													<span class="tg-bookwriter">Tác Giả: <a id="author"></a></span>
 													
 													<div class="tg-description">
-														<p>Consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore etdoloreat magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laborisi nisi ut aliquip ex ea commodo consequat aute.</p>
-														<p>Arure dolor in reprehenderit in voluptate velit esse cillum dolore fugiat nulla aetur excepteur sint occaecat cupidatat non proident, sunt in culpa quistan officia serunt mollit anim id est laborum sed ut perspiciatis unde omnis iste natus... <a href="javascript:void(0);">More</a></p>
+														<p id="description"></p>
 													</div>
 												</div>
 											</div>
-											
 											<div class="tg-relatedproducts">
 												<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
 													<div class="tg-sectionhead">
@@ -1121,7 +1181,86 @@ if ($data3 === null) {
 			}
 		  }
 		}
+		function setCookie(name, value, days) {
+	var expires = "";
+	if (days) {
+		var date = new Date();
+		date.setTime(date.getTime() + (days * 24 * 60 * 60 * 1000));
+		expires = "; expires=" + date.toUTCString();
+	}
+	document.cookie = name + "=" + (value || "") + expires + "; path=/";
+}
+
+function getCookie(name) {
+	var nameEQ = name + "=";
+	var ca = document.cookie.split(';');
+	for (var i = 0; i < ca.length; i++) {
+		var c = ca[i];
+		while (c.charAt(0) == ' ') c = c.substring(1, c.length);
+		if (c.indexOf(nameEQ) == 0) return c.substring(nameEQ.length, c.length);
+	}
+	return null;
+}
+
+function eraseCookie(name) {
+	document.cookie = name + '=; Max-Age=-99999999;';
+}
+
+function fetchData() {
+    document.getElementById('loadingOverlay').style.display = 'flex';
+    return new Promise(function(resolve, reject) {
+        let xhr = new XMLHttpRequest();
+        let urlParams = new URLSearchParams(window.location.search);
+        let bookId = urlParams.get('id');
+        let bookData = {
+            id:bookId
+        }
+        
+        xhr.open("POST", "http://localhost:8000/api/get-all-book", true);
+        xhr.setRequestHeader("Content-Type", "application/json");
+        xhr.setRequestHeader('Authorization', 'Bearer');
+        xhr.onreadystatechange = function () {
+            if (xhr.readyState === 4 && xhr.status === 200) {
+                var responseData = JSON.parse(xhr.responseText);
+                resolve(responseData);
+             document.getElementById('loadingOverlay').style.display = 'none';
+            }
+        };
+        xhr.send(JSON.stringify(bookData));
+    });
+}
+
+document.addEventListener("DOMContentLoaded", async function() {
+    try {
+        const responseData = await fetchData();
+        if (responseData) {
+            document.getElementById("category").innerText = responseData.data.category;
+            document.getElementById("bookName").innerText = responseData.data.bookName;
+            document.getElementById("author").innerText = responseData.data.author;
+            document.getElementById("description").innerText = responseData.data.description;
+        }
+		setCookie('categoryBook', responseData.data.category, 30); 
+    } catch (error) {
+        console.error(error);
+    }
+});
+
 </script>
+
+<style>
+    .overlay {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(0, 0, 0, 0.5);
+        display: none;
+        justify-content: center;
+        align-items: center;
+        z-index: 999;
+    }
+</style>
 		
 </body>
 </html>

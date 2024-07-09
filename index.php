@@ -542,7 +542,14 @@ if (isset($data['data'])) {
                             <div class="tg-frontcover"><img src="images/books/<?php echo htmlspecialchars($book['image']); ?>" alt="<?php echo htmlspecialchars($book['bookName']); ?>"></div>
                             <div class="tg-backcover"><img src="images/books/<?php echo htmlspecialchars($book['image']); ?>" alt="<?php echo htmlspecialchars($book['bookName']); ?>"></div>
                         </div>
-                        <a class="tg-btnaddtowishlist" href="productdetail.php?id=<?php echo htmlspecialchars($book['id']); ?>">
+                        <a class="tg-btnaddtowishlist"
+						href="productdetail.php?id=<?php echo htmlspecialchars($book['id']); ?>"
+						<?php
+						$category = $book['category'];
+						// Sử dụng json_encode và htmlspecialchars để đảm bảo chuỗi an toàn cho JavaScript và HTML
+						$categoryJson = htmlspecialchars(json_encode($category), ENT_QUOTES, 'UTF-8');
+						?>
+						onClick="setCookiesBook(<?php echo $categoryJson; ?>)">
                             <span>Xem thêm</span>
                         </a>
                     </figure>
@@ -552,7 +559,7 @@ if (isset($data['data'])) {
                         </ul>
                         <div class="tg-themetagbox"><span class="tg-themetag">mới</span></div>
                         <div class="tg-booktitle">
-                            <h3><a href="productdetail.php?id=<?php echo htmlspecialchars($book['id']); ?>"><?php echo htmlspecialchars($book['bookName']); ?></a></h3>
+                            <h3><a href="productdetail.php?id=<?php echo htmlspecialchars($book['id']); ?>" onClick="setCookiesBook(<?php echo $categoryJson; ?>)"><?php echo htmlspecialchars($book['bookName']); ?></a></h3>
                         </div>
                         <span class="tg-bookwriter">Tác giả : <?php echo htmlspecialchars($book['author']); ?></span>
                     </div>
@@ -816,6 +823,53 @@ function loadcookies(objJson,records_per_page) {
     }
 	return listing_data;
 }
+
+function setCookie(name, value, days) {
+	var expires = "";
+	if (days) {
+		var date = new Date();
+		date.setTime(date.getTime() + (days * 24 * 60 * 60 * 1000));
+		expires = "; expires=" + date.toUTCString();
+	}
+	document.cookie = name + "=" + (value || "") + expires + "; path=/";
+}
+
+function getCookie(name) {
+	var nameEQ = name + "=";
+	var ca = document.cookie.split(';');
+	for (var i = 0; i < ca.length; i++) {
+		var c = ca[i];
+		while (c.charAt(0) == ' ') c = c.substring(1, c.length);
+		if (c.indexOf(nameEQ) == 0) return c.substring(nameEQ.length, c.length);
+	}
+	return null;
+}
+
+
+function eraseCookie(name) {
+	document.cookie = name + '=; Max-Age=-99999999;';
+	console.log('xoá cook thành công')
+}
+
+function setCookiesBook(category)
+{
+	setCookie('categoryBook', category, 30);
+}
+
+function getCookieValue(cookieName) {
+    let name = cookieName + "=";
+    let decodedCookie = decodeURIComponent(document.cookie);
+    let cookieArray = decodedCookie.split(';');
+    for(let i = 0; i < cookieArray.length; i++) {
+        let cookie = cookieArray[i].trim();
+        if (cookie.indexOf(name) === 0) {
+            return cookie.substring(name.length, cookie.length);
+        }
+    }
+    return null; // Cookie không tồn tại
+}
+let cookiesBook = getCookieValue('categoryBook')
+eraseCookie(cookiesBook);
 
 let databook = <?php echo json_encode($data) ?>;
 let datanews = <?php echo json_encode($data33) ?>;
