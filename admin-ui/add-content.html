@@ -23,7 +23,7 @@
     <link rel="stylesheet" href="vendors/selectFX/css/cs-skin-elastic.css">
     <link rel="stylesheet" href="vendors/jqvmap/dist/jqvmap.min.css">
 
-    <script src="https://cdn.ckeditor.com/ckeditor5/41.4.2/classic/ckeditor.js"></script>
+    <script src="https://cdn.ckeditor.com/ckeditor5/36.0.0/classic/ckeditor.js"></script>
 
 
 
@@ -156,7 +156,7 @@
                                 <div class="col-12 col-md-6"><input type="text" id="titleNew" name="titleNew" placeholder="Nhập tiêu đề bài viết" class="form-control"></div>
                             </div>
                             <div class="row form-group">
-                                <div class="col col-md-3"><label for="text-input" class=" form-control-label">Nội dung chính bài viết</label></div>
+                                <div class="col col-md-3"><label for="text-input" class=" form-control-label">nội dung giới thiệu bài viết</label></div>
                                 <div class="col-12 col-md-9"><input type="text" id="description" name="description" placeholder="Nhập description" class="form-control"></div>
                             </div>
                             <div class="row form-group">
@@ -277,7 +277,7 @@ function processImageFilenames(content) {
 let editor;
 ClassicEditor
     .create( document.querySelector( '#editor' ), {
-        extraPlugins: [ MyCustomUploadAdapterPlugin ],
+        extraPlugins: [ MyCustomUploadAdapterPlugin],
     } )
     .then(newEditor => {
         editor = newEditor;

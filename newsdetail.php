@@ -19,6 +19,7 @@
 	<link rel="stylesheet" href="css/color.css">
 	<link rel="stylesheet" href="css/responsive.css">
 	<script src="js/vendor/modernizr-2.8.3-respond-1.4.2.min.js"></script>
+	<script src="https://cdn.ckeditor.com/ckeditor5/36.0.0/classic/ckeditor.js"></script>
 </head>
 <?php
 
@@ -924,17 +925,17 @@ $jsonDataNew = json_encode($data4);
 						<div id="tg-twocolumns" class="tg-twocolumns">
 						<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
 								<figure class="tg-newsdetailimg">
-									<img src="images/blog/img-01.jpg" alt="image description">
+									<img id="img" alt="image description">
 								</figure>
 							</div>
 							<div class="col-xs-12 col-sm-8 col-md-8 col-lg-9 pull-right">
 								<div id="tg-content" class="tg-content">
 									<div class="tg-newslist">
 										<div class="tg-sectionhead">
-											<h2 style="line-height:1.2 !important">bài viết 7 content kỳ lạ hấp dẫn sao cho tầm hơn 2 dòng</h2>
+											<h2 id="title" style="line-height:1.2 !important"></h2>
 										</div>
 										<div class="row">
-											<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+											<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12" id = "content">
 												
 											</div>
 										</div>
@@ -1116,6 +1117,51 @@ $jsonDataNew = json_encode($data4);
 			}
 		  }
 		}
+
+		document.addEventListener('DOMContentLoaded', function() {
+    // Lấy giá trị id từ URL
+    var urlParams = new URLSearchParams(window.location.search);
+    var id = urlParams.get('id');
+
+    if (id) {
+        var xhr = new XMLHttpRequest();
+        xhr.open('POST', 'http://localhost:8000/api/get-news', true);
+        xhr.setRequestHeader('Content-Type', 'application/json;charset=UTF-8');
+        xhr.onreadystatechange = function () {
+            if (xhr.readyState === 4) {
+                if (xhr.status === 200) {
+                    // Xử lý phản hồi tại đây
+                    var response = JSON.parse(xhr.responseText);
+
+                    document.getElementById('img').src = 'images/blog/' + response.data.image;
+                    document.getElementById('title').innerText = response.data.description;
+
+                    ClassicEditor
+                        .create(document.querySelector('#editor'))
+                        .then(editor => {
+                            editor.model.document.on('change', () => {
+                                var editorData = editor.getData();
+                                document.getElementById('content').innerHTML = editorData;
+                            });
+                        })
+                        .catch(error => {
+                            console.error('Error initializing editor:', error);
+                        });
+
+                    // Gán nội dung ban đầu từ CKEditor
+                    document.getElementById('content').innerHTML = response.data.content;
+                } else {
+                    console.error('Yêu cầu không thành công:', xhr.status);
+                }
+            }
+        };
+        // Gửi id trong body của yêu cầu
+        xhr.send(JSON.stringify({ id: id }));
+    } else {
+        console.log('ID không tồn tại trong URL');
+    }
+});
+
 
 </script>
 

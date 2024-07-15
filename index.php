@@ -611,14 +611,14 @@ if (isset($data3['data'])) {
            $formattedDatetime = $datetime->format('d/m/Y - H:i');
             ?>
             <article class="item tg-post">
-                <figure><a href="newsdetail.php"><img src="images/blog/<?php echo htmlspecialchars($new['image']); ?>" alt="image description"></a></figure>
+                <figure><a href="newsdetail.php?id=<?php echo htmlspecialchars($new['id']);?>"><img src="images/blog/<?php echo htmlspecialchars($new['image']); ?>" alt="image description"></a></figure>
                 <div class="tg-postcontent">
                     <ul class="tg-bookscategories">
                         <li><p><?php echo htmlspecialchars($formattedDatetime); ?></p></li>
                     </ul>
                     <div class="tg-themetagbox"><span class="tg-themetag">new</span></div>
                     <div class="tg-posttitle">
-                        <h3><a href="newsdetail.php"><?php echo htmlspecialchars($new['title']); ?></a></h3>
+                        <h3><a href="newsdetail.php?id=<?php echo htmlspecialchars($new['id']);?>"><?php echo htmlspecialchars($new['title']); ?></a></h3>
                     </div>
                     <span class="tg-bookwriter"><a><?php echo htmlspecialchars($new['author']); ?></a></span>
                 </div>
