@@ -171,7 +171,10 @@
                             </div>
                             <div class="row form-group">
                                 <div class="col col-md-3"><label for="text-input" class=" form-control-label">Nội dung bài viết</label></div>
-                                <div class="col-12 col-md-9">
+                                
+                            </div>
+                            <div class="row form-group">
+                                <div class="col-12 col-md-12">
                                     <textarea name="editor" id="editor">
                                     </textarea>
                                 </div>
@@ -210,7 +213,7 @@ class MyUploadAdapter {
         constructor(loader) {
       // The file loader instance to use during the upload.
       this.loader = loader;
-      //   this.url = 'http://localhost/QuanLyThuVien/images/uploadImages/books/';
+        this.url = 'http://localhost/QuanLyThuVien/images/uploadImages/blogs/';
        }
 
     // request(file) {
@@ -311,6 +314,7 @@ document.addEventListener("DOMContentLoaded", async function() {
             document.getElementById("titleNew").value = responseData.data.title;
             document.getElementById("description").value = responseData.data.description;
             editor.setData( responseData.data.content);
+            console.log('chec data get ', responseData.data.content)
             document.getElementById("author").value = responseData.data.author;
             document.getElementById("displayedImage").src = '../images/blog/' + responseData.data.image;
             document.getElementById("displayedImage").display = "block"
@@ -350,20 +354,26 @@ document.addEventListener("DOMContentLoaded", async function() {
 }
 
         function submitForm() {
-
-
             let title = document.getElementById('titleNew').value;
-            let description = document.getElementById('titleNew').description;
+            let description = document.getElementById('description').value;
             let author = document.getElementById('author').value;
-            let content =editor.getData();
+            let content = editor.getData();
+            console.log('content1 ',content)
             let fileInput = document.getElementById('displayedImage').src;
+            function updateImageSizes(htmlContent) {
+            // Sử dụng Regex để thay đổi giá trị width và height
+            return htmlContent.replace(/<img([^>]*)width="\d+"([^>]*)height="\d+"([^>]*)>/g, '<img$1width="500"$2height="400"$3>');
+            }
+
+            content = updateImageSizes(content);
+            console.log('content2 ',content)
 
             if (!title) {
                 alert("Vui lòng tiêu đề.");
                 return ;
             }
             if (!description) {
-                alert("Vui lòng nội dung chính.");
+                alert("Vui lòng nhập nội dung chính.");
                 return ;
             }
             else if (!author) {
@@ -379,6 +389,7 @@ document.addEventListener("DOMContentLoaded", async function() {
             let newsId = urlParams.get('id');
 
             let fileName = extractFilename(fileInput);
+           
             
             // Tạo đường dẫn mới
             let newsData = {

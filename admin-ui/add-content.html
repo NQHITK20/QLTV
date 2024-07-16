@@ -168,9 +168,10 @@
                             </div>
                             <div class="row form-group">
                                 <div class="col col-md-3"><label for="text-input" class=" form-control-label">Nội dung bài viết</label></div>
-                                <div class="col-12 col-md-9">
+                            </div>
+                            <div class="row form-group">
+                                <div class="col-12 col-md-12">
                                     <textarea name="editor" id="editor">
-                                       
                                     </textarea>
                                 </div>
                             </div>
@@ -333,6 +334,12 @@ ClassicEditor
             let content = editor.getData();
             let fileInput = document.getElementById('image');
             let file = fileInput.files[0]; // Lấy đối tượng file từ input
+            function updateImageSizes(htmlContent) {
+            // Sử dụng Regex để thay đổi giá trị width và height
+            return htmlContent.replace(/<img([^>]*)width="\d+"([^>]*)height="\d+"([^>]*)>/g, '<img$1width="500"$2height="400"$3>');
+            }
+
+            content = updateImageSizes(content);
 
             if (!title) {
                 alert("Vui lòng nhập tiêu đề.");
