@@ -1134,7 +1134,7 @@ $jsonDataNew = json_encode($data4);
                     var response = JSON.parse(xhr.responseText);
 
                     document.getElementById('img').src = 'images/blog/' + response.data.image;
-                    document.getElementById('title').innerText = response.data.description;
+                    document.getElementById('title').innerText = response.data.title;
 
                     ClassicEditor
                         .create(document.querySelector('#editor'))

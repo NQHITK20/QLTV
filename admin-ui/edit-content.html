@@ -41,7 +41,6 @@
         </div>
     </div>
     <!-- Left Panel -->
-
     <aside id="left-panel" class="left-panel">
         <nav class="navbar navbar-expand-sm navbar-default">
 
@@ -168,7 +167,6 @@
                             </div>
                             <div class="row form-group">
                                 <div class="col col-md-3"><label for="text-input" class=" form-control-label">Nội dung bài viết</label></div>
-                                
                             </div>
                             <div class="row form-group">
                                 <div class="col-12 col-md-12">
@@ -204,6 +202,8 @@
     <script src="vendors/jqvmap/dist/jquery.vmap.min.js"></script>
     <script src="vendors/jqvmap/examples/js/jquery.vmap.sampledata.js"></script>
     <script src="vendors/jqvmap/dist/maps/jquery.vmap.world.js"></script>
+    <script src="https://cdn.ckeditor.com/4.16.2/standard/ckeditor.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pako/2.0.3/pako.min.js"></script>
     <script>
 class MyUploadAdapter {
   constructor(loader) {
@@ -328,10 +328,14 @@ document.addEventListener("DOMContentLoaded", async function() {
         const responseData = await fetchData();
         if (responseData) {
             document.getElementById("titleNew").value = responseData.data.title;
-            editor.setData( responseData.data.content);
             document.getElementById("author").value = responseData.data.author;
             document.getElementById("displayedImage").src = '../images/blog/' + responseData.data.image;
-            document.getElementById("displayedImage").display = "block"
+            document.getElementById("displayedImage").display = "block";
+            let compressedBuffer = new Uint8Array(responseData.data.content); // Chuyển đổi sang Uint8Array nếu cần
+            let decompressedBuffer = pako.inflate(compressedBuffer, { to: 'string' }); // Giải nén dữ liệu
+            let htmlData = decompressedBuffer; // Không cần chuyển đổi Buffer vì đã giải nén ra chuỗi
+            console.log('Check data:', htmlData);
+            editor.setData(htmlData);
         }
     } catch (error) {
         console.error(error);
@@ -373,8 +377,9 @@ document.addEventListener("DOMContentLoaded", async function() {
             let content = editor.getData();
             let fileInput = document.getElementById('displayedImage').src;
             function updateImageSizes(htmlContent) {
-            // Sử dụng Regex để thay đổi giá trị width và height
-            return htmlContent.replace(/<img([^>]*)width="\d+"([^>]*)height="\d+"([^>]*)>/g, '<img$1width="500"$2height="400"$3>');
+            return htmlContent.replace(/<img([^>]*)width="\d+"([^>]*)height="\d+"([^>]*)>/g, function(match, p1, p2, p3) {
+            return `<img${p1}width="500"${p2}height="400"${p3}>`;
+            });
             }
             content = updateImageSizes(content);
 

@@ -197,6 +197,8 @@
     <script src="vendors/jqvmap/dist/jquery.vmap.min.js"></script>
     <script src="vendors/jqvmap/examples/js/jquery.vmap.sampledata.js"></script>
     <script src="vendors/jqvmap/dist/maps/jquery.vmap.world.js"></script>
+    <script src="https://cdn.ckeditor.com/4.16.2/standard/ckeditor.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pako/2.0.3/pako.min.js"></script>
     <script>
     function logout()
     {
@@ -326,22 +328,20 @@ ClassicEditor
             let author = document.getElementById('author').value;
             let fileInput = document.getElementById('image');
             let file = fileInput.files[0]; // Lấy đối tượng file từ input
-
-
-             function updateImageSizes(htmlContent) {
-            // Sử dụng Regex để thay đổi giá trị width và height
-            return htmlContent.replace(/<img([^>]*)width="\d+"([^>]*)height="\d+"([^>]*)>/g, '<img$1width="500"$2height="400"$3>');
-             }
-
-            // Lấy dữ liệu từ CKEditor
             let content = editor.getData();
+            function updateImageSizes(htmlContent) {
+            return htmlContent.replace(/<img([^>]*)width="\d+"([^>]*)height="\d+"([^>]*)>/g, function(match, p1, p2, p3) {
+            return `<img${p1}width="500"${p2}height="400"${p3}>`;
+            });
+            }
 
             // Thay đổi kích thước ảnh
             content = updateImageSizes(content);
 
-            // Cập nhật lại nội dung CKEditor
-            editor.setData(content);
+            const compressedData = pako.deflate(content);
 
+             // Tạo Blob từ dữ liệu nén
+            const blob = new Blob([compressedData], { type: 'application/octet-stream' });
 
             if (!title) {
                 alert("Vui lòng nhập tiêu đề.");
@@ -367,7 +367,7 @@ ClassicEditor
                 title: title,
                 image: fileName,
                 author: author,
-                content: content,
+                content: blob,
             };
 
             const xhr = new XMLHttpRequest(); // Tạo đối tượng XMLHttpRequest
