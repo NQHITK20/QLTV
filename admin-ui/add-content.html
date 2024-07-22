@@ -25,8 +25,6 @@
 
     <script src="https://cdn.ckeditor.com/ckeditor5/36.0.0/classic/ckeditor.js"></script>
 
-
-
     <link rel="stylesheet" href="assets/css/style.css">
 
     <link href='https://fonts.googleapis.com/css?family=Open+Sans:400,600,700,800' rel='stylesheet' type='text/css'>
@@ -154,10 +152,6 @@
                             <div class="row form-group">
                                 <div class="col col-md-3"><label for="text-input" class=" form-control-label">Tiêu đề bài viết</label></div>
                                 <div class="col-12 col-md-6"><input type="text" id="titleNew" name="titleNew" placeholder="Nhập tiêu đề bài viết" class="form-control"></div>
-                            </div>
-                            <div class="row form-group">
-                                <div class="col col-md-3"><label for="text-input" class=" form-control-label">nội dung giới thiệu bài viết</label></div>
-                                <div class="col-12 col-md-9"><input type="text" id="description" name="description" placeholder="Nhập description" class="form-control"></div>
                             </div>
                             <div class="row form-group">
                                 <div class="col col-md-3"><label for="text-input" class=" form-control-label">Ảnh chính bài viết</label></div>
@@ -329,23 +323,28 @@ ClassicEditor
         function submitForm() {
 
             let title = document.getElementById('titleNew').value;
-            let description = document.getElementById('description').value;
             let author = document.getElementById('author').value;
-            let content = editor.getData();
             let fileInput = document.getElementById('image');
             let file = fileInput.files[0]; // Lấy đối tượng file từ input
-            function updateImageSizes(htmlContent) {
+
+
+             function updateImageSizes(htmlContent) {
             // Sử dụng Regex để thay đổi giá trị width và height
             return htmlContent.replace(/<img([^>]*)width="\d+"([^>]*)height="\d+"([^>]*)>/g, '<img$1width="500"$2height="400"$3>');
-            }
+             }
 
+            // Lấy dữ liệu từ CKEditor
+            let content = editor.getData();
+
+            // Thay đổi kích thước ảnh
             content = updateImageSizes(content);
+
+            // Cập nhật lại nội dung CKEditor
+            editor.setData(content);
+
 
             if (!title) {
                 alert("Vui lòng nhập tiêu đề.");
-                return ;
-            }else if (!description) {
-                alert("Vui lòng nhập nội dung chính.");
                 return ;
             }
             else if (!file) {
@@ -366,7 +365,6 @@ ClassicEditor
             // Tạo đường dẫn mới
             let newsData = {
                 title: title,
-                description: description,
                 image: fileName,
                 author: author,
                 content: content,
@@ -405,18 +403,4 @@ ClassicEditor
      </script>
 
 </body>
-<style>
-    .overlay {
-        position: fixed;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        background-color: rgba(0, 0, 0, 0.5);
-        display: none;
-        justify-content: center;
-        align-items: center;
-        z-index: 999;
-    }
-</style>
 </html>
