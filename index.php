@@ -279,9 +279,9 @@ if ($data33 === null) {
 						<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
 							<strong class="tg-logo"><a href="index.php"><img src="images/flogo.png" alt="company name here"></a></strong>
 							<div class="tg-searchbox">
-								<form class="tg-formtheme tg-formsearch">
+								<form class="tg-formtheme tg-formsearch" id="searchForm">
 									<fieldset>
-										<input type="text" name="search" class="typeahead form-control" placeholder="Tìm kiếm ...">
+										<input type="text" name="search" class="typeahead form-control" placeholder="Sách hay">
 										<button type="submit" class="tg-btn">Search</button>
 									</fieldset>
 								</form>
@@ -882,6 +882,16 @@ document.cookie = 'last_page_book=' + Math.ceil(databook.data.length / 12) + '; 
 document.cookie = 'listing_new=' + JSON.stringify(loadcookies(datanews,4)) + '; expires=Fri, 31 Dec 9999 23:59:59 GMT; path=/;';
 document.cookie = 'page_index_new=' + 1 + '; expires=Fri, 31 Dec 9999 23:59:59 GMT; path=/;';
 document.cookie = 'last_page_new=' + Math.ceil(datanews.data.length / 4) + '; expires=Fri, 31 Dec 9999 23:59:59 GMT; path=/;';
+
+document.getElementById('searchForm').addEventListener('submit', function(event) {
+        event.preventDefault(); // Ngăn chặn hành động gửi biểu mẫu mặc định
+
+        let searchQuery = document.querySelector('input[name="search"]').value;
+        let url = `/QuanLyThuVien/findingproducts.php?tukhoa=${encodeURIComponent(searchQuery)}`;
+        
+        // Điều hướng đến URL mới với từ khóa tìm kiếm
+        window.location.href = url;
+    });
 
 	</script>
 

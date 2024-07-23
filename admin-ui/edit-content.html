@@ -331,11 +331,7 @@ document.addEventListener("DOMContentLoaded", async function() {
             document.getElementById("author").value = responseData.data.author;
             document.getElementById("displayedImage").src = '../images/blog/' + responseData.data.image;
             document.getElementById("displayedImage").display = "block";
-            let compressedBuffer = new Uint8Array(responseData.data.content); // Chuyển đổi sang Uint8Array nếu cần
-            let decompressedBuffer = pako.inflate(compressedBuffer, { to: 'string' }); // Giải nén dữ liệu
-            let htmlData = decompressedBuffer; // Không cần chuyển đổi Buffer vì đã giải nén ra chuỗi
-            console.log('Check data:', htmlData);
-            editor.setData(htmlData);
+            editor.setData(responseData.data.content);
         }
     } catch (error) {
         console.error(error);

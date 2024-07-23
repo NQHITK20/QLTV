@@ -329,19 +329,45 @@ ClassicEditor
             let fileInput = document.getElementById('image');
             let file = fileInput.files[0]; // Lấy đối tượng file từ input
             let content = editor.getData();
+
             function updateImageSizes(htmlContent) {
-            return htmlContent.replace(/<img([^>]*)width="\d+"([^>]*)height="\d+"([^>]*)>/g, function(match, p1, p2, p3) {
-            return `<img${p1}width="500"${p2}height="400"${p3}>`;
-            });
-            }
+    return htmlContent.replace(/<img([^>]*)>/g, function(match, p1) {
+        // Tìm các thuộc tính width và height hiện tại, nếu có
+        const widthMatch = p1.match(/width="(\d+)"/);
+        const heightMatch = p1.match(/height="(\d+)"/);
 
-            // Thay đổi kích thước ảnh
-            content = updateImageSizes(content);
+        // Xây dựng các thuộc tính mới với kích thước đã thay đổi
+        const newWidth = '500';
+        const newHeight = '400';
 
-            const compressedData = pako.deflate(content);
+        let newAttributes = '';
 
-             // Tạo Blob từ dữ liệu nén
-            const blob = new Blob([compressedData], { type: 'application/octet-stream' });
+        if (widthMatch) {
+            newAttributes += `width="${newWidth}" `;
+        } else {
+            newAttributes += `width="${newWidth}" `;
+        }
+
+        if (heightMatch) {
+            newAttributes += `height="${newHeight}" `;
+        } else {
+            newAttributes += `height="${newHeight}" `;
+        }
+
+        // Trả về thẻ img với kích thước mới
+        return `<img${p1.replace(/width="\d+"|height="\d+"/g, '')}${newAttributes.trim()}>`;
+    });
+}
+
+// Ví dụ sử dụng
+content = updateImageSizes(content);
+
+console.log(content);
+
+// Thay đổi kích thước ảnh
+content = updateImageSizes(content);
+
+console.log(content);
 
             if (!title) {
                 alert("Vui lòng nhập tiêu đề.");
@@ -367,7 +393,7 @@ ClassicEditor
                 title: title,
                 image: fileName,
                 author: author,
-                content: blob,
+                content: content,
             };
 
             const xhr = new XMLHttpRequest(); // Tạo đối tượng XMLHttpRequest
