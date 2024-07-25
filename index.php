@@ -142,7 +142,6 @@ if ($data2 === null) {
     die('Lỗi khi chuyển đổi JSON');
 }
 
-
 $url = 'http://localhost:8000/api/get-news'; // URL của API backend
 
 // Dữ liệu gửi đi
@@ -427,15 +426,6 @@ if ($data33 === null) {
 											<span class="tg-themebadge">3</span>
 											<i class="icon-heart"></i>
 										</a>
-										<div class="dropdown-menu tg-themedropdownmenu" aria-labelledby="tg-wishlisst">
-											<div class="tg-description"><p>Chưa có sách yêu thích nào</p></div>
-										</div>
-									</div>
-									<div class="dropdown tg-themedropdown tg-minicartdropdown">
-										<a href="javascript:void(0);" id="tg-minicart" class="tg-btnthemedropdown" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-											<span class="tg-themebadge">3</span>
-											<i class="icon-books"></i>
-										</a>
 										<div class="dropdown-menu tg-themedropdownmenu" aria-labelledby="tg-minicart">
 											<div class="tg-minicartbody">
 												<div class="tg-minicarproduct">
@@ -468,7 +458,6 @@ if ($data33 === null) {
 												</div>
 											</div>
 											<div class="tg-minicartfoot">
-												<span class="tg-subtotal">Đang mượn: <strong> 3</strong></span>
 												<div class="tg-btns">
 													<a class="tg-btn" href="javascript:void(0);">Xem thêm</a>
 													<a class="tg-btn" href="javascript:void(0);">Đóng</a>
@@ -479,10 +468,45 @@ if ($data33 === null) {
 									<div class="dropdown tg-themedropdown tg-wishlistdropdown">
 										<a href="javascript:void(0);" id="tg-wishlisst" class="tg-btnthemedropdown" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
 											<span class="tg-themebadge">3</span>
-											<i class="icon-bell"></i>
+											<i class="icon-books"></i>
 										</a>
-										<div class="dropdown-menu tg-themedropdownmenu" aria-labelledby="tg-wishlisst">
-											<div class="tg-description"><p>Không có thông báo nào</p></div>
+										<div class="dropdown-menu tg-themedropdownmenu" aria-labelledby="tg-minicart">
+											<div class="tg-minicartbody">
+												<div class="tg-minicarproduct">
+													<figure>
+														<img src="images/products/img-01.jpg" alt="image description">
+													</figure>
+													<div class="tg-minicarproductdata">
+														<h5><a href="javascript:void(0);">Our State Fair Is A Great Function</a></h5>
+														<h6><a href="javascript:void(0);">Tiểu thuyết</a></h6>
+													</div>
+												</div>
+												<div class="tg-minicarproduct">
+													<figure>
+														<img src="images/products/img-02.jpg" alt="image description">
+													</figure>
+													<div class="tg-minicarproductdata">
+														<h5><a href="javascript:void(0);">Bring Me To Light</a></h5>
+														<h6><a href="javascript:void(0);">Tiểu thuyết</a></h6>
+													</div>
+												</div>
+												<div class="tg-minicarproduct">
+													<figure>
+														<img src="images/products/img-03.jpg" alt="image description">
+													</figure>
+													<div class="tg-minicarproductdata">
+														<h5><a href="javascript:void(0);">Have Faith In Your Soul</a></h5>
+														<h6><a href="javascript:void(0);">Tiểu thuyết</a></h6>
+													</div>
+												</div>
+											</div>
+											<div class="tg-minicartfoot">
+											<span class="tg-subtotal">Đang mượn: <strong> 3</strong></span>
+												<div class="tg-btns">
+													<a class="tg-btn" href="javascript:void(0);">Xem thêm</a>
+													<a class="tg-btn" href="javascript:void(0);">Đóng</a>
+												</div>
+											</div>
 										</div>
 									</div>
 								</div>
@@ -543,7 +567,7 @@ if (isset($data['data'])) {
                             <div class="tg-backcover"><img src="images/books/<?php echo htmlspecialchars($book['image']); ?>" alt="<?php echo htmlspecialchars($book['bookName']); ?>"></div>
                         </div>
                         <a class="tg-btnaddtowishlist"
-						href="productdetail.php?id=<?php echo htmlspecialchars($book['id']); ?>"
+						href="bookdetail.php?id=<?php echo htmlspecialchars($book['id']); ?>"
 						<?php
 						$category = $book['category'];
 						$id = $book['id'];
@@ -561,7 +585,7 @@ if (isset($data['data'])) {
                         </ul>
                         <div class="tg-themetagbox"><span class="tg-themetag">mới</span></div>
                         <div class="tg-booktitle">
-                            <h3><a href="productdetail.php?id=<?php echo htmlspecialchars($book['id']); ?>" onClick="setCookiesBook(<?php echo $categoryJson; ?>,<?php echo $idJson; ?>))"><?php echo htmlspecialchars($book['bookName']); ?></a></h3>
+                            <h3><a href="bookdetail.php?id=<?php echo htmlspecialchars($book['id']); ?>" onClick="setCookiesBook(<?php echo $categoryJson; ?>,<?php echo $idJson; ?>))"><?php echo htmlspecialchars($book['bookName']); ?></a></h3>
                         </div>
                         <span class="tg-bookwriter">Tác giả : <?php echo htmlspecialchars($book['author']); ?></span>
                     </div>
@@ -887,11 +911,12 @@ document.getElementById('searchForm').addEventListener('submit', function(event)
         event.preventDefault(); // Ngăn chặn hành động gửi biểu mẫu mặc định
 
         let searchQuery = document.querySelector('input[name="search"]').value;
-        let url = `/QuanLyThuVien/findingproducts.php?tukhoa=${encodeURIComponent(searchQuery)}`;
+		setCookie('tukhoa', searchQuery, 30);
+        let url = `/QuanLyThuVien/findingbook.php?tukhoa=${encodeURIComponent(searchQuery)}`;
         
         // Điều hướng đến URL mới với từ khóa tìm kiếm
         window.location.href = url;
-    });
+});
 
 	</script>
 

@@ -945,7 +945,7 @@ if ($data4 === null) {
 												<div class="tg-postbook">
 													<figure class="tg-featureimg"><img id="imageBook" alt="image description"></figure>
 													<div class="tg-postbookcontent">
-														<a class="tg-btnaddtowishlist" href="javascript:void(0);">
+														<a class="tg-btnaddtowishlist" onclick="themVaoYeuthich()" style="cursor:pointer">
 															<span>Thêm vào yêu thích</span>
 														</a>
 													</div>
@@ -991,7 +991,7 @@ if ($data4 === null) {
 						                                            $categoryJson = htmlspecialchars(json_encode($category), ENT_QUOTES, 'UTF-8');
 						                                            $idJson = htmlspecialchars(json_encode($id), ENT_QUOTES, 'UTF-8');
 						                                            ?>
-																	<a class="tg-btnaddtowishlist" href="productdetail.php?id=<?php echo $idJson ?>" onClick="setCookiesBook(<?php echo $categoryJson ?>,<?php echo $idJson ?>)">
+																	<a class="tg-btnaddtowishlist" href="bookdetail.php?id=<?php echo $idJson ?>" onClick="setCookiesBook(<?php echo $categoryJson ?>,<?php echo $idJson ?>)">
 																		<span>Xem thêm</span>
 																	</a>
 																</figure>
@@ -1000,7 +1000,7 @@ if ($data4 === null) {
 																		<li><a><?php echo $book['category'] ?></a></li>
 																	</ul>
 																	<div class="tg-booktitle">
-																		<h3><a href="productdetail.php?id=<?php echo $idJson ?>" onClick="setCookiesBook(<?php echo $categoryJson ?>,<?php echo $idJson ?>)"><?php echo $book['bookName'] ?></a></h3>
+																		<h3><a href="bookdetail.php?id=<?php echo $idJson ?>" onClick="setCookiesBook(<?php echo $categoryJson ?>,<?php echo $idJson ?>)"><?php echo $book['bookName'] ?></a></h3>
 																	</div>
 																	<span class="tg-bookwriter"> <a><?php echo $book['author'] ?></a></span>																	
 																</div>
@@ -1305,6 +1305,34 @@ function setCookiesBook(category,bookId)
 {
 	setCookie('categoryBook', category, 30);
 	setCookie('bookId', bookId, 30);
+}
+
+function themVaoYeuthich()
+{
+	document.getElementById('loadingOverlay').style.display = 'flex';
+    return new Promise(function(resolve, reject) {
+        let xhr = new XMLHttpRequest();
+		let urlParams = new URLSearchParams(window.location.search);
+        let bookId = urlParams.get('id');
+		let data = JSON.parse(localStorage.getItem('userData'));
+        let bookData = {
+            idusername: data.id,
+			fvIdBook:bookId
+        }
+
+		let token = localStorage.getItem('jwtToken');
+        xhr.open("POST", "http://localhost:8000/api/create-fvbook", true);
+        xhr.setRequestHeader("Content-Type", "application/json");
+        xhr.setRequestHeader('Authorization', 'Bearer ' + token);
+        xhr.onreadystatechange = function () {
+            if (xhr.readyState === 4 && xhr.status === 200) {
+                var responseData = JSON.parse(xhr.responseText);
+                alert(responseData.errMessage)
+             document.getElementById('loadingOverlay').style.display = 'none';
+            }
+        };
+        xhr.send(JSON.stringify(bookData));
+    });
 }
 
 

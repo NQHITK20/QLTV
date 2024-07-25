@@ -104,6 +104,47 @@ if ($data3 === null) {
     die('Lỗi khi chuyển đổi JSON');
 }
 
+ini_set('display_errors', 1);
+ini_set('display_startup_errors', 1);
+error_reporting(E_ALL);
+
+$url = 'http://localhost:8000/api/search-book'; // URL của API backend
+
+// Dữ liệu gửi đi
+$datanew4 = array('tukhoa' => $_COOKIE['tukhoa']);
+
+// Chuyển đổi mảng dữ liệu thành JSON
+$jsonData4 = json_encode($datanew4);
+
+// Cấu hình cURL
+$ch = curl_init($url);
+curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+curl_setopt($ch, CURLOPT_HTTPHEADER, array(
+    'Content-Type: application/json',
+    'Authorization: Bearer' // Thêm token vào header Authorization
+));
+curl_setopt($ch, CURLOPT_POST, true);
+curl_setopt($ch, CURLOPT_POSTFIELDS, $jsonData4);
+
+// Thực hiện yêu cầu POST và nhận phản hồi
+$response4 = curl_exec($ch);
+
+// Kiểm tra nếu có lỗi khi gửi yêu cầu
+if ($response4 === FALSE) {
+    die('Lỗi khi gửi yêu cầu: ' . curl_error($ch));
+}
+
+// Đóng cURL
+curl_close($ch);
+
+// Chuyển đổi JSON thành mảng dữ liệu trong PHP
+$data4 = json_decode($response4, true);
+
+// Kiểm tra nếu có lỗi khi chuyển đổi JSON
+if ($data4 === null) {
+    die('Lỗi khi chuyển đổi JSON');
+}
+
 ?>
 
 <body>
@@ -147,9 +188,9 @@ if ($data3 === null) {
 						<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
 							<strong class="tg-logo"><a href="index.html"><img src="images/logo.png" alt="company name here"></a></strong>
 							<div class="tg-searchbox">
-								<form class="tg-formtheme tg-formsearch">
+								<form class="tg-formtheme tg-formsearch" id="searchForm">
 									<fieldset>
-										<input type="text" name="search" class="typeahead form-control" placeholder="Tìm kiếm sách tốt . . .">
+										<input type="text" name="search" class="typeahead form-control" placeholder="Sách hay..." >
 										<button type="submit" class="tg-btn">Search</button>
 									</fieldset>
 								</form>
@@ -880,10 +921,52 @@ if ($data3 === null) {
 								<div id="tg-content" class="tg-content">
 									<div class="tg-products">
 										<div class="tg-sectionhead">
-											<h2>Sách đang hot</h2>
+											<h2><?php echo $_COOKIE['tukhoa'] ?></h2>
 										</div>
 										<div class="tg-productgrid">
-											
+											<?php 
+											if (isset($data4['books']) && !empty($data4['books'])) {
+												// Lặp qua dữ liệu và hiển thị trong các div item
+												foreach ($data4['books'] as $book) {
+													// Chỉ hiển thị sách nếu showing = 1
+													if ($book['showing'] == 1) {
+														?>
+														<div class="col-xs-6 col-sm-6 col-md-4 col-lg-3">
+																							<div class="tg-postbook">
+																								<figure class="tg-featureimg">
+																									<div class="tg-bookimg">
+																										<div class="tg-frontcover"><img src="images/books/<?php echo htmlspecialchars($book['image']); ?>" alt="image description"></div>
+																										<div class="tg-backcover"><img src="images/books/<?php echo htmlspecialchars($book['image']); ?>" alt="image description"></div>
+																									</div>
+																									<?php
+																	$category = $book['category'];
+																	$id = $book['id'];
+																	// Sử dụng json_encode và htmlspecialchars để đảm bảo chuỗi an toàn cho JavaScript và HTML
+																	$categoryJson = htmlspecialchars(json_encode($category), ENT_QUOTES, 'UTF-8');
+																	$idJson = htmlspecialchars(json_encode($id), ENT_QUOTES, 'UTF-8');
+																	?>
+																									<a class="tg-btnaddtowishlist" href="bookdetail.php?id=<?php echo $idJson ?>" onClick="setCookiesBook(<?php echo $categoryJson ?>,<?php echo $idJson ?>)">
+																										<span>Xem thêm</span>
+																									</a>
+																								</figure>
+																								<div class="tg-postbookcontent">
+																									<ul class="tg-bookscategories">
+																										<li><a><?php echo htmlspecialchars($book['category']); ?></a></li>
+																									</ul>
+																									<div class="tg-booktitle">
+																										<h3><a href="bookdetail.php?id=<?php echo $idJson ?>" onClick="setCookiesBook(<?php echo $categoryJson ?>,<?php echo $idJson ?>)"><?php echo htmlspecialchars($book['bookName']); ?></a></h3>
+																									</div>
+																									<span class="tg-bookwriter"> <a><?php echo htmlspecialchars($book['author']); ?></a></span>
+																								</div>
+																							</div>
+																						</div>
+																						<?php
+													}
+												}
+											} else {
+												echo '<h2>Sách bạn tìm hiện không có . vui lòng thử lại</h2>';
+											}
+											?>
 										</div>
 									</div>
 								</div>
@@ -1064,6 +1147,36 @@ if ($data3 === null) {
 			}
 		  }
 		}
+
+		function setCookie(name, value, days) {
+	var expires = "";
+	if (days) {
+		var date = new Date();
+		date.setTime(date.getTime() + (days * 24 * 60 * 60 * 1000));
+		expires = "; expires=" + date.toUTCString();
+	}
+	document.cookie = name + "=" + (value || "") + expires + "; path=/";
+}
+
+		document.getElementById('searchForm').addEventListener('submit', function(event) {
+        event.preventDefault(); // Ngăn chặn hành động gửi biểu mẫu mặc định
+
+        let searchQuery = document.querySelector('input[name="search"]').value;
+		setCookie('tukhoa', searchQuery, 30);
+        let url = `/QuanLyThuVien/findingbook.php?tukhoa=${encodeURIComponent(searchQuery)}`;
+        
+        // Điều hướng đến URL mới với từ khóa tìm kiếm
+        window.location.href = url;
+});
+let targetDiv = document.getElementById('tg-main');
+    if (targetDiv) {
+        targetDiv.scrollIntoView({ behavior: 'smooth' });
+    }
+function setCookiesBook(category,bookId)
+{
+	setCookie('categoryBook', category, 30);
+	setCookie('bookId', bookId, 30);
+}
 </script>		
 </body>
 </html>

@@ -19,48 +19,36 @@
 	<link rel="stylesheet" href="css/responsive.css">
 	<script src="js/vendor/modernizr-2.8.3-respond-1.4.2.min.js"></script>
 </head>
+<script>
+        // Hàm gửi dữ liệu từ localStorage đến PHP
+        function sendDataToServer() {
+            // Lấy dữ liệu từ localStorage
+		    let data = JSON.parse(localStorage.getItem('userData'));
+			let token = localStorage.getItem('jwtToken')
+            // Gửi dữ liệu đến máy chủ PHP bằng Fetch API
+            fetch('favoritebook.php', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ idusername: data.id,token:token })
+            })
+            .then(response => response.json())
+            .then(data => {
+                console.log('Server response:', data);
+                alert(data.message); // Hiển thị thông báo từ phản hồi của máy chủ
+            })
+            .catch(error => {
+                console.error('Error:', error);
+            });
+        }
+
+        // Gọi hàm gửi dữ liệu khi trang được tải
+        document.addEventListener('DOMContentLoaded', function() {
+            sendDataToServer();
+        });
+    </script>
 <?php 
-
-ini_set('display_errors', 1);
-ini_set('display_startup_errors', 1);
-error_reporting(E_ALL);
-
-$url = 'http://localhost:8000/api/get-all-book'; // URL của API backend
-
-// Dữ liệu gửi đi
-$databook = array('id' => 'ALLSHOW');
-
-// Chuyển đổi mảng dữ liệu thành JSON
-$jsonData = json_encode($databook);
-
-// Cấu hình cURL
-$ch = curl_init($url);
-curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-curl_setopt($ch, CURLOPT_HTTPHEADER, array(
-    'Content-Type: application/json',
-    'Authorization: Bearer' // Thêm token vào header Authorization
-));
-curl_setopt($ch, CURLOPT_POST, true);
-curl_setopt($ch, CURLOPT_POSTFIELDS, $jsonData);
-
-// Thực hiện yêu cầu POST và nhận phản hồi
-$response = curl_exec($ch);
-
-// Kiểm tra nếu có lỗi khi gửi yêu cầu
-if ($response === FALSE) {
-    die('Lỗi khi gửi yêu cầu: ' . curl_error($ch));
-}
-
-// Đóng cURL
-curl_close($ch);
-
-// Chuyển đổi JSON thành mảng dữ liệu trong PHP
-$data = json_decode($response, true);
-
-// Kiểm tra nếu có lỗi khi chuyển đổi JSON
-if ($data === null) {
-    die('Lỗi khi chuyển đổi JSON');
-}
 
 ini_set('display_errors', 1);
 ini_set('display_startup_errors', 1);
@@ -145,6 +133,64 @@ if ($data3 === null) {
     die('Lỗi khi chuyển đổi JSON');
 }
 
+ini_set('display_errors', 1);
+ini_set('display_startup_errors', 1);
+error_reporting(E_ALL);
+
+$url = 'http://localhost:8000/api/get-fvbook'; // URL của API backend
+
+// Dữ liệu gửi đi
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+	// Nhận dữ liệu JSON từ yêu cầu POST
+	$data = json_decode(file_get_contents('php://input'), true);
+
+	// Truy cập các giá trị
+	$idusername = $data['idusername'] ?? null;
+	$token = $data['token'] ?? null;
+
+	// Xử lý dữ liệu (ví dụ: lưu vào cơ sở dữ liệu, ghi log, v.v.)
+	$datanew4 = array('idusername' => $idusername);
+	
+	// Trả về phản hồi JSON
+	header('Content-Type: application/json');
+	
+	// Để tránh việc PHP tiếp tục gửi HTML sau khi gửi dữ liệu JSON
+	exit;
+}
+
+
+// Chuyển đổi mảng dữ liệu thành JSON
+$jsonData4 = json_encode($datanew4);
+
+// Cấu hình cURL
+$ch = curl_init($url);
+curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+curl_setopt($ch, CURLOPT_HTTPHEADER, array(
+    'Content-Type: application/json',
+    'Authorization: Bearer' + $token // Thêm token vào header Authorization
+));
+curl_setopt($ch, CURLOPT_POST, true);
+curl_setopt($ch, CURLOPT_POSTFIELDS, $jsonData4);
+
+// Thực hiện yêu cầu POST và nhận phản hồi
+$response4 = curl_exec($ch);
+
+// Kiểm tra nếu có lỗi khi gửi yêu cầu
+if ($response4 === FALSE) {
+    die('Lỗi khi gửi yêu cầu: ' . curl_error($ch));
+}
+
+// Đóng cURL
+curl_close($ch);
+
+// Chuyển đổi JSON thành mảng dữ liệu trong PHP
+$data4 = json_decode($response4, true);
+
+// Kiểm tra nếu có lỗi khi chuyển đổi JSON
+if ($data4 === null) {
+    die('Lỗi khi chuyển đổi JSON');
+}
+
 ?>
 
 <body>
@@ -188,9 +234,9 @@ if ($data3 === null) {
 						<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
 							<strong class="tg-logo"><a href="index.html"><img src="images/logo.png" alt="company name here"></a></strong>
 							<div class="tg-searchbox">
-								<form class="tg-formtheme tg-formsearch">
+								<form class="tg-formtheme tg-formsearch" id="searchForm">
 									<fieldset>
-										<input type="text" name="search" class="typeahead form-control" placeholder="Tìm kiếm sách tốt . . .">
+										<input type="text" name="search" class="typeahead form-control" placeholder="Sách hay..." >
 										<button type="submit" class="tg-btn">Search</button>
 									</fieldset>
 								</form>
@@ -921,89 +967,53 @@ if ($data3 === null) {
 								<div id="tg-content" class="tg-content">
 									<div class="tg-products">
 										<div class="tg-sectionhead">
-											<h2><span>Độc giả chọn</span>Sách đang hot</h2>
+											<h2><?php echo $_COOKIE['tukhoa'] ?></h2>
 										</div>
 										<div class="tg-productgrid">
-											<div class="tg-refinesearch">
-												<span>Sách hay mới nhất</span>
-											</div>
-											<?php
-											$listing_book = isset($_COOKIE['listing_book']) ? json_decode($_COOKIE['listing_book'], true) : null; 									
-// Kiểm tra nếu dữ liệu có chứa key 'data'
-if ($listing_book) {
-    // Lặp qua dữ liệu và hiển thị trong các div item
-    foreach ($listing_book as $book) {
-        // Chỉ hiển thị sách nếu showing = 1
-        if ($book['showing'] == 1) {
-            ?>
-			<div class="col-xs-6 col-sm-6 col-md-4 col-lg-3">
-												<div class="tg-postbook">
-													<figure class="tg-featureimg">
-														<div class="tg-bookimg">
-															<div class="tg-frontcover"><img src="images/books/<?php echo htmlspecialchars($book['image']); ?>" alt="image description"></div>
-															<div class="tg-backcover"><img src="images/books/<?php echo htmlspecialchars($book['image']); ?>" alt="image description"></div>
-														</div>
-														<?php
-						$category = $book['category'];
-						$id = $book['id'];
-						// Sử dụng json_encode và htmlspecialchars để đảm bảo chuỗi an toàn cho JavaScript và HTML
-						$categoryJson = htmlspecialchars(json_encode($category), ENT_QUOTES, 'UTF-8');
-						$idJson = htmlspecialchars(json_encode($id), ENT_QUOTES, 'UTF-8');
-						?>
-														<a class="tg-btnaddtowishlist" href="bookdetail.php?id=<?php echo $idJson ?>" onClick="setCookiesBook(<?php echo $categoryJson ?>,<?php echo $idJson ?>)">
-															<span>Xem thêm</span>
-														</a>
-													</figure>
-													<div class="tg-postbookcontent">
-														<ul class="tg-bookscategories">
-															<li><a><?php echo htmlspecialchars($book['category']); ?></a></li>
-														</ul>
-														<div class="tg-booktitle">
-															<h3><a href="bookdetail.php?id=<?php echo $idJson ?>" onClick="setCookiesBook(<?php echo $categoryJson ?>,<?php echo $idJson ?>)"><?php echo htmlspecialchars($book['bookName']); ?></a></h3>
-														</div>
-														<span class="tg-bookwriter"> <a><?php echo htmlspecialchars($book['author']); ?></a></span>
-													</div>
-												</div>
-											</div>
-                                            <?php
-        }
-    }
-} else {
-    echo '<p>Không có dữ liệu</p>';
-}
-?>
-										</div>
-									</div>
-									<div class="pagination">
-										<a onclick="prevPage()" id="btn_prev" style="cursor: pointer;">&laquo;</a>
-										<?php
-										$page_index_book = isset($_COOKIE['page_index_book']) ? json_decode($_COOKIE['page_index_book'], true) : null;
-										$last_page_book = isset($_COOKIE['last_page_book']) ? json_decode($_COOKIE['last_page_book'], true) : null;
-										if ($page_index_book && $last_page_book ) {
-										if ($page_index_book < 5 ) {
-										    $count1 = 0;
-											for ($i = 1;$i <= min($page_index_book + 8, $last_page_book) && $count1 < 10; $i++) {
-												?>
-												<a class="pag-child" onclick="changePageClick(<?php echo $i ?>)" style="cursor:pointer"><?php echo $i ?></a>
-												<?php
-												$count1++;
+											<?php 
+											if (isset($data4['books']) && !empty($data4['books'])) {
+												// Lặp qua dữ liệu và hiển thị trong các div item
+												foreach ($data4['books'] as $book) {
+													// Chỉ hiển thị sách nếu showing = 1
+													if ($book['showing'] == 1) {
+														?>
+														<div class="col-xs-6 col-sm-6 col-md-4 col-lg-3">
+																							<div class="tg-postbook">
+																								<figure class="tg-featureimg">
+																									<div class="tg-bookimg">
+																										<div class="tg-frontcover"><img src="images/books/<?php echo htmlspecialchars($book['image']); ?>" alt="image description"></div>
+																										<div class="tg-backcover"><img src="images/books/<?php echo htmlspecialchars($book['image']); ?>" alt="image description"></div>
+																									</div>
+																									<?php
+																	$category = $book['category'];
+																	$id = $book['id'];
+																	// Sử dụng json_encode và htmlspecialchars để đảm bảo chuỗi an toàn cho JavaScript và HTML
+																	$categoryJson = htmlspecialchars(json_encode($category), ENT_QUOTES, 'UTF-8');
+																	$idJson = htmlspecialchars(json_encode($id), ENT_QUOTES, 'UTF-8');
+																	?>
+																									<a class="tg-btnaddtowishlist" href="bookdetail.php?id=<?php echo $idJson ?>" onClick="setCookiesBook(<?php echo $categoryJson ?>,<?php echo $idJson ?>)">
+																										<span>Xem thêm</span>
+																									</a>
+																								</figure>
+																								<div class="tg-postbookcontent">
+																									<ul class="tg-bookscategories">
+																										<li><a><?php echo htmlspecialchars($book['category']); ?></a></li>
+																									</ul>
+																									<div class="tg-booktitle">
+																										<h3><a href="bookdetail.php?id=<?php echo $idJson ?>" onClick="setCookiesBook(<?php echo $categoryJson ?>,<?php echo $idJson ?>)"><?php echo htmlspecialchars($book['bookName']); ?></a></h3>
+																									</div>
+																									<span class="tg-bookwriter"> <a><?php echo htmlspecialchars($book['author']); ?></a></span>
+																								</div>
+																							</div>
+																						</div>
+																						<?php
+													}
+												}
+											} else {
+												echo '<h2>Sách bạn tìm hiện không có . vui lòng thử lại</h2>';
 											}
-										}else{
-											if ($page_index_book >= 5) {
-												$count2 = 0;
-												for ($i = $page_index_book-4;$i <= min($page_index_book + 4, $last_page_book) && $count2 < 10; $i++) {
-													?>
-													<a class="pag-child" onclick="changePageClick(<?php echo $i ?>)" style="cursor:pointer"><?php echo $i ?></a>
-													<?php
-													$count2++;
-												}	
-											}
-										}
 											?>
-										<?php } else {
-                                          echo '<p>Không có dữ liệu tổng số trang và trang hiện tại</p>';
-                                            }?>
-										<a onclick="nextPage()" id="btn_next" style="cursor: pointer;">&raquo;</a>
+										</div>
 									</div>
 								</div>
 							</div>
@@ -1183,95 +1193,8 @@ if ($listing_book) {
 			}
 		  }
 		}
-</script>
-<script>
-let urlParams = new URLSearchParams(window.location.search);
-let current_page = urlParams.get('pageIndex') || 1; // Gán giá trị mặc định nếu pageIndex không tồn tại
-let records_per_page = 12;
 
-let objJson = <?php echo json_encode($data); ?>;
-
-// Hàm chuyển sang trang trước
-function prevPage() {
-    if (current_page > 1) {
-        current_page--;
-        changePage(current_page);
-        window.location.href = "products.php?pageIndex=" + current_page;
-    }
-}
-
-// Hàm chuyển sang trang sau
-function nextPage() {
-    if (current_page < numPages()) {
-        current_page++;
-        changePage(current_page);
-        window.location.href = "products.php?pageIndex=" + current_page;
-    }
-}
-
-// Hàm thay đổi trang
-function changePage(page) {
-    let btn_next = document.getElementById("btn_next");
-    let btn_prev = document.getElementById("btn_prev");
-
-    // Kiểm tra tính hợp lệ của trang
-    if (page < 1) page = 1;
-    if (page > numPages()) page = numPages();
-
-    let listing_book = [];
-
-    let startIndex = (page - 1) * records_per_page;
-    let endIndex = startIndex + records_per_page;
-
-    for (let i = startIndex; i < endIndex && i < objJson.data.length; i++) {
-        listing_book.push(objJson.data[i]);
-    }
-	document.cookie = 'listing_book=' + JSON.stringify(listing_book) + '; expires=Fri, 31 Dec 9999 23:59:59 GMT; path=/;';
-	document.cookie = 'page_index_book=' + current_page + '; expires=Fri, 31 Dec 9999 23:59:59 GMT; path=/;';
-
-    if (page == 1) {
-        btn_prev.style.visibility = "hidden";
-    } else {
-        btn_prev.style.visibility = "visible";
-    }
-
-    if (page == numPages()) {
-        btn_next.style.visibility = "hidden";
-    } else {
-        btn_next.style.visibility = "visible";
-    }
-
-    let pagChild = document.querySelectorAll('.pag-child');
-
-    pagChild.forEach(function(pag) {
-        if (pag.innerText === current_page) {
-            pag.className = "active";
-        } else {
-            pag.className = "";
-        }
-    });
-
-    let targetDiv = document.getElementById('tg-main');
-    if (targetDiv) {
-        targetDiv.scrollIntoView({ behavior: 'smooth' });
-    }
-}
-
-// Hàm thay đổi trang khi nhấn vào số trang
-function changePageClick(page) {
-    current_page = page;
-    changePage(current_page);
-    window.location.href = "products.php?pageIndex=" + current_page;
-}
-
-// Hàm tính tổng số trang
-function numPages() {
-    return Math.ceil(objJson.data.length / records_per_page);
-}
-
-changePage(current_page);
-
-function setCookie(name, value, days) {
+		function setCookie(name, value, days) {
 	var expires = "";
 	if (days) {
 		var date = new Date();
@@ -1281,26 +1204,25 @@ function setCookie(name, value, days) {
 	document.cookie = name + "=" + (value || "") + expires + "; path=/";
 }
 
-function getCookie(name) {
-	var nameEQ = name + "=";
-	var ca = document.cookie.split(';');
-	for (var i = 0; i < ca.length; i++) {
-		var c = ca[i];
-		while (c.charAt(0) == ' ') c = c.substring(1, c.length);
-		if (c.indexOf(nameEQ) == 0) return c.substring(nameEQ.length, c.length);
-	}
-	return null;
-}
+		document.getElementById('searchForm').addEventListener('submit', function(event) {
+        event.preventDefault(); // Ngăn chặn hành động gửi biểu mẫu mặc định
 
-function eraseCookie(name) {
-	document.cookie = name + '=; Max-Age=-99999999;';
-}
+        let searchQuery = document.querySelector('input[name="search"]').value;
+		setCookie('tukhoa', searchQuery, 30);
+        let url = `/QuanLyThuVien/findingbook.php?tukhoa=${encodeURIComponent(searchQuery)}`;
+        
+        // Điều hướng đến URL mới với từ khóa tìm kiếm
+        window.location.href = url;
+});
+let targetDiv = document.getElementById('tg-main');
+    if (targetDiv) {
+        targetDiv.scrollIntoView({ behavior: 'smooth' });
+    }
 function setCookiesBook(category,bookId)
 {
 	setCookie('categoryBook', category, 30);
 	setCookie('bookId', bookId, 30);
 }
-</script>
-		
+</script>		
 </body>
 </html>
