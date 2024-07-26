@@ -228,6 +228,52 @@ if ($data33 === null) {
     die('Lỗi khi chuyển đổi JSON');
 }
 
+ini_set('display_errors', 1);
+ini_set('display_startup_errors', 1);
+error_reporting(E_ALL);
+
+$url = 'http://localhost:8000/api/get-fv3'; // URL của API backend
+
+// Lấy dữ liệu từ cookies
+$idusername = $_COOKIE['idusername'] ?? null;
+
+if ($idusername) {
+    // Dữ liệu để gửi
+    $datanew5 = array('idusername' => $idusername);
+
+    // Chuyển đổi mảng dữ liệu thành JSON
+    $jsonData5 = json_encode($datanew5);
+
+    // Cấu hình cURL
+    $ch = curl_init($url);
+    curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+    curl_setopt($ch, CURLOPT_HTTPHEADER, array(
+        'Content-Type: application/json',
+        'Authorization: ' . 'Bearer' // Thêm token vào header Authorization
+    ));
+    curl_setopt($ch, CURLOPT_POST, true);
+    curl_setopt($ch, CURLOPT_POSTFIELDS, $jsonData5);
+
+    // Thực hiện yêu cầu POST và nhận phản hồi
+    $response5 = curl_exec($ch);
+
+    // Kiểm tra nếu có lỗi khi gửi yêu cầu
+    if ($response5 === FALSE) {
+        die('Lỗi khi gửi yêu cầu: ' . curl_error($ch));
+    }
+
+    // Đóng cURL
+    curl_close($ch);
+
+    // Chuyển đổi JSON thành mảng dữ liệu trong PHP
+    $data5 = json_decode($response5, true);
+
+    // Kiểm tra nếu có lỗi khi chuyển đổi JSON
+    if ($data5 === null) {
+        die('Lỗi khi chuyển đổi JSON');
+    }
+}
+
 ?>
 <body class="tg-home tg-homevtwo">
 	
@@ -428,38 +474,34 @@ if ($data33 === null) {
 										</a>
 										<div class="dropdown-menu tg-themedropdownmenu" aria-labelledby="tg-minicart">
 											<div class="tg-minicartbody">
+											<?php 
+											if (isset($data5['results']) && !empty($data5['results'])) {
+												// Lặp qua dữ liệu và hiển thị trong các div item
+												foreach ($data5['results'] as $book) {
+													// Chỉ hiển thị sách nếu showing = 1
+													if ($book['showing'] == 1) {
+														?>
 												<div class="tg-minicarproduct">
 													<figure>
-														<img src="images/products/img-01.jpg" alt="image description">
+														<img src="images/books/<?php echo $book['image']; ?>" alt="image bug" style="width:65px">
 														
 													</figure>
 													<div class="tg-minicarproductdata">
-														<h5><a href="javascript:void(0);">Our State Fair Is A Great Function</a></h5>
-														<h6><a href="javascript:void(0);">Tiểu thuyết</a></h6>
+														<h5><a><?php echo $book['bookName']; ?></a></h5>
+														<h6><a><?php echo $book['category']; ?></a></h6>
 													</div>
 												</div>
-												<div class="tg-minicarproduct">
-													<figure>
-														<img src="images/products/img-02.jpg" alt="image description">
-													</figure>
-													<div class="tg-minicarproductdata">
-														<h5><a href="javascript:void(0);">Bring Me To Light</a></h5>
-														<h6><a href="javascript:void(0);">Tiểu thuyết</a></h6>
-													</div>
-												</div>
-												<div class="tg-minicarproduct">
-													<figure>
-														<img src="images/products/img-03.jpg" alt="image description">
-													</figure>
-													<div class="tg-minicarproductdata">
-														<h5><a href="javascript:void(0);">Have Faith In Your Soul</a></h5>
-														<h6><a href="javascript:void(0);">Tiểu thuyết</a></h6>
-													</div>
-												</div>
+												<?php
+													}
+												}
+											} else {
+												echo '<div class="tg-description"><p>Chưa có sách yêu thích nào</p></div>';
+											}
+											?>
 											</div>
 											<div class="tg-minicartfoot">
 												<div class="tg-btns">
-													<a class="tg-btn" href="javascript:void(0);">Xem thêm</a>
+													<a class="tg-btn" href="favoritebook.php">Xem thêm</a>
 													<a class="tg-btn" href="javascript:void(0);">Đóng</a>
 												</div>
 											</div>
@@ -823,11 +865,17 @@ if (isset($data3['data'])) {
 		  }
 		}
 		//Sự kiện logout
+
+	function deleteCookie(name) {
+    document.cookie = name + '=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;';
+    }
 	function logout()
     {
         localStorage.removeItem('userData')
         localStorage.removeItem('jwtToken')
-        
+		deleteCookie('idusername');
+        deleteCookie('token');
+        deleteCookie('jwtToken');
     }
 	let data = localStorage.getItem('userData');
 
@@ -917,6 +965,18 @@ document.getElementById('searchForm').addEventListener('submit', function(event)
         // Điều hướng đến URL mới với từ khóa tìm kiếm
         window.location.href = url;
 });
+
+let data2 = JSON.parse(localStorage.getItem('userData'));
+let token = localStorage.getItem('jwtToken');
+
+            // Kiểm tra nếu dữ liệu tồn tại
+            if (data2 && token) {
+                // Lưu vào cookies
+                setCookie('idusername', data2.id, 30);
+                setCookie('token', token, 30);
+            } else {
+                console.error('Thiếu dữ liệu người dùng hoặc token.');
+            }
 
 	</script>
 

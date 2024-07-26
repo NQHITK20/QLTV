@@ -19,35 +19,6 @@
 	<link rel="stylesheet" href="css/responsive.css">
 	<script src="js/vendor/modernizr-2.8.3-respond-1.4.2.min.js"></script>
 </head>
-<script>
-        // Hàm gửi dữ liệu từ localStorage đến PHP
-        function sendDataToServer() {
-            // Lấy dữ liệu từ localStorage
-		    let data = JSON.parse(localStorage.getItem('userData'));
-			let token = localStorage.getItem('jwtToken')
-            // Gửi dữ liệu đến máy chủ PHP bằng Fetch API
-            fetch('favoritebook.php', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({ idusername: data.id,token:token })
-            })
-            .then(response => response.json())
-            .then(data => {
-                console.log('Server response:', data);
-                alert(data.message); // Hiển thị thông báo từ phản hồi của máy chủ
-            })
-            .catch(error => {
-                console.error('Error:', error);
-            });
-        }
-
-        // Gọi hàm gửi dữ liệu khi trang được tải
-        document.addEventListener('DOMContentLoaded', function() {
-            sendDataToServer();
-        });
-    </script>
 <?php 
 
 ini_set('display_errors', 1);
@@ -139,56 +110,44 @@ error_reporting(E_ALL);
 
 $url = 'http://localhost:8000/api/get-fvbook'; // URL của API backend
 
-// Dữ liệu gửi đi
-if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-	// Nhận dữ liệu JSON từ yêu cầu POST
-	$data = json_decode(file_get_contents('php://input'), true);
+// Lấy dữ liệu từ cookies
+$idusername = $_COOKIE['idusername'] ?? null;
 
-	// Truy cập các giá trị
-	$idusername = $data['idusername'] ?? null;
-	$token = $data['token'] ?? null;
+if ($idusername) {
+    // Dữ liệu để gửi
+    $datanew4 = array('idusername' => $idusername);
 
-	// Xử lý dữ liệu (ví dụ: lưu vào cơ sở dữ liệu, ghi log, v.v.)
-	$datanew4 = array('idusername' => $idusername);
-	
-	// Trả về phản hồi JSON
-	header('Content-Type: application/json');
-	
-	// Để tránh việc PHP tiếp tục gửi HTML sau khi gửi dữ liệu JSON
-	exit;
-}
+    // Chuyển đổi mảng dữ liệu thành JSON
+    $jsonData4 = json_encode($datanew4);
 
+    // Cấu hình cURL
+    $ch = curl_init($url);
+    curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+    curl_setopt($ch, CURLOPT_HTTPHEADER, array(
+        'Content-Type: application/json',
+        'Authorization: ' . 'Bearer' // Thêm token vào header Authorization
+    ));
+    curl_setopt($ch, CURLOPT_POST, true);
+    curl_setopt($ch, CURLOPT_POSTFIELDS, $jsonData4);
 
-// Chuyển đổi mảng dữ liệu thành JSON
-$jsonData4 = json_encode($datanew4);
+    // Thực hiện yêu cầu POST và nhận phản hồi
+    $response4 = curl_exec($ch);
 
-// Cấu hình cURL
-$ch = curl_init($url);
-curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-curl_setopt($ch, CURLOPT_HTTPHEADER, array(
-    'Content-Type: application/json',
-    'Authorization: Bearer' + $token // Thêm token vào header Authorization
-));
-curl_setopt($ch, CURLOPT_POST, true);
-curl_setopt($ch, CURLOPT_POSTFIELDS, $jsonData4);
+    // Kiểm tra nếu có lỗi khi gửi yêu cầu
+    if ($response4 === FALSE) {
+        die('Lỗi khi gửi yêu cầu: ' . curl_error($ch));
+    }
 
-// Thực hiện yêu cầu POST và nhận phản hồi
-$response4 = curl_exec($ch);
+    // Đóng cURL
+    curl_close($ch);
 
-// Kiểm tra nếu có lỗi khi gửi yêu cầu
-if ($response4 === FALSE) {
-    die('Lỗi khi gửi yêu cầu: ' . curl_error($ch));
-}
+    // Chuyển đổi JSON thành mảng dữ liệu trong PHP
+    $data4 = json_decode($response4, true);
 
-// Đóng cURL
-curl_close($ch);
-
-// Chuyển đổi JSON thành mảng dữ liệu trong PHP
-$data4 = json_decode($response4, true);
-
-// Kiểm tra nếu có lỗi khi chuyển đổi JSON
-if ($data4 === null) {
-    die('Lỗi khi chuyển đổi JSON');
+    // Kiểm tra nếu có lỗi khi chuyển đổi JSON
+    if ($data4 === null) {
+        die('Lỗi khi chuyển đổi JSON');
+    }
 }
 
 ?>
@@ -967,13 +926,13 @@ if ($data4 === null) {
 								<div id="tg-content" class="tg-content">
 									<div class="tg-products">
 										<div class="tg-sectionhead">
-											<h2><?php echo $_COOKIE['tukhoa'] ?></h2>
+											<h2>Sách yêu thích</h2>
 										</div>
 										<div class="tg-productgrid">
 											<?php 
-											if (isset($data4['books']) && !empty($data4['books'])) {
+											if (isset($data4['results']) && !empty($data4['results'])) {
 												// Lặp qua dữ liệu và hiển thị trong các div item
-												foreach ($data4['books'] as $book) {
+												foreach ($data4['results'] as $book) {
 													// Chỉ hiển thị sách nếu showing = 1
 													if ($book['showing'] == 1) {
 														?>
@@ -1010,7 +969,7 @@ if ($data4 === null) {
 													}
 												}
 											} else {
-												echo '<h2>Sách bạn tìm hiện không có . vui lòng thử lại</h2>';
+												echo '<h2>Hiện tại bạn chưa có sách yêu thích nào.</h2>';
 											}
 											?>
 										</div>

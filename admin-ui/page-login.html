@@ -105,20 +105,16 @@
         document.getElementById('rememberMe').checked = rememberMe; // Set trạng thái checkbox dựa trên giá trị đã lưu
     }
 
-    let rememberedPassword = localStorage.getItem('rememberedPassword');
-    if (rememberedPassword) {
-        document.getElementById('password').value = rememberedPassword;
-    }
     //auth từng role
     let data = JSON.parse(localStorage.getItem('userData'))
     if (data.roleId ==="3") {
-        window.location.href="index.html"
+        window.location.href="index.php"
     }
     if (data.roleId ==="2") {
         window.location.href="index.html"
     }
     if (data.roleId ==="1") {
-        window.location.href="../index.php"
+        window.location.href="../index.html"
     }
 };
 
@@ -179,25 +175,22 @@
                         if (data.errCode !== 0) {
                             alert(data.errMessage)
                         }else{
-                        // Login successful, save JWT to localStorage
+                                localStorage.setItem('jwtToken', data.token);
+                                let token = localStorage.getItem("jwtToken");
+                                 if (token) {
+                                 document.cookie = "jwtToken=" + token + "; path=/";
+                                } else {
+                                  alert("Không có token, từ chối truy cập");
+                                }                        
                         localStorage.setItem('userData', JSON.stringify(data.user));
-                        localStorage.setItem('jwtToken', data.token);
-                        let token = localStorage.getItem("jwtToken");
-                        if (token) {
-                            document.cookie = "jwtToken=" + token + "; path=/";
-                        } else {
-                        alert("Không có token, từ chối truy cập");
-                        }
                         
                         //lưu checkbox
                         if (rememberMe) {
                             // If rememberMe is checked, save email to localStorage
                             localStorage.setItem('rememberedEmail', email);
-                            localStorage.setItem('rememberedPassword', password);
                         } else {
                             // If rememberMe is not checked, remove rememberedEmail from localStorage
                             localStorage.removeItem('rememberedEmail');
-                            localStorage.removeItem('rememberedPassword');
                         }
                        // Lưu dữ liệu vào Local Storage
                         // Redirect to dashboard or other page

@@ -179,24 +179,31 @@ if ($data4 === null) {
 						<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
 							<ul class="tg-addnav">
 								<li>
-									<a href="javascript:void(0);">
+									<a href="index.php">
+										<i class="icon-home"></i>
+										<em>Trang chủ</em>
+									</a>
+								</li>
+								<li>
+									<a href="contactus.html">
 										<i class="icon-envelope"></i>
 										<em>Liên hệ</em>
 									</a>
 								</li>
 								<li>
-									<a href="javascript:void(0);">
+									<a href="aboutus.html">
 										<i class="icon-user"></i>
 										<em>Về chúng tôi</em>
 									</a>
 								</li>
 							</ul>
 							<div class="tg-userlogin">
-								<figure><a href="javascript:void(0);"><img src="images/users/img-01.jpg" alt="image description"></a></figure>
-								<span onclick="profileBar()" class="dropbtn">Hi, John</span>
-								<div id="myDropdown" class="dropdown-content">								
-									<a href="#about"><i class="icon-exit" ></i> Đăng xuất</a>
-								  </div>
+								<figure><a><img src="images/blank-avatar.jpg" alt="image description"></a></figure>
+								<span onclick="profileBar()" class="dropbtn"></span>
+								<div id="myDropdown" class="dropdown-content">
+									<a class="dropdown-1" href="admin-ui/page-login.html" onclick="logout()"></i></a>
+									<a class="dropdown-2" href="admin-ui/page-register.html"></i> Đăng ký</a>
+								</div>
 							</div>
 						</div>
 					</div>
@@ -206,11 +213,11 @@ if ($data4 === null) {
 				<div class="container">
 					<div class="row">
 						<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
-							<strong class="tg-logo"><a href="index.html"><img src="images/logo.png" alt="company name here"></a></strong>
+							<strong class="tg-logo"><a href="index.php"><img src="images/flogo.png" alt="company name here"></a></strong>
 							<div class="tg-searchbox">
-								<form class="tg-formtheme tg-formsearch">
+								<form class="tg-formtheme tg-formsearch" id="searchForm">
 									<fieldset>
-										<input type="text" name="search" class="typeahead form-control" placeholder="Tìm kiếm sách tốt . . .">
+										<input type="text" name="search" class="typeahead form-control" placeholder="Sách hay">
 										<button type="submit" class="tg-btn">Search</button>
 									</fieldset>
 								</form>
@@ -235,600 +242,119 @@ if ($data4 === null) {
 									</div>
 									<div id="tg-navigation" class="collapse navbar-collapse tg-navigation">
 										<ul>
-										<li class="menu-item-has-children menu-item-has-mega-menu">
-											<a href="javascript:void(0);">Danh mục</a>
-											<div class="mega-menu">
-												<ul class="tg-themetabnav" role="tablist">
-													<li role="presentation" class="active">
-														<a href="#artandphotography" aria-controls="artandphotography" role="tab" data-toggle="tab">Art</a>
-													</li>
-													<li role="presentation">
-														<a href="#biography" aria-controls="biography" role="tab" data-toggle="tab">Biography</a>
-													</li>
-													<li role="presentation">
-														<a href="#childrensbook" aria-controls="childrensbook" role="tab" data-toggle="tab">Children’s Book</a>
-													</li>
-													<li role="presentation">
-														<a href="#craftandhobbies" aria-controls="craftandhobbies" role="tab" data-toggle="tab">Craft &amp; Hobbies</a>
-													</li>
-													<li role="presentation">
-														<a href="#crimethriller" aria-controls="crimethriller" role="tab" data-toggle="tab">Crime &amp; Thriller</a>
-													</li>
-													<li role="presentation">
-														<a href="#fantasyhorror" aria-controls="fantasyhorror" role="tab" data-toggle="tab">Fantasy &amp; Horror</a>
-													</li>
-													<li role="presentation">
-														<a href="#fiction" aria-controls="fiction" role="tab" data-toggle="tab">Fiction</a>
-													</li>
-													<li role="presentation">
-														<a href="#fooddrink" aria-controls="fooddrink" role="tab" data-toggle="tab">Food &amp; Drink</a>
-													</li><li role="presentation">
-														<a href="#graphicanimemanga" aria-controls="graphicanimemanga" role="tab" data-toggle="tab">Graphic, Anime &amp; Manga</a>
-													</li>
-													<li role="presentation">
-														<a href="#sciencefiction" aria-controls="sciencefiction" role="tab" data-toggle="tab">Science Fiction</a>
-													</li>
-												</ul>
-												<div class="tab-content tg-themetabcontent">
-													<div role="tabpanel" class="tab-pane active" id="artandphotography">
-														<ul>
-															<li>
-																<div class="tg-linkstitle">
-																	<h2>Architecture</h2>
-																</div>
-																<ul>
-																	<li><a href="products.php">Tough As Nails</a></li>
-																	<li><a href="products.php">Pro Grease Monkey</a></li>
-																	<li><a href="products.php">Building Memories</a></li>
-																	<li><a href="products.php">Bulldozer Boyz</a></li>
-																	<li><a href="products.php">Build Or Leave On Us</a></li>
-																</ul>
-															</li>
-															<li>
-																<div class="tg-linkstitle">
-																	<h2>Art Forms</h2>
-																</div>
-																<ul>
-																	<li><a href="products.php">Consectetur adipisicing</a></li>
-																	<li><a href="products.php">Aelit sed do eiusmod</a></li>
-																	<li><a href="products.php">Tempor incididunt labore</a></li>
-																	<li><a href="products.php">Dolore magna aliqua</a></li>
-																	<li><a href="products.php">Ut enim ad minim</a></li>
-																</ul>
-																<a class="tg-btnviewall" href="products.php">View All</a>
-															</li>
-															<li>
-																<div class="tg-linkstitle">
-																	<h2>History</h2>
-																</div>
-																<ul>
-																	<li><a href="products.php">Veniam quis nostrud</a></li>
-																	<li><a href="products.php">Exercitation</a></li>
-																	<li><a href="products.php">Laboris nisi ut aliuip</a></li>
-																	<li><a href="products.php">Commodo conseat</a></li>
-																	<li><a href="products.php">Duis aute irure</a></li>
-																</ul>
-																<a class="tg-btnviewall" href="products.php">View All</a>
-															</li>
-														</ul>
-														<ul>
-															<li>
-																<figure><img src="images/img-01.png" alt="image description"></figure>
-																<div class="tg-textbox">
-																	<h3>More Than<span>12,0657,53</span>Books Collection</h3>
-																	<div class="tg-description">
-																		<p>Consectetur adipisicing elit sed doe eiusmod tempor incididunt laebore toloregna aliqua enim.</p>
+											<li class="menu-item-has-children menu-item-has-mega-menu">
+												<a href="javascript:void(0);">Danh mục</a>
+												<div class="mega-menu">
+													<ul class="tg-themetabnav" role="tablist">
+													<?php
+													// Kiểm tra nếu $data2 chứa các danh mục
+                                                    if (isset($data2['categories']) && is_array($data2['categories'])) {
+                                                     foreach ($data2['categories'] as $category) {
+                                                    // Giả sử mỗi mục danh mục có thuộc tính 'category'
+                                                    if (isset($category['category'])) {
+                                                    echo '<li role="presentation">';
+                                                    echo '<a href="#' . htmlspecialchars($category['id']) . '" aria-controls="' . htmlspecialchars($category['id']) . '" role="tab" data-toggle="tab">' . htmlspecialchars($category['category']) . '</a>';
+                                                    echo '</li>';
+                                                                      }
+                                                             }
+                                                    } else {
+                                                        echo 'Không có danh mục nào để hiển thị.';
+                                                        }
+                                                    ?>
+													</ul>
+													<div class="tab-content tg-themetabcontent">
+													<?php foreach ($data2['result'] as $catdata): ?>
+														<div role="tabpanel" class="tab-pane active" id="<?= htmlspecialchars($catdata['catId']) ?>">
+															<ul>
+																<li>
+																	<div class="tg-linkstitle">
+																		<h2>Tác giả</h2>
 																	</div>
-																	<a class="tg-btn" href="products.php">view all</a>
-																</div>
-															</li>
-														</ul>
-													</div>
-													<div role="tabpanel" class="tab-pane" id="biography">
-														<ul>
-															<li>
-																<div class="tg-linkstitle">
-																	<h2>History</h2>
-																</div>
-																<ul>
-																	<li><a href="products.php">Veniam quis nostrud</a></li>
-																	<li><a href="products.php">Exercitation</a></li>
-																	<li><a href="products.php">Laboris nisi ut aliuip</a></li>
-																	<li><a href="products.php">Commodo conseat</a></li>
-																	<li><a href="products.php">Duis aute irure</a></li>
-																</ul>
-																<a class="tg-btnviewall" href="products.php">View All</a>
-															</li>
-															<li>
-																<div class="tg-linkstitle">
-																	<h2>Architecture</h2>
-																</div>
-																<ul>
-																	<li><a href="products.php">Tough As Nails</a></li>
-																	<li><a href="products.php">Pro Grease Monkey</a></li>
-																	<li><a href="products.php">Building Memories</a></li>
-																	<li><a href="products.php">Bulldozer Boyz</a></li>
-																	<li><a href="products.php">Build Or Leave On Us</a></li>
-																</ul>
-																<a class="tg-btnviewall" href="products.php">View All</a>
-															</li>
-															<li>
-																<div class="tg-linkstitle">
-																	<h2>Art Forms</h2>
-																</div>
-																<ul>
-																	<li><a href="products.php">Consectetur adipisicing</a></li>
-																	<li><a href="products.php">Aelit sed do eiusmod</a></li>
-																	<li><a href="products.php">Tempor incididunt labore</a></li>
-																	<li><a href="products.php">Dolore magna aliqua</a></li>
-																	<li><a href="products.php">Ut enim ad minim</a></li>
-																</ul>
-																<a class="tg-btnviewall" href="products.php">View All</a>
-															</li>
-														</ul>
-														<ul>
-															<li>
-																<figure><img src="images/img-01.png" alt="image description"></figure>
-																<div class="tg-textbox">
-																	<h3>More Than<span>12,0657,53</span>Books Collection</h3>
-																	<div class="tg-description">
-																		<p>Consectetur adipisicing elit sed doe eiusmod tempor incididunt laebore toloregna aliqua enim.</p>
+																	<ul>
+																	<?php 
+                                                                    $count = 0;
+                                                                    $displayed_authors = [];
+                                                                    foreach ($catdata['books'] as $author): 
+                                                                    if ($count >= 5) break;
+                                                                    if (in_array($author['author'], $displayed_authors)) continue;
+                                                                    $displayed_authors[] = $author['author'];
+                                                                    ?>
+                                                                    <li><a><?= htmlspecialchars($author['author']) ?></a></li>
+                                                                    <?php 
+                                                                    $count++;
+                                                                    endforeach; 
+                                                                    ?>
+																	</ul>
+																</li>
+																<li>
+																	<div class="tg-linkstitle">
+																		<h2>Mới nhất</h2>
 																	</div>
-																	<a class="tg-btn" href="products.php">view all</a>
-																</div>
-															</li>
-														</ul>
-													</div>
-													<div role="tabpanel" class="tab-pane" id="childrensbook">
-														<ul>
-															<li>
-																<div class="tg-linkstitle">
-																	<h2>Architecture</h2>
-																</div>
-																<ul>
-																	<li><a href="products.php">Tough As Nails</a></li>
-																	<li><a href="products.php">Pro Grease Monkey</a></li>
-																	<li><a href="products.php">Building Memories</a></li>
-																	<li><a href="products.php">Bulldozer Boyz</a></li>
-																	<li><a href="products.php">Build Or Leave On Us</a></li>
-																</ul>
-																<a class="tg-btnviewall" href="products.php">View All</a>
-															</li>
-															<li>
-																<div class="tg-linkstitle">
-																	<h2>Art Forms</h2>
-																</div>
-																<ul>
-																	<li><a href="products.php">Consectetur adipisicing</a></li>
-																	<li><a href="products.php">Aelit sed do eiusmod</a></li>
-																	<li><a href="products.php">Tempor incididunt labore</a></li>
-																	<li><a href="products.php">Dolore magna aliqua</a></li>
-																	<li><a href="products.php">Ut enim ad minim</a></li>
-																</ul>
-																<a class="tg-btnviewall" href="products.php">View All</a>
-															</li>
-															<li>
-																<div class="tg-linkstitle">
-																	<h2>History</h2>
-																</div>
-																<ul>
-																	<li><a href="products.php">Veniam quis nostrud</a></li>
-																	<li><a href="products.php">Exercitation</a></li>
-																	<li><a href="products.php">Laboris nisi ut aliuip</a></li>
-																	<li><a href="products.php">Commodo conseat</a></li>
-																	<li><a href="products.php">Duis aute irure</a></li>
-																</ul>
-																<a class="tg-btnviewall" href="products.php">View All</a>
-															</li>
-														</ul>
-														<ul>
-															<li>
-																<figure><img src="images/img-01.png" alt="image description"></figure>
-																<div class="tg-textbox">
-																	<h3>More Than<span>12,0657,53</span>Books Collection</h3>
-																	<div class="tg-description">
-																		<p>Consectetur adipisicing elit sed doe eiusmod tempor incididunt laebore toloregna aliqua enim.</p>
+																	<ul>
+																	<?php 
+                                                                       $count = 0;
+                                                                       $displayed_books = [];
+                                                                       foreach ($catdata['newbooks'] as $newbook): 
+                                                                       if ($count >= 5) break;
+                                                                       if (in_array($newbook['bookName'], $displayed_books)) continue;
+                                                                       $displayed_books[] = $newbook['bookName'];
+                                                                       ?>
+                                                                      <li><a><?= htmlspecialchars($newbook['bookName']) ?></a></li>
+                                                                      <?php 
+                                                                      $count++;
+                                                                      endforeach; 
+                                                                      ?>
+																	</ul>
+																</li>
+																<li>
+																	<div class="tg-linkstitle">
+																		<h2>Sách hay</h2>
 																	</div>
-																	<a class="tg-btn" href="products.php">view all</a>
-																</div>
-															</li>
-														</ul>
-													</div>
-													<div role="tabpanel" class="tab-pane" id="craftandhobbies">
-														<ul>
-															<li>
-																<div class="tg-linkstitle">
-																	<h2>History</h2>
-																</div>
-																<ul>
-																	<li><a href="products.php">Veniam quis nostrud</a></li>
-																	<li><a href="products.php">Exercitation</a></li>
-																	<li><a href="products.php">Laboris nisi ut aliuip</a></li>
-																	<li><a href="products.php">Commodo conseat</a></li>
-																	<li><a href="products.php">Duis aute irure</a></li>
-																</ul>
-																<a class="tg-btnviewall" href="products.php">View All</a>
-															</li>
-															<li>
-																<div class="tg-linkstitle">
-																	<h2>Architecture</h2>
-																</div>
-																<ul>
-																	<li><a href="products.php">Tough As Nails</a></li>
-																	<li><a href="products.php">Pro Grease Monkey</a></li>
-																	<li><a href="products.php">Building Memories</a></li>
-																	<li><a href="products.php">Bulldozer Boyz</a></li>
-																	<li><a href="products.php">Build Or Leave On Us</a></li>
-																</ul>
-																<a class="tg-btnviewall" href="products.php">View All</a>
-															</li>
-															<li>
-																<div class="tg-linkstitle">
-																	<h2>Art Forms</h2>
-																</div>
-																<ul>
-																	<li><a href="products.php">Consectetur adipisicing</a></li>
-																	<li><a href="products.php">Aelit sed do eiusmod</a></li>
-																	<li><a href="products.php">Tempor incididunt labore</a></li>
-																	<li><a href="products.php">Dolore magna aliqua</a></li>
-																	<li><a href="products.php">Ut enim ad minim</a></li>
-																</ul>
-																<a class="tg-btnviewall" href="products.php">View All</a>
-															</li>
-														</ul>
-														<ul>
-															<li>
-																<figure><img src="images/img-01.png" alt="image description"></figure>
-																<div class="tg-textbox">
-																	<h3>More Than<span>12,0657,53</span>Books Collection</h3>
-																	<div class="tg-description">
-																		<p>Consectetur adipisicing elit sed doe eiusmod tempor incididunt laebore toloregna aliqua enim.</p>
+																	<ul>
+																	<?php 
+                                                                      $count = 0;
+                                                                      $displayed_books = [];
+                                                                      foreach ($catdata['books'] as $book): 
+                                                                      if ($count >= 5) break;
+                                                                      if (in_array($book['bookName'], $displayed_books)) continue;
+                                                                      $displayed_books[] = $book['bookName'];
+                                                                      ?>
+                                                                      <li><a><?= htmlspecialchars($book['bookName']) ?></a></li>
+                                                                      <?php 
+                                                                      $count++;
+                                                                      endforeach; 
+                                                                      ?>
+																	</ul>
+																</li>
+															</ul>
+															<ul>
+																<li>
+																	<figure><img src="images/img-01.png" alt="image description"></figure>
+																	<div class="tg-textbox">
+																		<h3>Hơn <span>10,000</span>cuốn sách chờ bạn khám phá</h3>
+																		<a class="tg-btn" href="products.php?pageIndex=1">Xem thêm</a>
 																	</div>
-																	<a class="tg-btn" href="products.php">view all</a>
-																</div>
-															</li>
-														</ul>
-													</div>
-													<div role="tabpanel" class="tab-pane" id="crimethriller">
-														<ul>
-															<li>
-																<div class="tg-linkstitle">
-																	<h2>Architecture</h2>
-																</div>
-																<ul>
-																	<li><a href="products.php">Tough As Nails</a></li>
-																	<li><a href="products.php">Pro Grease Monkey</a></li>
-																	<li><a href="products.php">Building Memories</a></li>
-																	<li><a href="products.php">Bulldozer Boyz</a></li>
-																	<li><a href="products.php">Build Or Leave On Us</a></li>
-																</ul>
-																<a class="tg-btnviewall" href="products.php">View All</a>
-															</li>
-															<li>
-																<div class="tg-linkstitle">
-																	<h2>Art Forms</h2>
-																</div>
-																<ul>
-																	<li><a href="products.php">Consectetur adipisicing</a></li>
-																	<li><a href="products.php">Aelit sed do eiusmod</a></li>
-																	<li><a href="products.php">Tempor incididunt labore</a></li>
-																	<li><a href="products.php">Dolore magna aliqua</a></li>
-																	<li><a href="products.php">Ut enim ad minim</a></li>
-																</ul>
-																<a class="tg-btnviewall" href="products.php">View All</a>
-															</li>
-															<li>
-																<div class="tg-linkstitle">
-																	<h2>History</h2>
-																</div>
-																<ul>
-																	<li><a href="products.php">Veniam quis nostrud</a></li>
-																	<li><a href="products.php">Exercitation</a></li>
-																	<li><a href="products.php">Laboris nisi ut aliuip</a></li>
-																	<li><a href="products.php">Commodo conseat</a></li>
-																	<li><a href="products.php">Duis aute irure</a></li>
-																</ul>
-																<a class="tg-btnviewall" href="products.php">View All</a>
-															</li>
-														</ul>
-														<ul>
-															<li>
-																<figure><img src="images/img-01.png" alt="image description"></figure>
-																<div class="tg-textbox">
-																	<h3>More Than<span>12,0657,53</span>Books Collection</h3>
-																	<div class="tg-description">
-																		<p>Consectetur adipisicing elit sed doe eiusmod tempor incididunt laebore toloregna aliqua enim.</p>
-																	</div>
-																	<a class="tg-btn" href="products.php">view all</a>
-																</div>
-															</li>
-														</ul>
-													</div>
-													<div role="tabpanel" class="tab-pane" id="fantasyhorror">
-														<ul>
-															<li>
-																<div class="tg-linkstitle">
-																	<h2>History</h2>
-																</div>
-																<ul>
-																	<li><a href="products.php">Veniam quis nostrud</a></li>
-																	<li><a href="products.php">Exercitation</a></li>
-																	<li><a href="products.php">Laboris nisi ut aliuip</a></li>
-																	<li><a href="products.php">Commodo conseat</a></li>
-																	<li><a href="products.php">Duis aute irure</a></li>
-																</ul>
-																<a class="tg-btnviewall" href="products.php">View All</a>
-															</li>
-															<li>
-																<div class="tg-linkstitle">
-																	<h2>Architecture</h2>
-																</div>
-																<ul>
-																	<li><a href="products.php">Tough As Nails</a></li>
-																	<li><a href="products.php">Pro Grease Monkey</a></li>
-																	<li><a href="products.php">Building Memories</a></li>
-																	<li><a href="products.php">Bulldozer Boyz</a></li>
-																	<li><a href="products.php">Build Or Leave On Us</a></li>
-																</ul>
-																<a class="tg-btnviewall" href="products.php">View All</a>
-															</li>
-															<li>
-																<div class="tg-linkstitle">
-																	<h2>Art Forms</h2>
-																</div>
-																<ul>
-																	<li><a href="products.php">Consectetur adipisicing</a></li>
-																	<li><a href="products.php">Aelit sed do eiusmod</a></li>
-																	<li><a href="products.php">Tempor incididunt labore</a></li>
-																	<li><a href="products.php">Dolore magna aliqua</a></li>
-																	<li><a href="products.php">Ut enim ad minim</a></li>
-																</ul>
-																<a class="tg-btnviewall" href="products.php">View All</a>
-															</li>
-														</ul>
-														<ul>
-															<li>
-																<figure><img src="images/img-01.png" alt="image description"></figure>
-																<div class="tg-textbox">
-																	<h3>More Than<span>12,0657,53</span>Books Collection</h3>
-																	<div class="tg-description">
-																		<p>Consectetur adipisicing elit sed doe eiusmod tempor incididunt laebore toloregna aliqua enim.</p>
-																	</div>
-																	<a class="tg-btn" href="products.php">view all</a>
-																</div>
-															</li>
-														</ul>
-													</div>
-													<div role="tabpanel" class="tab-pane" id="fiction">
-														<ul>
-															<li>
-																<div class="tg-linkstitle">
-																	<h2>Architecture</h2>
-																</div>
-																<ul>
-																	<li><a href="products.php">Tough As Nails</a></li>
-																	<li><a href="products.php">Pro Grease Monkey</a></li>
-																	<li><a href="products.php">Building Memories</a></li>
-																	<li><a href="products.php">Bulldozer Boyz</a></li>
-																	<li><a href="products.php">Build Or Leave On Us</a></li>
-																</ul>
-																<a class="tg-btnviewall" href="products.php">View All</a>
-															</li>
-															<li>
-																<div class="tg-linkstitle">
-																	<h2>Art Forms</h2>
-																</div>
-																<ul>
-																	<li><a href="products.php">Consectetur adipisicing</a></li>
-																	<li><a href="products.php">Aelit sed do eiusmod</a></li>
-																	<li><a href="products.php">Tempor incididunt labore</a></li>
-																	<li><a href="products.php">Dolore magna aliqua</a></li>
-																	<li><a href="products.php">Ut enim ad minim</a></li>
-																</ul>
-																<a class="tg-btnviewall" href="products.php">View All</a>
-															</li>
-															<li>
-																<div class="tg-linkstitle">
-																	<h2>History</h2>
-																</div>
-																<ul>
-																	<li><a href="products.php">Veniam quis nostrud</a></li>
-																	<li><a href="products.php">Exercitation</a></li>
-																	<li><a href="products.php">Laboris nisi ut aliuip</a></li>
-																	<li><a href="products.php">Commodo conseat</a></li>
-																	<li><a href="products.php">Duis aute irure</a></li>
-																</ul>
-																<a class="tg-btnviewall" href="products.php">View All</a>
-															</li>
-														</ul>
-														<ul>
-															<li>
-																<figure><img src="images/img-01.png" alt="image description"></figure>
-																<div class="tg-textbox">
-																	<h3>More Than<span>12,0657,53</span>Books Collection</h3>
-																	<div class="tg-description">
-																		<p>Consectetur adipisicing elit sed doe eiusmod tempor incididunt laebore toloregna aliqua enim.</p>
-																	</div>
-																	<a class="tg-btn" href="products.php">view all</a>
-																</div>
-															</li>
-														</ul>
-													</div>
-													<div role="tabpanel" class="tab-pane" id="fooddrink">
-														<ul>
-															<li>
-																<div class="tg-linkstitle">
-																	<h2>History</h2>
-																</div>
-																<ul>
-																	<li><a href="products.php">Veniam quis nostrud</a></li>
-																	<li><a href="products.php">Exercitation</a></li>
-																	<li><a href="products.php">Laboris nisi ut aliuip</a></li>
-																	<li><a href="products.php">Commodo conseat</a></li>
-																	<li><a href="products.php">Duis aute irure</a></li>
-																</ul>
-																<a class="tg-btnviewall" href="products.php">View All</a>
-															</li>
-															<li>
-																<div class="tg-linkstitle">
-																	<h2>Architecture</h2>
-																</div>
-																<ul>
-																	<li><a href="products.php">Tough As Nails</a></li>
-																	<li><a href="products.php">Pro Grease Monkey</a></li>
-																	<li><a href="products.php">Building Memories</a></li>
-																	<li><a href="products.php">Bulldozer Boyz</a></li>
-																	<li><a href="products.php">Build Or Leave On Us</a></li>
-																</ul>
-																<a class="tg-btnviewall" href="products.php">View All</a>
-															</li>
-															<li>
-																<div class="tg-linkstitle">
-																	<h2>Art Forms</h2>
-																</div>
-																<ul>
-																	<li><a href="products.php">Consectetur adipisicing</a></li>
-																	<li><a href="products.php">Aelit sed do eiusmod</a></li>
-																	<li><a href="products.php">Tempor incididunt labore</a></li>
-																	<li><a href="products.php">Dolore magna aliqua</a></li>
-																	<li><a href="products.php">Ut enim ad minim</a></li>
-																</ul>
-																<a class="tg-btnviewall" href="products.php">View All</a>
-															</li>
-														</ul>
-														<ul>
-															<li>
-																<figure><img src="images/img-01.png" alt="image description"></figure>
-																<div class="tg-textbox">
-																	<h3>More Than<span>12,0657,53</span>Books Collection</h3>
-																	<div class="tg-description">
-																		<p>Consectetur adipisicing elit sed doe eiusmod tempor incididunt laebore toloregna aliqua enim.</p>
-																	</div>
-																	<a class="tg-btn" href="products.php">view all</a>
-																</div>
-															</li>
-														</ul>
-													</div>
-													<div role="tabpanel" class="tab-pane" id="graphicanimemanga">
-														<ul>
-															<li>
-																<div class="tg-linkstitle">
-																	<h2>Architecture</h2>
-																</div>
-																<ul>
-																	<li><a href="products.php">Tough As Nails</a></li>
-																	<li><a href="products.php">Pro Grease Monkey</a></li>
-																	<li><a href="products.php">Building Memories</a></li>
-																	<li><a href="products.php">Bulldozer Boyz</a></li>
-																	<li><a href="products.php">Build Or Leave On Us</a></li>
-																</ul>
-																<a class="tg-btnviewall" href="products.php">View All</a>
-															</li>
-															<li>
-																<div class="tg-linkstitle">
-																	<h2>Art Forms</h2>
-																</div>
-																<ul>
-																	<li><a href="products.php">Consectetur adipisicing</a></li>
-																	<li><a href="products.php">Aelit sed do eiusmod</a></li>
-																	<li><a href="products.php">Tempor incididunt labore</a></li>
-																	<li><a href="products.php">Dolore magna aliqua</a></li>
-																	<li><a href="products.php">Ut enim ad minim</a></li>
-																</ul>
-																<a class="tg-btnviewall" href="products.php">View All</a>
-															</li>
-															<li>
-																<div class="tg-linkstitle">
-																	<h2>History</h2>
-																</div>
-																<ul>
-																	<li><a href="products.php">Veniam quis nostrud</a></li>
-																	<li><a href="products.php">Exercitation</a></li>
-																	<li><a href="products.php">Laboris nisi ut aliuip</a></li>
-																	<li><a href="products.php">Commodo conseat</a></li>
-																	<li><a href="products.php">Duis aute irure</a></li>
-																</ul>
-																<a class="tg-btnviewall" href="products.php">View All</a>
-															</li>
-														</ul>
-														<ul>
-															<li>
-																<figure><img src="images/img-01.png" alt="image description"></figure>
-																<div class="tg-textbox">
-																	<h3>More Than<span>12,0657,53</span>Books Collection</h3>
-																	<div class="tg-description">
-																		<p>Consectetur adipisicing elit sed doe eiusmod tempor incididunt laebore toloregna aliqua enim.</p>
-																	</div>
-																	<a class="tg-btn" href="products.php">view all</a>
-																</div>
-															</li>
-														</ul>
-													</div>
-													<div role="tabpanel" class="tab-pane" id="sciencefiction">
-														<ul>
-															<li>
-																<div class="tg-linkstitle">
-																	<h2>History</h2>
-																</div>
-																<ul>
-																	<li><a href="products.php">Veniam quis nostrud</a></li>
-																	<li><a href="products.php">Exercitation</a></li>
-																	<li><a href="products.php">Laboris nisi ut aliuip</a></li>
-																	<li><a href="products.php">Commodo conseat</a></li>
-																	<li><a href="products.php">Duis aute irure</a></li>
-																</ul>
-																<a class="tg-btnviewall" href="products.php">View All</a>
-															</li>
-															<li>
-																<div class="tg-linkstitle">
-																	<h2>Architecture</h2>
-																</div>
-																<ul>
-																	<li><a href="products.php">Tough As Nails</a></li>
-																	<li><a href="products.php">Pro Grease Monkey</a></li>
-																	<li><a href="products.php">Building Memories</a></li>
-																	<li><a href="products.php">Bulldozer Boyz</a></li>
-																	<li><a href="products.php">Build Or Leave On Us</a></li>
-																</ul>
-																<a class="tg-btnviewall" href="products.php">View All</a>
-															</li>
-															<li>
-																<div class="tg-linkstitle">
-																	<h2>Art Forms</h2>
-																</div>
-																<ul>
-																	<li><a href="products.php">Consectetur adipisicing</a></li>
-																	<li><a href="products.php">Aelit sed do eiusmod</a></li>
-																	<li><a href="products.php">Tempor incididunt labore</a></li>
-																	<li><a href="products.php">Dolore magna aliqua</a></li>
-																	<li><a href="products.php">Ut enim ad minim</a></li>
-																</ul>
-																<a class="tg-btnviewall" href="products.php">View All</a>
-															</li>
-														</ul>
-														<ul>
-															<li>
-																<figure><img src="images/img-01.png" alt="image description"></figure>
-																<div class="tg-textbox">
-																	<h3>More Than<span>12,0657,53</span>Books Collection</h3>
-																	<div class="tg-description">
-																		<p>Consectetur adipisicing elit sed doe eiusmod tempor incididunt laebore toloregna aliqua enim.</p>
-																	</div>
-																	<a class="tg-btn" href="products.php">view all</a>
-																</div>
-															</li>
-														</ul>
+																</li>
+															</ul>
+														</div>
+													<?php endforeach; ?>
 													</div>
 												</div>
-											</div>
-										</li>
-										<li class="menu-item-has-children">
-											<a href="javascript:void(0);">Home</a>
-										</li>
-										<li class="menu-item-has-children">
-											<a href="javascript:void(0);">Sách hay</a>
-										</li>
-										<li><a href="products.php">Tin tức</a></li>
+											</li>
+											<li class="menu-item-has-children">
+												<a>Sách</a>
+												<ul class="sub-menu">
+													<li><a href="">Sách mới nhất</a></li>
+													<li><a href="">Sách hay</a></li>
+												</ul>
+											</li>
+										    <li class="menu-item-has-children">
+											<a>Tin tức</a>
+											<ul class="sub-menu" id="menu-tin-tuc">
+												<li><a href="">Tin tức mới nhất</a></li>
+												<li><a href="">tin tức nổi bật</a></li>
+											</ul>
+										    </li>	
 									</div>
 								</nav>
 								<div class="tg-wishlistandcart">
@@ -836,15 +362,6 @@ if ($data4 === null) {
 										<a href="javascript:void(0);" id="tg-wishlisst" class="tg-btnthemedropdown" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
 											<span class="tg-themebadge">3</span>
 											<i class="icon-heart"></i>
-										</a>
-										<div class="dropdown-menu tg-themedropdownmenu" aria-labelledby="tg-wishlisst">
-											<div class="tg-description"><p>Chưa có sách yêu thích nào</p></div>
-										</div>
-									</div>
-									<div class="dropdown tg-themedropdown tg-minicartdropdown">
-										<a href="javascript:void(0);" id="tg-minicart" class="tg-btnthemedropdown" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-											<span class="tg-themebadge">3</span>
-											<i class="icon-books"></i>
 										</a>
 										<div class="dropdown-menu tg-themedropdownmenu" aria-labelledby="tg-minicart">
 											<div class="tg-minicartbody">
@@ -878,9 +395,8 @@ if ($data4 === null) {
 												</div>
 											</div>
 											<div class="tg-minicartfoot">
-												<span class="tg-subtotal">Đang mượn: <strong> 3</strong></span>
 												<div class="tg-btns">
-													<a class="tg-btn" href="javascript:void(0);">Xem thêm</a>
+													<a class="tg-btn" href="favoritebook.php">Xem thêm</a>
 													<a class="tg-btn" href="javascript:void(0);">Đóng</a>
 												</div>
 											</div>
@@ -889,10 +405,45 @@ if ($data4 === null) {
 									<div class="dropdown tg-themedropdown tg-wishlistdropdown">
 										<a href="javascript:void(0);" id="tg-wishlisst" class="tg-btnthemedropdown" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
 											<span class="tg-themebadge">3</span>
-											<i class="icon-bell"></i>
+											<i class="icon-books"></i>
 										</a>
-										<div class="dropdown-menu tg-themedropdownmenu" aria-labelledby="tg-wishlisst">
-											<div class="tg-description"><p>Không có thông báo nào</p></div>
+										<div class="dropdown-menu tg-themedropdownmenu" aria-labelledby="tg-minicart">
+											<div class="tg-minicartbody">
+												<div class="tg-minicarproduct">
+													<figure>
+														<img src="images/products/img-01.jpg" alt="image description">
+													</figure>
+													<div class="tg-minicarproductdata">
+														<h5><a href="javascript:void(0);">Our State Fair Is A Great Function</a></h5>
+														<h6><a href="javascript:void(0);">Tiểu thuyết</a></h6>
+													</div>
+												</div>
+												<div class="tg-minicarproduct">
+													<figure>
+														<img src="images/products/img-02.jpg" alt="image description">
+													</figure>
+													<div class="tg-minicarproductdata">
+														<h5><a href="javascript:void(0);">Bring Me To Light</a></h5>
+														<h6><a href="javascript:void(0);">Tiểu thuyết</a></h6>
+													</div>
+												</div>
+												<div class="tg-minicarproduct">
+													<figure>
+														<img src="images/products/img-03.jpg" alt="image description">
+													</figure>
+													<div class="tg-minicarproductdata">
+														<h5><a href="javascript:void(0);">Have Faith In Your Soul</a></h5>
+														<h6><a href="javascript:void(0);">Tiểu thuyết</a></h6>
+													</div>
+												</div>
+											</div>
+											<div class="tg-minicartfoot">
+											<span class="tg-subtotal">Đang mượn: <strong> 3</strong></span>
+												<div class="tg-btns">
+													<a class="tg-btn" href="javascript:void(0);">Xem thêm</a>
+													<a class="tg-btn" href="javascript:void(0);">Đóng</a>
+												</div>
+											</div>
 										</div>
 									</div>
 								</div>
@@ -901,7 +452,7 @@ if ($data4 === null) {
 					</div>
 				</div>
 			</div>
-		</header> 
+		</header>
 		<!--************************************
 				Header End
 		*************************************-->
@@ -1180,16 +731,41 @@ if ($data4 === null) {
 		// Close the dropdown if the user clicks outside of it
 		window.onclick = function(event) {
 		  if (!event.target.matches('.dropbtn')) {
-			let dropdowns = document.getElementsByClassName("dropdown-content");
-			let i;
+			var dropdowns = document.getElementsByClassName("dropdown-content");
+			var i;
 			for (i = 0; i < dropdowns.length; i++) {
-			  let openDropdown = dropdowns[i];
+			  var openDropdown = dropdowns[i];
 			  if (openDropdown.classList.contains('show')) {
 				openDropdown.classList.remove('show');
 			  }
 			}
 		  }
 		}
+		//Sự kiện logout
+
+	function deleteCookie(name) {
+    document.cookie = name + '=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;';
+    }
+	function logout()
+    {
+        localStorage.removeItem('userData')
+        localStorage.removeItem('jwtToken')
+		deleteCookie('idusername');
+        deleteCookie('token');
+        deleteCookie('jwtToken');
+    }
+	let data = localStorage.getItem('userData');
+
+if (data) {
+    data = JSON.parse(data); // Parse the JSON string into an object
+    document.querySelector('.dropbtn').innerHTML = 'Hi ' + data.lastName;
+    document.querySelector('.dropdown-1').innerHTML = 'Đăng xuất';
+    document.querySelector('.dropdown-2').style.display = 'none';
+} else {
+    document.querySelector('.dropbtn').innerHTML = 'Welcome';
+    document.querySelector('.dropdown-1').innerHTML = 'Đăng nhập';
+    document.querySelector('.dropdown-2').style.display = 'block';
+}
 		function setCookie(name, value, days) {
 	var expires = "";
 	if (days) {
@@ -1309,21 +885,24 @@ function setCookiesBook(category,bookId)
 
 function themVaoYeuthich()
 {
-	document.getElementById('loadingOverlay').style.display = 'flex';
     return new Promise(function(resolve, reject) {
         let xhr = new XMLHttpRequest();
 		let urlParams = new URLSearchParams(window.location.search);
         let bookId = urlParams.get('id');
 		let data = JSON.parse(localStorage.getItem('userData'));
-        let bookData = {
+		if (!data) {
+			alert('Vui lòng đăng nhập để có thể thêm sách vào danh sách yêu thích.')
+			return ;
+		}else{
+	        document.getElementById('loadingOverlay').style.display = 'flex';
+			let bookData = {
             idusername: data.id,
 			fvIdBook:bookId
         }
 
-		let token = localStorage.getItem('jwtToken');
         xhr.open("POST", "http://localhost:8000/api/create-fvbook", true);
         xhr.setRequestHeader("Content-Type", "application/json");
-        xhr.setRequestHeader('Authorization', 'Bearer ' + token);
+        xhr.setRequestHeader('Authorization', 'Bearer');
         xhr.onreadystatechange = function () {
             if (xhr.readyState === 4 && xhr.status === 200) {
                 var responseData = JSON.parse(xhr.responseText);
@@ -1332,6 +911,7 @@ function themVaoYeuthich()
             }
         };
         xhr.send(JSON.stringify(bookData));
+		}	
     });
 }
 
