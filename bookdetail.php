@@ -160,6 +160,64 @@ if ($data4 === null) {
     die('Lỗi khi chuyển đổi JSON');
 }
 
+ini_set('display_errors', 1);
+ini_set('display_startup_errors', 1);
+error_reporting(E_ALL);
+
+$url = 'http://localhost:8000/api/check-fvbook'; // URL của API backend
+
+if (isset($_COOKIE['idusername']) && isset($_COOKIE['bookId'])) {
+    $idusername = $_COOKIE['idusername'];
+    $bookId = $_COOKIE['bookId'];
+
+    if ($idusername === null || $idusername === '' || $bookId === null || $bookId === '') {
+        // Xử lý lỗi giải mã JSON nếu cần
+        echo "Lỗi: Không thể giải mã dữ liệu JSON từ cookie 'idusername' hoặc 'bookId'.";
+    } else {
+        // Sử dụng biến $idusername và $bookId
+        $datanew4 = array('idusername' => $idusername, 'bookId' => $bookId);
+
+        // Chuyển đổi mảng dữ liệu thành JSON
+        $jsonData5 = json_encode($datanew4);
+        
+        if ($jsonData5 === false) {
+            die('Lỗi khi chuyển đổi dữ liệu sang JSON: ' . json_last_error_msg());
+        }
+
+        // Cấu hình cURL
+        $ch = curl_init($url);
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        curl_setopt($ch, CURLOPT_HTTPHEADER, array(
+            'Content-Type: application/json',
+            'Authorization: Bearer YOUR_ACCESS_TOKEN_HERE' // Thêm token vào header Authorization
+        ));
+        curl_setopt($ch, CURLOPT_POST, true);
+        curl_setopt($ch, CURLOPT_POSTFIELDS, $jsonData5);
+
+        // Thực hiện yêu cầu POST và nhận phản hồi
+        $response5 = curl_exec($ch);
+
+        // Kiểm tra nếu có lỗi khi gửi yêu cầu
+        if ($response5 === FALSE) {
+            die('Lỗi khi gửi yêu cầu: ' . curl_error($ch));
+        }
+
+        // Đóng cURL
+        curl_close($ch);
+
+        // Chuyển đổi JSON thành mảng dữ liệu trong PHP
+        $data5 = json_decode($response5, true);
+
+        // Kiểm tra nếu có lỗi khi chuyển đổi JSON
+        if ($data5 === null && json_last_error() !== JSON_ERROR_NONE) {
+            die('Lỗi khi chuyển đổi JSON: ' . json_last_error_msg());
+        }
+    }
+} else {
+    echo "Cookie 'idusername' hoặc 'bookId' không tồn tại.";
+}
+
+
 ?>
 
 <body>
@@ -496,9 +554,23 @@ if ($data4 === null) {
 												<div class="tg-postbook">
 													<figure class="tg-featureimg"><img id="imageBook" alt="image description"></figure>
 													<div class="tg-postbookcontent">
-														<a class="tg-btnaddtowishlist" onclick="themVaoYeuthich()" style="cursor:pointer">
-															<span>Thêm vào yêu thích</span>
-														</a>
+														<?php if (isset($data5['check'])) {
+															if ($data5['check'] === 1) {
+																?>
+																<a class="tg-btnaddtowishlist" onclick="XoaKhoiYeuthich()" style="cursor:pointer;">
+															        <span>Xoá khỏi yêu thích</span>
+														        </a>
+																<?php
+															}
+															else{
+																?>
+																<a class="tg-btnaddtowishlist" onclick="themVaoYeuthich()" style="cursor:pointer">
+															        <span>Thêm vào yêu thích</span>
+														        </a>
+																<?php
+															}
+														}
+															?>
 													</div>
 												</div>
 											</div>
@@ -526,7 +598,6 @@ if ($data4 === null) {
 												<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
 													<div id="tg-relatedproductslider" class="tg-relatedproductslider tg-relatedbooks owl-carousel">
 													<?php foreach($data4['relatedbook'] as $book){
-														
 														?>
 														<div class="item">
 															<div class="tg-postbook">
@@ -905,9 +976,42 @@ function themVaoYeuthich()
         xhr.setRequestHeader('Authorization', 'Bearer');
         xhr.onreadystatechange = function () {
             if (xhr.readyState === 4 && xhr.status === 200) {
-                var responseData = JSON.parse(xhr.responseText);
+                let responseData = JSON.parse(xhr.responseText);
                 alert(responseData.errMessage)
-             document.getElementById('loadingOverlay').style.display = 'none';
+                document.getElementById('loadingOverlay').style.display = 'none';
+	            location.reload()
+            }
+        };
+        xhr.send(JSON.stringify(bookData));
+		}	
+    });
+}
+
+function XoaKhoiYeuthich()
+{
+    return new Promise(function(resolve, reject) {
+        let xhr = new XMLHttpRequest();
+		let urlParams = new URLSearchParams(window.location.search);
+        let bookId = urlParams.get('id');
+		let data = JSON.parse(localStorage.getItem('userData'));
+		if (!data) {
+			alert('Vui lòng đăng nhập để có thể xoá sách khỏi danh sách yêu thích.')
+			return ;
+		}else{
+	        document.getElementById('loadingOverlay').style.display = 'flex';
+			let bookData = {
+            idusername: data.id,
+			bookId:bookId
+        }
+        xhr.open("POST", "http://localhost:8000/api/delete-fvbook", true);
+        xhr.setRequestHeader("Content-Type", "application/json");
+        xhr.setRequestHeader('Authorization', 'Bearer');
+        xhr.onreadystatechange = function () {
+            if (xhr.readyState === 4 && xhr.status === 200) {
+                let responseData = JSON.parse(xhr.responseText);
+				alert(responseData.errMessage)
+                document.getElementById('loadingOverlay').style.display = 'none';
+	            location.reload()	
             }
         };
         xhr.send(JSON.stringify(bookData));

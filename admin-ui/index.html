@@ -67,28 +67,28 @@
                         <a href="index.html"> <i class="menu-icon fa fa-dashboard"></i>Dashboard </a>
                     </li>
                     <h3 class="menu-title">Các mục chính</h3><!-- /.menu-title -->
-                    <li class="menu-item-has-children dropdown hidden-user">
+                    <li class="menu-item-has-children dropdown hide-with-user">
                         <a href="#" class="dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"> <i class="menu-icon fa fa-user"></i>Tài khoản</a>
                         <ul class="sub-menu children dropdown-menu">
                             <li><i class="fa fa-user"></i><a href="manage-user.php">Quản lý tài khoản</a></li>
                             <li><i class="fa fa-plus"></i><a href="add-user.html">Thêm tài khoản</a></li>
                         </ul>
                     </li>
-                    <li class="menu-item-has-children dropdown hidden-user">
+                    <li class="menu-item-has-children dropdown hide-with-admin">
                         <a href="#" class="dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"> <i class="menu-icon fa fa fa-file-text-o"></i>Bài viết</a>
                         <ul class="sub-menu children dropdown-menu">
                             <li><i class="fa fa-file-text-o"></i><a href="manage-content.php">Quản lý bài viết</a></li>
                             <li><i class="fa fa-plus"></i><a href="add-content.html">Thêm bài viết</a></li>
                         </ul>
                     </li>
-                    <li class="menu-item-has-children dropdown">
+                    <li class="menu-item-has-children dropdown hide-with-admin">
                         <a href="#" class="dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"> <i class="menu-icon fa fa-book"></i>Sách</a>
                         <ul class="sub-menu children dropdown-menu">
                             <li><i class="fa fa-book"></i><a href="manage-book.php">Quản lý sách</a></li>
                             <li><i class="fa fa-plus"></i><a href="add-book.html">Thêm sách</a></li>
                         </ul>
                     </li>
-                    <li class="menu-item-has-children dropdown">
+                    <li class="menu-item-has-children dropdown hide-with-admin">
                         <a href="#" class="dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"> <i class="menu-icon fa fa-tags"></i>Danh mục sách</a>
                         <ul class="sub-menu children dropdown-menu">
                            <li><i class="fa fa-tags"></i><a href="manage-category.php">Quản lý danh mục</a></li>
@@ -161,7 +161,7 @@
             </div>
 
 
-            <div class="col-sm-6 col-lg-3 hidden-user">
+            <div class="col-sm-6 col-lg-3 hide-with-user">
                 <div class="card text-white bg-flat-color-1">
                     <div class="card-body pb-0">
                         <div class="dropdown float-right">
@@ -189,7 +189,7 @@
                 </div>
             </div>
 
-            <div class="col-sm-6 col-lg-3 hidden-user">
+            <div class="col-sm-6 col-lg-3 hide-with-admin">
                 <div class="card text-white bg-flat-color-4">
                     <div class="card-body pb-0">
                         <div class="dropdown float-right">
@@ -216,7 +216,7 @@
             </div>
             <!--/.col-->
 
-            <div class="col-sm-6 col-lg-3">
+            <div class="col-sm-6 col-lg-3 hide-with-admin">
                 <div class="card text-white bg-flat-color-2">
                     <div class="card-body pb-0">
                         <div class="dropdown float-right">
@@ -244,7 +244,7 @@
             </div>
             <!--/.col-->
 
-            <div class="col-sm-6 col-lg-3">
+            <div class="col-sm-6 col-lg-3 hide-with-admin">
                 <div class="card text-white bg-flat-color-3">
                     <div class="card-body pb-0">
                         <div class="dropdown float-right">
@@ -433,12 +433,23 @@ document.getElementById('loadingOverlay').style.display = 'none';
         localStorage.removeItem('jwtToken')
         
     }
-    document.getElementById('span-avatar').innerText = 'Hi ' + JSON.parse(localStorage.getItem('userData')).lastName
-    if (JSON.parse(localStorage.getItem('userData')).roleId !== "3") {
-    document.querySelectorAll('.hidden-user').forEach(element => {
+    document.addEventListener('DOMContentLoaded', () => {
+        document.getElementById('span-avatar').innerText = 'Hi ' + JSON.parse(localStorage.getItem('userData')).lastName
+    if (JSON.parse(localStorage.getItem('userData')).roleId === "2") {
+    document.getElementById('loadingOverlay').style.display = 'flex';
+    document.querySelectorAll('.hide-with-user').forEach(element => {
         element.style.display = "none";
     });
-}
+    document.getElementById('loadingOverlay').style.display = 'none';
+    }
+    if (JSON.parse(localStorage.getItem('userData')).roleId === "3") {
+    document.getElementById('loadingOverlay').style.display = 'flex';
+    document.querySelectorAll('.hide-with-admin').forEach(element => {
+        element.style.display = "none";
+    });
+    document.getElementById('loadingOverlay').style.display = 'none';
+    }
+    });
 </script>
 <script>
     document.addEventListener('DOMContentLoaded', function () {

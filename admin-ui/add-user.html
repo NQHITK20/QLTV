@@ -149,7 +149,7 @@
                     <div class="card-body card-block">
                         <form id="registerForm" action="" method="post" enctype="multipart/form-data" class="form-horizontal">
                             <div class="row form-group">
-                                <div class="col col-md-3"><label for="text-input" class=" form-control-label">Họ</label></div>
+                                <div class="col col-md-3"><label for="text-input" class=" form-control-label">Họ và tên đệm</label></div>
                                 <div class="col-12 col-md-2"><input type="text" id="firstName" name="firstName" placeholder="Nhập họ" class="form-control"></div>
                             </div>
                             <div class="row form-group">
@@ -244,7 +244,7 @@
             const address = document.getElementById('address').value;
 
             if (firstName === "") {
-                alert("Vui lòng nhập họ.");
+                alert("Vui lòng nhập họ và tên đệm.");
                 return ;
             }else if (lastName === "") {
                 alert("Vui lòng nhập tên.");

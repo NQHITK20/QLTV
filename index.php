@@ -468,14 +468,17 @@ if ($idusername) {
 								</nav>
 								<div class="tg-wishlistandcart">
 									<div class="dropdown tg-themedropdown tg-wishlistdropdown">
+									<?php 
+											if (isset($data5['results']) && !empty($data5['results'])) {
+												?>
 										<a href="javascript:void(0);" id="tg-wishlisst" class="tg-btnthemedropdown" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-											<span class="tg-themebadge">3</span>
+											<span class="tg-themebadge"><?php echo $data5['bookCount'] ?></span>
 											<i class="icon-heart"></i>
 										</a>
 										<div class="dropdown-menu tg-themedropdownmenu" aria-labelledby="tg-minicart">
 											<div class="tg-minicartbody">
-											<?php 
-											if (isset($data5['results']) && !empty($data5['results'])) {
+											
+												<?php
 												// Lặp qua dữ liệu và hiển thị trong các div item
 												foreach ($data5['results'] as $book) {
 													// Chỉ hiển thị sách nếu showing = 1
@@ -682,7 +685,7 @@ if (isset($data3['data'])) {
                     <ul class="tg-bookscategories">
                         <li><p><?php echo htmlspecialchars($formattedDatetime); ?></p></li>
                     </ul>
-                    <div class="tg-themetagbox"><span class="tg-themetag">new</span></div>
+                    <div class="tg-themetagbox"><span class="tg-themetag">mới</span></div>
                     <div class="tg-posttitle">
                         <h3><a href="newsdetail.php?id=<?php echo htmlspecialchars($new['id']);?>"><?php echo htmlspecialchars($new['title']); ?></a></h3>
                     </div>
