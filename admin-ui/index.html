@@ -89,12 +89,20 @@
                         </ul>
                     </li>
                     <li class="menu-item-has-children dropdown hide-with-admin">
-                        <a href="#" class="dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"> <i class="menu-icon fa fa-tags"></i>Danh mục sách</a>
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"> <i class="menu-icon fa fa-tags"></i>Danh mục</a>
                         <ul class="sub-menu children dropdown-menu">
                            <li><i class="fa fa-tags"></i><a href="manage-category.php">Quản lý danh mục</a></li>
                             <li><i class="fa fa-plus"></i><a href="add-category.html">Thêm danh mục</a></li>
                         </ul>
                     </li>
+
+                    <li class="menu-item-has-children dropdown hide-with-admin">
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"> <i class="menu-icon fa fa-bookmark"></i>Đơn mượn sách</a>
+                        <ul class="sub-menu children dropdown-menu">
+                           <li><i class="fa fa-bookmark"></i><a href="manage-book-borow.php">Quản lý đơn mượn sách</a></li>
+                           <li><i class="fa fa-plus"></i><a href="add-book-borrow.html">Thêm đơn mượn sách</a></li>
+                        </ul>
+                    </li
                 </ul>
             </div><!-- /.navbar-collapse -->
         </nav>
@@ -261,7 +269,31 @@
                         <h4 class="mb-0" id="count-category">
                         </h4>
                         <p class="text-light">Danh mục</p>
+                    </div>
 
+                    <div class="chart-wrapper px-0" style="height:70px;" height="70">
+                        <canvas id="widgetChart3"></canvas>
+                    </div>
+                </div>
+            </div>
+            <!--/.col-->
+            <div class="col-sm-6 col-lg-3 hide-with-admin">
+                <div class="card text-white bg-flat-color-4">
+                    <div class="card-body pb-0">
+                        <div class="dropdown float-right">
+                            <button class="btn bg-transparent dropdown-toggle theme-toggle text-light" type="button" id="dropdownMenuButton3" data-toggle="dropdown">
+                                <i class="fa fa-cog"></i>
+                            </button>
+                            <div class="dropdown-menu" aria-labelledby="dropdownMenuButton3">
+                                <div class="dropdown-menu-content">
+                                    <a class="dropdown-item" href="manage-category.php">Xem thêm</a>
+                                    <a class="dropdown-item" href="add-category.html">Thêm danh mục</a>
+                                </div>
+                            </div>
+                        </div>
+                        <h4 class="mb-0" id="count-category">
+                        </h4>
+                        <p class="text-light">Danh mục</p>
                     </div>
 
                     <div class="chart-wrapper px-0" style="height:70px;" height="70">

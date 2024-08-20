@@ -467,18 +467,15 @@ if ($idusername) {
 									</div>
 								</nav>
 								<div class="tg-wishlistandcart">
-									<div class="dropdown tg-themedropdown tg-wishlistdropdown">
-									<?php 
-											if (isset($data5['results']) && !empty($data5['results'])) {
-												?>
+								<div class="dropdown tg-themedropdown tg-minicartdropdown">
 										<a href="javascript:void(0);" id="tg-wishlisst" class="tg-btnthemedropdown" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
 											<span class="tg-themebadge"><?php echo $data5['bookCount'] ?></span>
 											<i class="icon-heart"></i>
 										</a>
 										<div class="dropdown-menu tg-themedropdownmenu" aria-labelledby="tg-minicart">
 											<div class="tg-minicartbody">
-											
 												<?php
+												if (isset($data5['results']) && !empty($data5['results'])) {
 												// Lặp qua dữ liệu và hiển thị trong các div item
 												foreach ($data5['results'] as $book) {
 													// Chỉ hiển thị sách nếu showing = 1
@@ -501,58 +498,12 @@ if ($idusername) {
 												echo '<div class="tg-description"><p>Chưa có sách yêu thích nào</p></div>';
 											}
 											?>
-											</div>
 											<div class="tg-minicartfoot">
 												<div class="tg-btns">
 													<a class="tg-btn" href="favoritebook.php">Xem thêm</a>
 													<a class="tg-btn" href="javascript:void(0);">Đóng</a>
 												</div>
-											</div>
-										</div>
-									</div>
-									<div class="dropdown tg-themedropdown tg-wishlistdropdown">
-										<a href="javascript:void(0);" id="tg-wishlisst" class="tg-btnthemedropdown" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-											<span class="tg-themebadge">3</span>
-											<i class="icon-books"></i>
-										</a>
-										<div class="dropdown-menu tg-themedropdownmenu" aria-labelledby="tg-minicart">
-											<div class="tg-minicartbody">
-												<div class="tg-minicarproduct">
-													<figure>
-														<img src="images/products/img-01.jpg" alt="image description">
-													</figure>
-													<div class="tg-minicarproductdata">
-														<h5><a href="javascript:void(0);">Our State Fair Is A Great Function</a></h5>
-														<h6><a href="javascript:void(0);">Tiểu thuyết</a></h6>
-													</div>
-												</div>
-												<div class="tg-minicarproduct">
-													<figure>
-														<img src="images/products/img-02.jpg" alt="image description">
-													</figure>
-													<div class="tg-minicarproductdata">
-														<h5><a href="javascript:void(0);">Bring Me To Light</a></h5>
-														<h6><a href="javascript:void(0);">Tiểu thuyết</a></h6>
-													</div>
-												</div>
-												<div class="tg-minicarproduct">
-													<figure>
-														<img src="images/products/img-03.jpg" alt="image description">
-													</figure>
-													<div class="tg-minicarproductdata">
-														<h5><a href="javascript:void(0);">Have Faith In Your Soul</a></h5>
-														<h6><a href="javascript:void(0);">Tiểu thuyết</a></h6>
-													</div>
-												</div>
-											</div>
-											<div class="tg-minicartfoot">
-											<span class="tg-subtotal">Đang mượn: <strong> 3</strong></span>
-												<div class="tg-btns">
-													<a class="tg-btn" href="javascript:void(0);">Xem thêm</a>
-													<a class="tg-btn" href="javascript:void(0);">Đóng</a>
-												</div>
-											</div>
-										</div>
+											    </div>
 									</div>
 								</div>
 							</div>
