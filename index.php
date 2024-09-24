@@ -235,7 +235,7 @@ error_reporting(E_ALL);
 $url = 'http://localhost:8000/api/get-fv3'; // URL của API backend
 
 // Lấy dữ liệu từ cookies
-$idusername = $_COOKIE['idusername'] ?? null;
+$idusername = $_COOKIE['idusername'] ?? -1;
 
 if ($idusername) {
     // Dữ liệu để gửi
@@ -275,6 +275,7 @@ if ($idusername) {
 }
 
 ?>
+
 <body class="tg-home tg-homevtwo">
 	
 	<div id="tg-wrapper" class="tg-wrapper tg-haslayout">
