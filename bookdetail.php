@@ -564,7 +564,7 @@ if (isset($_COOKIE['idusername']) && isset($_COOKIE['bookId'])) {
 															}
 															else{
 																?>
-																<a class="tg-btnaddtowishlist" onclick="themVaoYeuthich()" style="cursor:pointer">
+																<a class="tg-btnaddtowishlist" onclick="themVaoYeuthich()" style="cursor:pointer;background:aqua;">
 															        <span>Thêm vào yêu thích</span>
 														        </a>
 																<?php

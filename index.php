@@ -512,7 +512,7 @@ if ($idusername) {
 							<div class="dropdown tg-themedropdown tg-wishlistdropdown">
 										<a href="javascript:void(0);" id="tg-wishlisst" class="tg-btnthemedropdown" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
 											<span class="tg-themebadge">3</span>
-											<i class="icon-books"></i>
+											<i class="icon-cart"></i>
 										</a>
 										<div class="dropdown-menu tg-themedropdownmenu" aria-labelledby="tg-minicart">
 											<div class="tg-minicartbody">
@@ -960,7 +960,7 @@ document.getElementById('searchForm').addEventListener('submit', function(event)
 
         let searchQuery = document.querySelector('input[name="search"]').value;
 		setCookie('tukhoa', searchQuery, 30);
-        let url = `/QuanLyThuVien/findingbook.php?tukhoa=${encodeURIComponent(searchQuery)}`;
+        let url = `/QLTV/findingbook.php?tukhoa=${encodeURIComponent(searchQuery)}`;
         
         // Điều hướng đến URL mới với từ khóa tìm kiếm
         window.location.href = url;
