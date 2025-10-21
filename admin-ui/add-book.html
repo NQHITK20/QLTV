@@ -27,7 +27,7 @@
     <link rel="stylesheet" href="assets/css/style.css">
 
     <link href='https://fonts.googleapis.com/css?family=Open+Sans:400,600,700,800' rel='stylesheet' type='text/css'>
-    
+
 
 </head>
 
@@ -123,7 +123,7 @@
             <div class="col-sm-4">
                 <div class="page-header float-left">
                     <div class="page-title">
-                        <h1>Tài khoản</h1>
+                        <h1>Sách</h1>
                     </div>
                 </div>
             </div>
@@ -171,6 +171,11 @@
                                     </div>
                                 </div>
                                 <div class="row form-group">
+                                    <div class="col col-md-3"><label for="text-input" class=" form-control-label">Giá</label></div>
+                                    <div class="col-12 col-md-2"><input type="number" id="price" name="price" placeholder="0" class="form-control">
+                                    </div>
+                                </div>
+                                <div class="row form-group">
                                     <div class="col col-md-3"><label for="text-input" class=" form-control-label">Số lượng</label></div>
                                     <div class="col-12 col-md-2"><input type="number" id="soLuong" name="soLuong" placeholder="0" class="form-control"></div>
                                 </div>
@@ -184,7 +189,7 @@
                         <button type="submit" class="btn btn-primary btn-sm" onclick="submitForm()">
                             <i class="fa fa-dot-circle-o"></i> Xác nhận
                         </button>
-                       
+
                     </div>
                 </div>
             </div>
@@ -224,7 +229,7 @@
     {
         localStorage.removeItem('userData')
         localStorage.removeItem('jwtToken')
-        
+
     }
     document.getElementById('span-avatar').innerText = 'Hi ' + JSON.parse(localStorage.getItem('userData')).lastName
     if (JSON.parse(localStorage.getItem('userData')).roleId !== "3") {
@@ -252,10 +257,10 @@
 
             // Tách tên file từ đối tượng file
             let fileNamez = file.name;
-            
+
             // Tạo đường dẫn mới
             var image= '../images/books/' + fileNamez;
-            
+
             // Đặt đường dẫn mới cho thẻ <img> để hiển thị ảnh
             var img = document.getElementById('displayedImage');
             img.src = image;
@@ -277,6 +282,7 @@
             const bookName = document.getElementById('bookName').value;
             const author = document.getElementById('author').value;
             const category = document.getElementById('category').value;
+            const price = document.getElementById('price').value;
             const soLuong = document.getElementById('soLuong').value;
             const description = document.getElementById('description').value;
             const fileInput = document.getElementById('image');
@@ -288,21 +294,22 @@
             }else if (!file) {
                 alert("Vui lòng chọn ảnh sách.");
                 return ;
-            } 
+            }
             else if (!author) {
                 alert("Vui lòng nhập tên tác giả.");
                 return ;
-            } else  if (!category) {
+            }
+            else  if (!category) {
                 alert("Vui lòng chọn danh mục.");
                 return ;
-            } else if (!soLuong) {
-                alert("Vui lòng nhập số lượng");
+            } else if (!price) {
+                alert("Vui lòng nhập giá");
                 return ;
-            } 
-            
+            }
+
             // Tách tên file từ đối tượng file
             let fileName = file.name;
-            
+
             // Tạo đường dẫn mới
             const userData = {
                 bookName: bookName,
@@ -312,6 +319,7 @@
                 category: category,
                 soLuong:soLuong,
                 description:description,
+                price:price
             };
 
             const xhr = new XMLHttpRequest(); // Tạo đối tượng XMLHttpRequest

@@ -27,7 +27,7 @@
     <link rel="stylesheet" href="assets/css/style.css">
 
     <link href='https://fonts.googleapis.com/css?family=Open+Sans:400,600,700,800' rel='stylesheet' type='text/css'>
-    
+
 
 </head>
 
@@ -139,6 +139,11 @@
                                 <div class="col-12 col-md-3"><input type="text" id="bookName" name="bookName" placeholder="" class="form-control"></div>
                             </div>
                             <div class="row form-group">
+                                <div class="col col-md-3"><label for="text-input" class=" form-control-label">Mã sách</label></div>
+                                <div class="col-12 col-md-3"><input type="text" id="hiddenBookcode" name="hiddenBookcode" placeholder="" class="form-control" disabled>
+                                </div>
+                            </div>
+                            <div class="row form-group">
                                 <div class="col col-md-3"><label for="text-input" class=" form-control-label">Ảnh sách</label></div>
                                 <div class="col-12 col-md-3">
                                     <input type="file" id="image" name="image" onchange="onchangeImage()">
@@ -173,7 +178,7 @@
                         <button type="submit" class="btn btn-primary btn-sm" onclick="submitForm()">
                             <i class="fa fa-dot-circle-o"></i> Xác nhận
                         </button>
-                       
+
                     </div>
                 </div>
             </div>
@@ -251,7 +256,7 @@ document.addEventListener("DOMContentLoaded", async function() {
     } catch (error) {
         console.error(error);
     }
-});               
+});
     </script>
     <script>
         //Load và onchane cái option
@@ -299,10 +304,10 @@ fetch('http://localhost:8000/api/get-all-category', {
 
             // Tách tên file từ đối tượng file
             let fileNamez = file.name;
-            
+
             // Tạo đường dẫn mới
             var image= '../images/books/' + fileNamez;
-            
+
             // Đặt đường dẫn mới cho thẻ <img> để hiển thị ảnh
             var img = document.getElementById('displayedImage');
             img.src = image;
@@ -323,7 +328,7 @@ fetch('http://localhost:8000/api/get-all-category', {
             }else if (!fileInput) {
                 alert("Vui lòng chọn ảnh sách.");
                 return ;
-            } 
+            }
             else if (!author) {
                 alert("Vui lòng nhập tên tác giả.");
                 return ;
@@ -333,11 +338,11 @@ fetch('http://localhost:8000/api/get-all-category', {
             } else if (!soLuong) {
                 alert("Vui lòng nhập số lượng");
                 return ;
-            } 
+            }
             //  Tách tên file từ đối tượng file
              let fileName = extractFilename(fileInput);
-            
-            
+
+
             // Tạo đường dẫn mới
             const userData = {
                 bookName: bookName,

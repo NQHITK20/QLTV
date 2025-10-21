@@ -73,7 +73,7 @@ if ($data === null) {
     <link rel="stylesheet" href="assets/css/main.css">
 
     <link href='https://fonts.googleapis.com/css?family=Open+Sans:400,600,700,800' rel='stylesheet' type='text/css'>
-   
+
     <style>
         .overlay {
             position: fixed;
@@ -213,9 +213,9 @@ if ($data === null) {
                                     <thead>
                                         <tr>
                                             <th>Tên Sách</th>
-                                            <th>Mã sách</th>
                                             <th>Ảnh</th>
                                             <th>Tác giả</th>
+                                            <th>Giá</th>
                                             <th>Danh mục</th>
                                             <th>Trạng thái</th>
                                             <th>Hành động</th>
@@ -230,9 +230,9 @@ if ($data === null) {
                     ?>
                     <tr>
                         <td ><?php echo htmlspecialchars($book['bookName']); ?></td>
-                        <td ><?php echo htmlspecialchars($book['bookCode']); ?></td>
-                        <td ><img src="../images/books/<?php echo htmlspecialchars($book['image']); ?>" alt="<?php echo htmlspecialchars($book['bookName']); ?>" style="width"></td>
+                        <td ><img src="../images/books/<?php echo htmlspecialchars($book['image']); ?>" alt="<?php echo htmlspecialchars($book['bookName']); ?>"></td>
                         <td><?php echo htmlspecialchars($book['author']); ?></td>
+                        <td><?php echo htmlspecialchars($book['price']); ?> vnđ</td>
                         <td><?php echo htmlspecialchars($book['category']); ?></td>
                         <td>
                         <?php
@@ -261,7 +261,7 @@ if ($data === null) {
                 echo '<tr><td colspan="7">Không có dữ liệu</td></tr>';
             }
             ?>
-                                    </tbody>     
+                                    </tbody>
                                 </table>
                             </div>
                         </div>
@@ -369,9 +369,9 @@ if ($data === null) {
     } catch (error) {
         console.error(`Error in showHideBook: ${error}`);
         alert('An error occurred while updating the book name.');
-    }   
+    }
   }
-}    
+}
 
 let hideBook = async (id, name , buttonId) => {
         if (buttonId === "btn-hide-fade") {
@@ -406,21 +406,21 @@ let hideBook = async (id, name , buttonId) => {
     } catch (error) {
         console.error(`Error in showHideBook: ${error}`);
         alert('An error occurred while updating the book name.');
-    }   
+    }
   }
-}    
+}
 function logout()
     {
         localStorage.removeItem('userData')
         localStorage.removeItem('jwtToken')
-        
+
     }
     document.getElementById('span-avatar').innerText = 'Hi ' + JSON.parse(localStorage.getItem('userData')).lastName
     if (JSON.parse(localStorage.getItem('userData')).roleId !== "3") {
     document.querySelectorAll('.hidden-user').forEach(element => {
         element.style.display = "none";
     });
-}                                  
+}
 </script>
 
 </html>
