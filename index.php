@@ -630,6 +630,9 @@ if (isset($data['data'])) {
                             <h3><a href="bookdetail.php?id=<?php echo htmlspecialchars($book['id']); ?>" onClick="setCookiesBook(<?php echo $categoryJson; ?>,<?php echo $idJson; ?>))"><?php echo htmlspecialchars($book['bookName']); ?></a></h3>
                         </div>
                         <span class="tg-bookwriter">Tác giả : <?php echo htmlspecialchars($book['author']); ?></span>
+						<span class="tg-bookprice">
+							<ins><?php echo htmlspecialchars($book['price']); ?> nvđ</ins>
+						</span>
                     </div>
                 </div>
             </div>
@@ -687,6 +690,8 @@ if (isset($data3['data'])) {
                         <h3><a href="newsdetail.php?id=<?php echo htmlspecialchars($new['id']);?>"><?php echo htmlspecialchars($new['title']); ?></a></h3>
                     </div>
                     <span class="tg-bookwriter"><a><?php echo htmlspecialchars($new['author']); ?></a></span>
+
+					
                 </div>
             </article>
             <?php
