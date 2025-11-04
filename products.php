@@ -962,6 +962,9 @@ if ($listing_book) {
 															<h3><a href="bookdetail.php?id=<?php echo $idJson ?>" onClick="setCookiesBook(<?php echo $categoryJson ?>,<?php echo $idJson ?>)"><?php echo htmlspecialchars($book['bookName']); ?></a></h3>
 														</div>
 														<span class="tg-bookwriter"> <a><?php echo htmlspecialchars($book['author']); ?></a></span>
+														<span class="tg-bookprice">
+															<ins><?php echo htmlspecialchars($book['price']); ?> nvđ</ins>
+														</span>
 													</div>
 												</div>
 											</div>

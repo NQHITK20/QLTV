@@ -587,6 +587,9 @@ if (isset($_COOKIE['idusername']) && isset($_COOKIE['bookId'])) {
 													<div class="tg-description">
 														<p id="description"></p>
 													</div>
+													<span class="tg-bookprice">
+														<ins id="price"></ins>
+													</span>
 												</div>
 											</div>
 											<div class="tg-relatedproducts">
@@ -624,7 +627,10 @@ if (isset($_COOKIE['idusername']) && isset($_COOKIE['bookId'])) {
 																	<div class="tg-booktitle">
 																		<h3><a href="bookdetail.php?id=<?php echo $idJson ?>" onClick="setCookiesBook(<?php echo $categoryJson ?>,<?php echo $idJson ?>)"><?php echo $book['bookName'] ?></a></h3>
 																	</div>
-																	<span class="tg-bookwriter"> <a><?php echo $book['author'] ?></a></span>																	
+																	<span class="tg-bookwriter"> <a><?php echo $book['author'] ?></a></span>
+																	<span class="tg-bookprice">
+															            <ins><?php echo htmlspecialchars($book['price']); ?> vnđ</ins>
+														            </span>																	
 																</div>
 															</div>
 														</div>
@@ -895,6 +901,7 @@ document.addEventListener("DOMContentLoaded", async function() {
             document.getElementById("imageBook").src = "images/books/" + responseData.data.image;
             document.getElementById("author").innerText = responseData.data.author;
             document.getElementById("description").innerText = responseData.data.description;
+            document.getElementById("price").innerText = responseData.data.price + ' vnđ';
         } 
     } catch (error) {
         console.error(error);
