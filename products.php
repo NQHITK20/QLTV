@@ -929,14 +929,14 @@ if ($data3 === null) {
 											</div>
 											<?php
 											$listing_book = isset($_COOKIE['listing_book']) ? json_decode($_COOKIE['listing_book'], true) : null; 									
-// Kiểm tra nếu dữ liệu có chứa key 'data'
-if ($listing_book) {
-    // Lặp qua dữ liệu và hiển thị trong các div item
-    foreach ($listing_book as $book) {
-        // Chỉ hiển thị sách nếu showing = 1
-        if ($book['showing'] == 1) {
-            ?>
-			<div class="col-xs-6 col-sm-6 col-md-4 col-lg-3">
+                                            // Kiểm tra nếu dữ liệu có chứa key 'data'
+                                            if ($listing_book) {
+                                            // Lặp qua dữ liệu và hiển thị trong các div item
+                                             foreach ($listing_book as $book) {
+                                            // Chỉ hiển thị sách nếu showing = 1
+                                            if ($book['showing'] == 1) {
+                                                ?>
+			                                    <div class="col-xs-6 col-sm-6 col-md-4 col-lg-3">
 												<div class="tg-postbook">
 													<figure class="tg-featureimg">
 														<div class="tg-bookimg">

@@ -545,7 +545,6 @@ if ($idusername) {
 												</div>
 											</div>
 											<div class="tg-minicartfoot">
-											<span class="tg-subtotal">Đang mượn: <strong> 3</strong></span>
 												<div class="tg-btns">
 													<a class="tg-btn" href="javascript:void(0);">Xem thêm</a>
 													<a class="tg-btn" href="javascript:void(0);">Đóng</a>
@@ -660,8 +659,8 @@ if (isset($data['data'])) {
 					<div class="row">
 						<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
 							<div class="tg-sectionhead">
-								<h2><span>Some Great Books</span>Picked By Authors</h2>
-								<a class="tg-btn" href="javascript:void(0);">View All</a>
+								<h2><span>Bộ sưu tập</span>Sách đang hot</h2>
+								<a class="tg-btn" href="javascript:void(0);">Xem tất cả</a>
 							</div>
 						</div>
 						<div id="tg-pickedbyauthorslider" class="tg-pickedbyauthor tg-pickedbyauthorslider owl-carousel">
@@ -675,136 +674,22 @@ if (isset($data['data'])) {
 											<div class="tg-description">
 												<p>Consectetur adipisicing elit sed do eiusmod tempor incididunt labore toloregna aliqua enim adia minim veniam, quis nostrud.</p>
 											</div>
-											<strong class="tg-bookpage">Book Pages: 206</strong>
-											<strong class="tg-bookcategory">Category: Adventure, Fun</strong>
-											<strong class="tg-bookprice">Price: $23.18</strong>
-											<div class="tg-ratingbox"><span class="tg-stars"><span></span></span></div>
+											<strong class="tg-bookcategory">Danh mục: Adventure, Fun</strong>
+											<strong class="tg-bookprice">Giá: 500 000 vnđ</strong>
 										</div>
 									</figure>
 									<div class="tg-postbookcontent">
 										<div class="tg-booktitle">
 											<h3><a href="javascript:void(0);">Seven Minutes In Heaven</a></h3>
 										</div>
-										<span class="tg-bookwriter">By: <a href="javascript:void(0);">Sunshine Orlando</a></span>
+										<span class="tg-bookwriter">Tác giả: <a href="javascript:void(0);">Sunshine Orlando</a></span>
 										<a class="tg-btn tg-btnstyletwo" href="javascript:void(0);">
 											<i class="fa fa-shopping-basket"></i>
-											<em>Add To Basket</em>
+											<em>Đặt sách</em>
 										</a>
 									</div>
 								</div>
-							</div>
-							<div class="item">
-								<div class="tg-postbook">
-									<figure class="tg-featureimg">
-										<div class="tg-bookimg">
-											<div class="tg-frontcover"><img src="images/books/img-11.jpg" alt="image description"></div>
-										</div>
-										<div class="tg-hovercontent">
-											<div class="tg-description">
-												<p>Consectetur adipisicing elit sed do eiusmod tempor incididunt labore toloregna aliqua enim adia minim veniam, quis nostrud.</p>
-											</div>
-											<strong class="tg-bookpage">Book Pages: 206</strong>
-											<strong class="tg-bookcategory">Category: Adventure, Fun</strong>
-											<strong class="tg-bookprice">Price: $23.18</strong>
-											<div class="tg-ratingbox"><span class="tg-stars"><span></span></span></div>
-										</div>
-									</figure>
-									<div class="tg-postbookcontent">
-										<div class="tg-booktitle">
-											<h3><a href="javascript:void(0);">Slow And Steady Wins The Race</a></h3>
-										</div>
-										<span class="tg-bookwriter">By: <a href="javascript:void(0);">Drusilla Glandon</a></span>
-										<a class="tg-btn tg-btnstyletwo" href="javascript:void(0);">
-											<i class="fa fa-shopping-basket"></i>
-											<em>Add To Basket</em>
-										</a>
-									</div>
-								</div>
-							</div>
-							<div class="item">
-								<div class="tg-postbook">
-									<figure class="tg-featureimg">
-										<div class="tg-bookimg">
-											<div class="tg-frontcover"><img src="images/books/img-12.jpg" alt="image description"></div>
-										</div>
-										<div class="tg-hovercontent">
-											<div class="tg-description">
-												<p>Consectetur adipisicing elit sed do eiusmod tempor incididunt labore toloregna aliqua enim adia minim veniam, quis nostrud.</p>
-											</div>
-											<strong class="tg-bookpage">Book Pages: 206</strong>
-											<strong class="tg-bookcategory">Category: Adventure, Fun</strong>
-											<strong class="tg-bookprice">Price: $23.18</strong>
-											<div class="tg-ratingbox"><span class="tg-stars"><span></span></span></div>
-										</div>
-									</figure>
-									<div class="tg-postbookcontent">
-										<div class="tg-booktitle">
-											<h3><a href="javascript:void(0);">There’s No Time Like The Present</a></h3>
-										</div>
-										<span class="tg-bookwriter">By: <a href="javascript:void(0);">Patrick Seller</a></span>
-										<a class="tg-btn tg-btnstyletwo" href="javascript:void(0);">
-											<i class="fa fa-shopping-basket"></i>
-											<em>Add To Basket</em>
-										</a>
-									</div>
-								</div>
-							</div>
-							<div class="item">
-								<div class="tg-postbook">
-									<figure class="tg-featureimg">
-										<div class="tg-bookimg">
-											<div class="tg-frontcover"><img src="images/books/img-10.jpg" alt="image description"></div>
-										</div>
-										<div class="tg-hovercontent">
-											<div class="tg-description">
-												<p>Consectetur adipisicing elit sed do eiusmod tempor incididunt labore toloregna aliqua enim adia minim veniam, quis nostrud.</p>
-											</div>
-											<strong class="tg-bookpage">Book Pages: 206</strong>
-											<strong class="tg-bookcategory">Category: Adventure, Fun</strong>
-											<strong class="tg-bookprice">Price: $23.18</strong>
-											<div class="tg-ratingbox"><span class="tg-stars"><span></span></span></div>
-										</div>
-									</figure>
-									<div class="tg-postbookcontent">
-										<div class="tg-booktitle">
-											<h3><a href="javascript:void(0);">Seven Minutes In Heaven</a></h3>
-										</div>
-										<span class="tg-bookwriter">By: <a href="javascript:void(0);">Sunshine Orlando</a></span>
-										<a class="tg-btn tg-btnstyletwo" href="javascript:void(0);">
-											<i class="fa fa-shopping-basket"></i>
-											<em>Add To Basket</em>
-										</a>
-									</div>
-								</div>
-							</div>
-							<div class="item">
-								<div class="tg-postbook">
-									<figure class="tg-featureimg">
-										<div class="tg-bookimg">
-											<div class="tg-frontcover"><img src="images/books/img-11.jpg" alt="image description"></div>
-										</div>
-										<div class="tg-hovercontent">
-											<div class="tg-description">
-												<p>Consectetur adipisicing elit sed do eiusmod tempor incididunt labore toloregna aliqua enim adia minim veniam, quis nostrud.</p>
-											</div>
-											<strong class="tg-bookpage">Book Pages: 206</strong>
-											<strong class="tg-bookcategory">Category: Adventure, Fun</strong>
-											<strong class="tg-bookprice">Price: $23.18</strong>
-											<div class="tg-ratingbox"><span class="tg-stars"><span></span></span></div>
-										</div>
-									</figure>
-									<div class="tg-postbookcontent">
-										<div class="tg-booktitle">
-											<h3><a href="javascript:void(0);">Slow And Steady Wins The Race</a></h3>
-										</div>
-										<span class="tg-bookwriter">By: <a href="javascript:void(0);">Drusilla Glandon</a></span>
-										<a class="tg-btn tg-btnstyletwo" href="javascript:void(0);">
-											<i class="fa fa-shopping-basket"></i>
-											<em>Add To Basket</em>
-										</a>
-									</div>
-								</div>
-							</div>
+							</div>						
 						</div>
 					</div>
 				</div>
