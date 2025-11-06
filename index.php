@@ -185,6 +185,7 @@ if ($data3 === null) {
     die('Lỗi khi chuyển đổi JSON');
 }
 
+
 $url = 'http://localhost:8000/api/get-news'; // URL của API backend
 
 // Dữ liệu gửi đi
@@ -273,6 +274,65 @@ if ($idusername) {
         die('Lỗi khi chuyển đổi JSON');
     }
 }
+
+ini_set('display_errors', 1);
+ini_set('display_startup_errors', 1);
+error_reporting(E_ALL);
+
+$url = 'http://localhost:8000/api/get-all-book'; // URL của API backend
+
+// Dữ liệu gửi đi
+$databook12 = array('id' => 'L12');
+
+// Chuyển đổi mảng dữ liệu thành JSON
+$jsonData12 = json_encode($databook12);
+
+
+// Cấu hình cURL
+$ch = curl_init($url);
+curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+curl_setopt($ch, CURLOPT_HTTPHEADER, array(
+    'Content-Type: application/json',
+    'Authorization: Bearer' // Thêm token vào header Authorization
+));
+curl_setopt($ch, CURLOPT_POST, true);
+curl_setopt($ch, CURLOPT_POSTFIELDS, $jsonData12);
+
+// Thực hiện yêu cầu POST và nhận phản hồi
+$response12 = curl_exec($ch);
+
+// Kiểm tra nếu có lỗi khi gửi yêu cầu
+if ($response12 === FALSE) {
+    die('Lỗi khi gửi yêu cầu: ' . curl_error($ch));
+}
+
+// Đóng cURL
+curl_close($ch);
+
+// Chuyển đổi JSON thành mảng dữ liệu trong PHP
+$data12 = json_decode($response12, true);
+
+// Kiểm tra nếu có lỗi khi chuyển đổi JSON
+if ($data12 === null) {
+    die('Lỗi khi chuyển đổi JSON');
+}
+
+// Debug: Kiểm tra cấu trúc dữ liệu
+if (!is_array($data12)) {
+    die('Dữ liệu không phải là mảng');
+}
+
+// Đảm bảo $data12 có cấu trúc đúng
+if (isset($data12['data'])) {
+    $data12 = $data12['data'];
+} elseif (isset($data12['results'])) {
+    $data12 = $data12['results'];
+}
+
+// Debug: In ra cấu trúc dữ liệu để kiểm tra
+echo '<pre>'; print_r($data12); echo '</pre>';
+
+
 
 ?>
 
@@ -664,32 +724,64 @@ if (isset($data['data'])) {
 							</div>
 						</div>
 						<div id="tg-pickedbyauthorslider" class="tg-pickedbyauthor tg-pickedbyauthorslider owl-carousel">
-							<div class="item">
-								<div class="tg-postbook">
-									<figure class="tg-featureimg">
-										<div class="tg-bookimg">
-											<div class="tg-frontcover"><img src="images/books/img-10.jpg" alt="image description"></div>
-										</div>
-										<div class="tg-hovercontent">
-											<div class="tg-description">
-												<p>Consectetur adipisicing elit sed do eiusmod tempor incididunt labore toloregna aliqua enim adia minim veniam, quis nostrud.</p>
+								<?php
+                                // Sử dụng trực tiếp $data12 đã được chuẩn hóa
+                                $hotBooks = [];
+                                if (!empty($data12) && is_array($data12)) {
+                                    $hotBooks = $data12;
+                                }								// fallback to $data (main book list) if $hotBooks is empty
+								if (empty($hotBooks) && isset($data['data']) && is_array($data['data'])) {
+									$hotBooks = $data['data'];
+								}
+								if (!empty($hotBooks)) {
+									$count = 0;
+									foreach ($hotBooks as $item) {
+										// Lấy đúng dữ liệu sách từ mảng lồng
+										$book = is_array($item) && isset($item[0]) ? $item[0] : $item;
+										if ($count >= 12) break;
+										// Nếu có trường 'showing' thì kiểm tra, còn không thì vẫn hiển thị
+										if (isset($book['showing']) && (string)$book['showing'] !== '1') continue;
+										$category = $book['category'] ?? '';
+										$id = $book['id'] ?? '';
+										$categoryJson = htmlspecialchars(json_encode($category), ENT_QUOTES, 'UTF-8');
+										$idJson = htmlspecialchars(json_encode($id), ENT_QUOTES, 'UTF-8');
+										?>
+										<div class="item">
+											<div class="tg-postbook">
+												<figure class="tg-featureimg">
+													<div class="tg-bookimg">
+														<?php
+														$imgFile = (!empty($book['image'])) ? htmlspecialchars($book['image']) : 'no-image.png';
+														?>
+														<div class="tg-frontcover"><img src="images/books/<?php echo $imgFile; ?>" alt="<?php echo htmlspecialchars($book['bookName'] ?? 'book'); ?>"></div>
+													</div>
+													<div class="tg-hovercontent">
+														<div class="tg-description">
+															<p><?php echo htmlspecialchars(mb_substr($book['description'] ?? '', 0, 120)); ?></p>
+														</div>
+														<strong class="tg-bookcategory">Danh mục: <?php echo htmlspecialchars($book['category'] ?? ''); ?></strong>
+														<strong class="tg-bookprice">Giá: <?php echo htmlspecialchars($book['price'] ?? 0); ?> vnđ</strong>
+													</div>
+												</figure>
+												<div class="tg-postbookcontent">
+													<div class="tg-booktitle">
+														<h3><a href="bookdetail.php?id=<?php echo $idJson; ?>" onClick="setCookiesBook(<?php echo $categoryJson; ?>,<?php echo $idJson; ?>)"><?php echo htmlspecialchars($book['bookName'] ?? ''); ?></a></h3>
+													</div>
+													<span class="tg-bookwriter">Tác giả: <?php echo htmlspecialchars($book['author'] ?? ''); ?></span>
+													<a class="tg-btn tg-btnstyletwo" href="bookdetail.php?id=<?php echo $idJson; ?>" onClick="setCookiesBook(<?php echo $categoryJson; ?>,<?php echo $idJson; ?>)">
+														<i class="fa fa-shopping-basket"></i>
+														<em>Đặt sách</em>
+													</a>
+												</div>
 											</div>
-											<strong class="tg-bookcategory">Danh mục: Adventure, Fun</strong>
-											<strong class="tg-bookprice">Giá: 500 000 vnđ</strong>
 										</div>
-									</figure>
-									<div class="tg-postbookcontent">
-										<div class="tg-booktitle">
-											<h3><a href="javascript:void(0);">Seven Minutes In Heaven</a></h3>
-										</div>
-										<span class="tg-bookwriter">Tác giả: <a href="javascript:void(0);">Sunshine Orlando</a></span>
-										<a class="tg-btn tg-btnstyletwo" href="javascript:void(0);">
-											<i class="fa fa-shopping-basket"></i>
-											<em>Đặt sách</em>
-										</a>
-									</div>
-								</div>
-							</div>						
+										<?php
+										$count++;
+									}
+								} else {
+									echo '<div class="item"><p>Không có sách đang hot.</p></div>';
+								}
+								?>
 						</div>
 					</div>
 				</div>
