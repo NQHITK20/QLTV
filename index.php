@@ -3,7 +3,7 @@
 <head>
 	<meta charset="utf-8">
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
-	 <title>Book Library</title>
+	 <title>Thư viện sách</title>
 	<meta name="description" content="">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<link rel="apple-touch-icon" href="apple-touch-icon.png">
@@ -329,8 +329,6 @@ if (isset($data12['data'])) {
     $data12 = $data12['results'];
 }
 
-// Debug: In ra cấu trúc dữ liệu để kiểm tra
-echo '<pre>'; print_r($data12); echo '</pre>';
 
 
 

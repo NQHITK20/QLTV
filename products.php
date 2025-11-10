@@ -27,39 +27,52 @@ error_reporting(E_ALL);
 
 $url = 'http://localhost:8000/api/get-all-book'; // URL của API backend
 
-// Dữ liệu gửi đi
-$databook = array('id' => 'ALLSHOW');
-
-// Chuyển đổi mảng dữ liệu thành JSON
-$jsonData = json_encode($databook);
-
-// Cấu hình cURL
-$ch = curl_init($url);
-curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-curl_setopt($ch, CURLOPT_HTTPHEADER, array(
-    'Content-Type: application/json',
-    'Authorization: Bearer' // Thêm token vào header Authorization
-));
-curl_setopt($ch, CURLOPT_POST, true);
-curl_setopt($ch, CURLOPT_POSTFIELDS, $jsonData);
-
-// Thực hiện yêu cầu POST và nhận phản hồi
-$response = curl_exec($ch);
-
-// Kiểm tra nếu có lỗi khi gửi yêu cầu
-if ($response === FALSE) {
-    die('Lỗi khi gửi yêu cầu: ' . curl_error($ch));
-}
-
-// Đóng cURL
-curl_close($ch);
-
-// Chuyển đổi JSON thành mảng dữ liệu trong PHP
-$data = json_decode($response, true);
-
-// Kiểm tra nếu có lỗi khi chuyển đổi JSON
-if ($data === null) {
-    die('Lỗi khi chuyển đổi JSON');
+// Lấy danh mục từ query string nếu có
+$category = isset($_GET['category']) ? $_GET['category'] : null;
+if ($category) {
+	// Nếu có category, gọi API lấy sách theo danh mục
+	$url = 'http://localhost:8000/api/get-books-by-category';
+	$databook = array('category' => $category);
+	$jsonData = json_encode($databook);
+	$ch = curl_init($url);
+	curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+	curl_setopt($ch, CURLOPT_HTTPHEADER, array(
+		'Content-Type: application/json',
+		'Authorization: Bearer'
+	));
+	curl_setopt($ch, CURLOPT_POST, true);
+	curl_setopt($ch, CURLOPT_POSTFIELDS, $jsonData);
+	$response = curl_exec($ch);
+	if ($response === FALSE) {
+		die('Lỗi khi gửi yêu cầu: ' . curl_error($ch));
+	}
+	curl_close($ch);
+	$data = json_decode($response, true);
+	if ($data === null) {
+		die('Lỗi khi chuyển đổi JSON');
+	}
+} else {
+	// Nếu không có category, lấy toàn bộ sách như cũ
+	$url = 'http://localhost:8000/api/get-all-book';
+	$databook = array('id' => 'ALLSHOW');
+	$jsonData = json_encode($databook);
+	$ch = curl_init($url);
+	curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+	curl_setopt($ch, CURLOPT_HTTPHEADER, array(
+		'Content-Type: application/json',
+		'Authorization: Bearer'
+	));
+	curl_setopt($ch, CURLOPT_POST, true);
+	curl_setopt($ch, CURLOPT_POSTFIELDS, $jsonData);
+	$response = curl_exec($ch);
+	if ($response === FALSE) {
+		die('Lỗi khi gửi yêu cầu: ' . curl_error($ch));
+	}
+	curl_close($ch);
+	$data = json_decode($response, true);
+	if ($data === null) {
+		die('Lỗi khi chuyển đổi JSON');
+	}
 }
 
 ini_set('display_errors', 1);
@@ -176,9 +189,13 @@ if ($data3 === null) {
 								<span onclick="profileBar()" class="dropbtn">Hi, John</span>
 								<div id="myDropdown" class="dropdown-content">								
 									<a href="#about"><i class="icon-exit" ></i> Đăng xuất</a>
-								  </div>
-							</div>
-						</div>
+									</div>
+									<?php // Đóng lại khối if phân trang nếu bị thiếu }
+									?>
+										</div>
+									</div>
+									<?php // Đóng lại khối if hiển thị sản phẩm }
+									?>
 					</div>
 				</div>
 			</div>
@@ -928,14 +945,11 @@ if ($data3 === null) {
 												<span>Sách hay mới nhất</span>
 											</div>
 											<?php
-											$listing_book = isset($_COOKIE['listing_book']) ? json_decode($_COOKIE['listing_book'], true) : null; 									
-                                            // Kiểm tra nếu dữ liệu có chứa key 'data'
-                                            if ($listing_book) {
-                                            // Lặp qua dữ liệu và hiển thị trong các div item
-                                             foreach ($listing_book as $book) {
-                                            // Chỉ hiển thị sách nếu showing = 1
-                                            if ($book['showing'] == 1) {
-                                                ?>
+											// Hiển thị sách từ $data lấy từ API
+											if (isset($data['data']) && is_array($data['data'])) {
+												foreach ($data['data'] as $book) {
+													if (!isset($book['showing']) || $book['showing'] == 1) {
+												?>
 			                                    <div class="col-xs-6 col-sm-6 col-md-4 col-lg-3">
 												<div class="tg-postbook">
 													<figure class="tg-featureimg">
@@ -1020,7 +1034,7 @@ if ($data3 === null) {
 											<ul>
 												<?php 
 												foreach($data2['data'] as $cat) {?>
-												<li><a href="<?php echo $cat['category'] ?>"><span> <?php echo $cat['category'] ?></span><em><?php echo $cat['booksCount'] ?></em></a></li>
+												<li><a href="products.php?category=<?php echo urlencode($cat['category']) ?>"><span> <?php echo $cat['category'] ?></span><em><?php echo $cat['booksCount'] ?></em></a></li>
 												<?php }?>
 											</ul>
 										</div>
