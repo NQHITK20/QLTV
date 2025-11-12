@@ -991,37 +991,25 @@ if ($data3 === null) {
 ?>
 										</div>
 									</div>
+									<?php
+									// Tính lại số trang từ dữ liệu API
+									$booksPerPage = 12;
+									$totalBooks = isset($data['data']) ? count($data['data']) : 0;
+									$totalPages = ceil($totalBooks / $booksPerPage);
+									if ($totalPages > 1) {
+									?>
 									<div class="pagination">
 										<a onclick="prevPage()" id="btn_prev" style="cursor: pointer;">&laquo;</a>
 										<?php
-										$page_index_book = isset($_COOKIE['page_index_book']) ? json_decode($_COOKIE['page_index_book'], true) : null;
-										$last_page_book = isset($_COOKIE['last_page_book']) ? json_decode($_COOKIE['last_page_book'], true) : null;
-										if ($page_index_book && $last_page_book ) {
-										if ($page_index_book < 5 ) {
-										    $count1 = 0;
-											for ($i = 1;$i <= min($page_index_book + 8, $last_page_book) && $count1 < 10; $i++) {
-												?>
-												<a class="pag-child" onclick="changePageClick(<?php echo $i ?>)" style="cursor:pointer"><?php echo $i ?></a>
-												<?php
-												$count1++;
-											}
-										}else{
-											if ($page_index_book >= 5) {
-												$count2 = 0;
-												for ($i = $page_index_book-4;$i <= min($page_index_book + 4, $last_page_book) && $count2 < 10; $i++) {
-													?>
-													<a class="pag-child" onclick="changePageClick(<?php echo $i ?>)" style="cursor:pointer"><?php echo $i ?></a>
-													<?php
-													$count2++;
-												}	
-											}
+										for ($i = 1; $i <= $totalPages; $i++) {
+											echo '<a class="pag-child" onclick="changePageClick('.$i.')" style="cursor:pointer">'.$i.'</a>';
 										}
-											?>
-										<?php } else {
-                                          echo '<p>Không có dữ liệu tổng số trang và trang hiện tại</p>';
-                                            }?>
+										?>
 										<a onclick="nextPage()" id="btn_next" style="cursor: pointer;">&raquo;</a>
 									</div>
+									<?php
+									}
+									?>
 								</div>
 							</div>
 							<div class="col-xs-12 col-sm-4 col-md-4 col-lg-3 pull-left">
