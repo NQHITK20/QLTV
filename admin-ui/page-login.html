@@ -1,221 +1,285 @@
-<!doctype html>
+<!DOCTYPE html>
 <!--[if lt IE 7]>      <html class="no-js lt-ie9 lt-ie8 lt-ie7" lang=""> <![endif]-->
 <!--[if IE 7]>         <html class="no-js lt-ie9 lt-ie8" lang=""> <![endif]-->
 <!--[if IE 8]>         <html class="no-js lt-ie9" lang=""> <![endif]-->
 <!--[if gt IE 8]><!-->
 <html class="no-js" lang="en">
-<!--<![endif]-->
+    <!--<![endif]-->
 
-<head>
-    <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <title>Sufee Admin - HTML5 Admin Template</title>
-    <meta name="description" content="Sufee Admin - HTML5 Admin Template">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <head>
+        <meta charset="utf-8" />
+        <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+        <title>Sufee Admin - HTML5 Admin Template</title>
+        <meta name="description" content="Sufee Admin - HTML5 Admin Template" />
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <link rel="apple-touch-icon" href="apple-icon.png">
-    <link rel="shortcut icon" href="favicon.ico">
-    <link rel="stylesheet" href="vendors/bootstrap/dist/css/bootstrap.min.css">
-    <link rel="stylesheet" href="vendors/font-awesome/css/font-awesome.min.css">
-    <link rel="stylesheet" href="vendors/themify-icons/css/themify-icons.css">
-    <link rel="stylesheet" href="vendors/flag-icon-css/css/flag-icon.min.css">
-    <link rel="stylesheet" href="vendors/selectFX/css/cs-skin-elastic.css">
+        <link rel="apple-touch-icon" href="apple-icon.png" />
+        <link rel="shortcut icon" href="favicon.ico" />
+        <link
+            rel="stylesheet"
+            href="vendors/bootstrap/dist/css/bootstrap.min.css"
+        />
+        <link
+            rel="stylesheet"
+            href="vendors/font-awesome/css/font-awesome.min.css"
+        />
+        <link
+            rel="stylesheet"
+            href="vendors/themify-icons/css/themify-icons.css"
+        />
+        <link
+            rel="stylesheet"
+            href="vendors/flag-icon-css/css/flag-icon.min.css"
+        />
+        <link
+            rel="stylesheet"
+            href="vendors/selectFX/css/cs-skin-elastic.css"
+        />
 
-    <link rel="stylesheet" href="assets/css/style.css">
+        <link rel="stylesheet" href="assets/css/style.css" />
 
-    <link href='https://fonts.googleapis.com/css?family=Open+Sans:400,600,700,800' rel='stylesheet' type='text/css'>
+        <link
+            href="https://fonts.googleapis.com/css?family=Open+Sans:400,600,700,800"
+            rel="stylesheet"
+            type="text/css"
+        />
+    </head>
 
-</head>
-
-<body class="bg-dark">
-    <div class="overlay" id="loadingOverlay">
-        <div class="spinner-border text-light" role="status">
-            <span class="sr-only">Loading...</span>
+    <body class="bg-dark">
+        <div class="overlay" id="loadingOverlay">
+            <div class="spinner-border text-light" role="status">
+                <span class="sr-only">Loading...</span>
+            </div>
         </div>
-    </div>
-    <div class="sufee-login d-flex align-content-center flex-wrap">
-        <div class="container">
-            <div class="login-content">
-                <div class="login-logo">
-                    <a href="../index.php">
-                        <img class="align-content" src="images/logo.png" alt="">
-                    </a>
-                </div>
-                <div class="login-form">
-                    <form id="loginForm">
-                        <div class="form-group">
-                            <label>Email</label>
-                            <input type="email" id="email" class="form-control" placeholder="Email">
-                        </div>
-                            <div class="form-group" style="position: relative;">
-                                <label>Mật khẩu</label>
-                                <input type="password" id="passwordInput" class="form-control" placeholder="">
-                                <i id="eyeIcon" class="fa fa-eye-slash" style="right: 10px;
-                                position: absolute;
-                                z-index: 10;
-                                top: 44px;cursor: pointer; " onclick="togglePasswordVisibility()"></i>
+        <div class="sufee-login d-flex align-content-center flex-wrap">
+            <div class="container">
+                <div class="login-content">
+                    <div class="login-logo">
+                        <a href="../index.php">
+                            <img
+                                class="align-content"
+                                src="images/logo.png"
+                                alt=""
+                            />
+                        </a>
+                    </div>
+                    <div class="login-form">
+                        <form id="loginForm">
+                            <div class="form-group">
+                                <label>Email</label>
+                                <input
+                                    type="email"
+                                    id="email"
+                                    class="form-control"
+                                    placeholder="Email"
+                                />
                             </div>
-                                <div class="checkbox">
-                                    <label>
-                                <input type="checkbox" id="rememberMe" name="rememberMe"> Nhớ tài khoản
-                            </label>
-                                    <label class="pull-right">
-                                <a href="pages-forget.html">Quên mật khẩu</a>
-                            </label>
-
-                                </div>
-                                <button type="button" class="btn btn-success btn-flat m-b-30 m-t-30" onclick="handleLogin()">Đăng nhập</button>
-                                <div class="register-link m-t-15 m-b-2 text-center">
-                                    <p>Chưa có tài khoản ? <a href="page-register.html"> Đăng kí ở đây</a></p>
-                                </div>
-                    </form>
+                            <div class="form-group" style="position: relative">
+                                <label>Mật khẩu</label>
+                                <input
+                                    type="password"
+                                    id="passwordInput"
+                                    class="form-control"
+                                    placeholder=""
+                                />
+                                <i
+                                    id="eyeIcon"
+                                    class="fa fa-eye-slash"
+                                    style="
+                                        right: 10px;
+                                        position: absolute;
+                                        z-index: 10;
+                                        top: 44px;
+                                        cursor: pointer;
+                                    "
+                                    onclick="togglePasswordVisibility()"
+                                ></i>
+                            </div>
+                            <div class="checkbox">
+                                <label>
+                                    <input
+                                        type="checkbox"
+                                        id="rememberMe"
+                                        name="rememberMe"
+                                    />
+                                    Nhớ tài khoản
+                                </label>
+                                <label class="pull-right">
+                                    <a href="pages-forget.html"
+                                        >Quên mật khẩu</a
+                                    >
+                                </label>
+                            </div>
+                            <button
+                                type="button"
+                                class="btn btn-success btn-flat m-b-30 m-t-30"
+                                onclick="handleLogin()"
+                            >
+                                Đăng nhập
+                            </button>
+                            <div class="register-link m-t-15 m-b-2 text-center">
+                                <p>
+                                    Chưa có tài khoản ?
+                                    <a href="page-register.html">
+                                        Đăng kí ở đây</a
+                                    >
+                                </p>
+                            </div>
+                        </form>
+                    </div>
                 </div>
             </div>
         </div>
-    </div>
-    <style>
-        .overlay {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background-color: rgba(0, 0, 0, 0.5);
-            display: none;
-            justify-content: center;
-            align-items: center;
-            z-index: 999;
-        }
-    </style>
-
-
-    <script src="vendors/jquery/dist/jquery.min.js"></script>
-    <script src="vendors/popper.js/dist/umd/popper.min.js"></script>
-    <script src="vendors/bootstrap/dist/js/bootstrap.min.js"></script>
-    <script src="assets/js/main.js"></script>
-
-
-    <script>
-        //Xử lí check box
-        window.onload = function() {
-    let rememberedEmail = localStorage.getItem('rememberedEmail');
-    if (rememberedEmail) {
-        document.getElementById('email').value = rememberedEmail;
-        let rememberMe = localStorage.getItem('rememberMe') === 'true';
-        document.getElementById('rememberMe').checked = rememberMe; // Set trạng thái checkbox dựa trên giá trị đã lưu
-    }
-
-    //auth từng role
-    let data = JSON.parse(localStorage.getItem('userData'))
-    if (data.roleId ==="3") {
-        window.location.href="index.php"
-    }
-    if (data.roleId ==="2") {
-        window.location.href="index.html"
-    }
-    if (data.roleId ==="1") {
-        window.location.href="../index.html"
-    }
-};
-
-//Ẩn hiện mật khẩu
-       function togglePasswordVisibility() {
-            let passwordInput = document.getElementById('passwordInput');
-            let eyeIcon = document.getElementById('eyeIcon');
-
-            if (passwordInput.type === "password") {
-                passwordInput.type = "text";
-                eyeIcon.classList.remove("fa-eye-slash");
-                eyeIcon.classList.add("fa-eye");
-               
-            } else {
-                passwordInput.type = "password";
-                eyeIcon.classList.remove("fa-eye");
-                eyeIcon.classList.add("fa-eye-slash");
+        <style>
+            .overlay {
+                position: fixed;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+                background-color: rgba(0, 0, 0, 0.5);
+                display: none;
+                justify-content: center;
+                align-items: center;
+                z-index: 999;
             }
-        }
+        </style>
 
-        //set coockies
-        function setCookie(name, value, days) {
-            let expires = "";
-            if (days) {
-                let date = new Date();
-                date.setTime(date.getTime() + (days * 24 * 60 * 60 * 1000));
-                expires = "; expires=" + date.toUTCString();
-            }
-            document.cookie = name + "=" + (value || "") + expires + "; path=/";
-        }
+        <script src="vendors/jquery/dist/jquery.min.js"></script>
+        <script src="vendors/popper.js/dist/umd/popper.min.js"></script>
+        <script src="vendors/bootstrap/dist/js/bootstrap.min.js"></script>
+        <script src="assets/js/main.js"></script>
 
-//Sự kiện ấn nút login
-        async function handleLogin () {
-            let email = document.getElementById('email').value;
-            let password = document.getElementById('passwordInput').value;
-            let rememberMe = document.getElementById('rememberMe').checked;
+        <script>
+            //Xử lí check box
+            window.onload = function () {
+                let rememberedEmail = localStorage.getItem("rememberedEmail");
+                if (rememberedEmail) {
+                    document.getElementById("email").value = rememberedEmail;
+                    let rememberMe =
+                        localStorage.getItem("rememberMe") === "true";
+                    document.getElementById("rememberMe").checked = rememberMe; // Set trạng thái checkbox dựa trên giá trị đã lưu
+                }
 
-            // Validate email
-            if (!email) {
-                alert('Vui lòng nhập email.');
-                return;
+                //auth từng role
+                let data = JSON.parse(localStorage.getItem("userData"));
+                if (data.roleId === "3") {
+                    window.location.href = "index.php";
+                }
+                if (data.roleId === "2") {
+                    window.location.href = "index.html";
+                }
+                if (data.roleId === "1") {
+                    window.location.href = "../index.html";
+                }
+            };
+
+            //Ẩn hiện mật khẩu
+            function togglePasswordVisibility() {
+                let passwordInput = document.getElementById("passwordInput");
+                let eyeIcon = document.getElementById("eyeIcon");
+
+                if (passwordInput.type === "password") {
+                    passwordInput.type = "text";
+                    eyeIcon.classList.remove("fa-eye-slash");
+                    eyeIcon.classList.add("fa-eye");
+                } else {
+                    passwordInput.type = "password";
+                    eyeIcon.classList.remove("fa-eye");
+                    eyeIcon.classList.add("fa-eye-slash");
+                }
             }
 
-            // Validate password
-            if (!password) {
-                alert('Vui lòng nhập mật khẩu.');
-                return;
+            //set coockies
+            function setCookie(name, value, days) {
+                let expires = "";
+                if (days) {
+                    let date = new Date();
+                    date.setTime(date.getTime() + days * 24 * 60 * 60 * 1000);
+                    expires = "; expires=" + date.toUTCString();
+                }
+                document.cookie =
+                    name + "=" + (value || "") + expires + "; path=/";
             }
 
-            // Send login request to server
-            const xhr = new XMLHttpRequest();
-            xhr.open('POST', 'http://localhost:8000/api/login', true);
-            xhr.setRequestHeader('Content-Type', 'application/json');
-            xhr.onload = function () {
-                document.getElementById('loadingOverlay').style.display = 'none';
+            //Sự kiện ấn nút login
+            async function handleLogin() {
+                let email = document.getElementById("email").value;
+                let password = document.getElementById("passwordInput").value;
+                let rememberMe = document.getElementById("rememberMe").checked;
+
+                // Validate email
+                if (!email) {
+                    alert("Vui lòng nhập email.");
+                    return;
+                }
+
+                // Validate password
+                if (!password) {
+                    alert("Vui lòng nhập mật khẩu.");
+                    return;
+                }
+
+                // Send login request to server
+                const xhr = new XMLHttpRequest();
+                xhr.open("POST", "http://localhost:8001/api/login", true);
+                xhr.setRequestHeader("Content-Type", "application/json");
+                xhr.onload = function () {
+                    document.getElementById("loadingOverlay").style.display =
+                        "none";
                     if (xhr.status === 200) {
                         const data = JSON.parse(xhr.responseText);
                         if (data.errCode !== 0) {
-                            alert(data.errMessage)
-                        }else{
-                                localStorage.setItem('jwtToken', data.token);
-                                let token = localStorage.getItem("jwtToken");
-                                 if (token) {
-                                 document.cookie = "jwtToken=" + token + "; path=/";
-                                } else {
-                                  alert("Không có token, từ chối truy cập");
-                                }                        
-                        localStorage.setItem('userData', JSON.stringify(data.user));
-                        
-                        //lưu checkbox
-                        if (rememberMe) {
-                            // If rememberMe is checked, save email to localStorage
-                            localStorage.setItem('rememberedEmail', email);
+                            alert(data.errMessage);
                         } else {
-                            // If rememberMe is not checked, remove rememberedEmail from localStorage
-                            localStorage.removeItem('rememberedEmail');
+                            localStorage.setItem("jwtToken", data.token);
+                            let token = localStorage.getItem("jwtToken");
+                            if (token) {
+                                document.cookie =
+                                    "jwtToken=" + token + "; path=/";
+                            } else {
+                                alert("Không có token, từ chối truy cập");
+                            }
+                            localStorage.setItem(
+                                "userData",
+                                JSON.stringify(data.user)
+                            );
+
+                            //lưu checkbox
+                            if (rememberMe) {
+                                // If rememberMe is checked, save email to localStorage
+                                localStorage.setItem("rememberedEmail", email);
+                            } else {
+                                // If rememberMe is not checked, remove rememberedEmail from localStorage
+                                localStorage.removeItem("rememberedEmail");
+                            }
+                            // Lưu dữ liệu vào Local Storage
+                            // Redirect to dashboard or other page
+                            if (data.user.roleId == 1) {
+                                window.location.href = "../index.php";
+                            } else if (data.user.roleId == 2) {
+                                window.location.href = "index.html";
+                            } else {
+                                window.location.href = "index.html";
+                            }
                         }
-                       // Lưu dữ liệu vào Local Storage
-                        // Redirect to dashboard or other page
-                        if (data.user.roleId == 1) {
-                            window.location.href = '../index.php'
-                        }else if (data.user.roleId == 2) {
-                            window.location.href = 'index.html'
-                        } else{
-                            window.location.href='index.html'
-                        }
-                        }   
                     } else {
                         // Login failed, display error message
-                        alert('Lỗi sever.Vui lòng thử lại sau.');
+                        alert("Lỗi sever.Vui lòng thử lại sau.");
                     }
-            };
-            xhr.onerror = function () {
-                console.error('Request failed');
-                alert('Có lỗi xảy ra khi gửi yêu cầu. Vui lòng thử lại sau.');
-                document.getElementById('loadingOverlay').style.display = 'none';
-            };
-            document.getElementById('loadingOverlay').style.display = 'flex';
-            xhr.send(JSON.stringify({ email, password }));
-        }
-    </script>
-</body>
-
+                };
+                xhr.onerror = function () {
+                    console.error("Request failed");
+                    alert(
+                        "Có lỗi xảy ra khi gửi yêu cầu. Vui lòng thử lại sau."
+                    );
+                    document.getElementById("loadingOverlay").style.display =
+                        "none";
+                };
+                document.getElementById("loadingOverlay").style.display =
+                    "flex";
+                xhr.send(JSON.stringify({ email, password }));
+            }
+        </script>
+    </body>
 </html>

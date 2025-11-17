@@ -1,5 +1,6 @@
 
 <?php
+require_once __DIR__ . '/../config.php';
 ini_set('display_errors', 1);
 ini_set('display_startup_errors', 1);
 error_reporting(E_ALL);
@@ -7,7 +8,7 @@ error_reporting(E_ALL);
 // Kiểm tra và lấy token từ cookie hoặc localStorage
 $token = isset($_COOKIE['jwtToken']) ? $_COOKIE['jwtToken'] : '';
 
-$url = 'http://localhost:8000/api/get-category-by-id'; // URL của API backend
+$url = rtrim(BACKEND_URL, '/') . '/api/get-category-by-id'; // URL của API backend
 
 // Tạo body của yêu cầu với id = "ALL"
 $data = json_encode(['id' => 'ALL']);
@@ -90,7 +91,7 @@ if ($data === null) {
             z-index: 999;
         }
     </style>
-    
+
 </head>
 
 <body>
@@ -155,7 +156,7 @@ if ($data === null) {
     <!-- Right Panel -->
 
     <div id="right-panel" class="right-panel">
-        
+
         <!-- Header-->
         <header id="header" class="header">
             <div class="header-menu">
@@ -240,7 +241,7 @@ if ($data === null) {
                 echo '<tr><td colspan="4">Không có dữ liệu</td></tr>';
             }
             ?>
-                                    </tbody>     
+                                    </tbody>
                                 </table>
                             </div>
                         </div>
@@ -248,9 +249,9 @@ if ($data === null) {
                 </div>
             </div><!-- .animated -->
         </div><!-- .content -->
-        
-        
-        
+
+
+
     </div><!-- /#right-panel -->
 
     <!-- Right Panel -->
@@ -287,7 +288,7 @@ try {
     {
         localStorage.removeItem('userData')
         localStorage.removeItem('jwtToken')
-        
+
     }
 
     const deleteCategory = async (id,name) => {
@@ -300,13 +301,13 @@ try {
         return;
     }
 
-    
+
     let userId={
         id:id
     }
 
     const xhr = new XMLHttpRequest();
-    xhr.open('DELETE', `http://localhost:8000/api/delete-category`, true);
+    xhr.open('DELETE', window.APP_CONFIG.backendUrl + '/api/delete-category', true);
     xhr.setRequestHeader('Content-Type', 'application/json');
     const token = localStorage.getItem('jwtToken');
     xhr.setRequestHeader('Authorization', `Bearer ${token}`);
@@ -343,7 +344,7 @@ function logout()
     {
         localStorage.removeItem('userData')
         localStorage.removeItem('jwtToken')
-        
+
     }
     document.getElementById('span-avatar').innerText = 'Hi ' + JSON.parse(localStorage.getItem('userData')).lastName
     if (JSON.parse(localStorage.getItem('userData')).roleId !== "3") {

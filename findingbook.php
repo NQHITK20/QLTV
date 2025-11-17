@@ -20,12 +20,13 @@
 	<script src="js/vendor/modernizr-2.8.3-respond-1.4.2.min.js"></script>
 </head>
 <?php 
+require_once __DIR__ . '/config.php';
 
 ini_set('display_errors', 1);
 ini_set('display_startup_errors', 1);
 error_reporting(E_ALL);
 
-$url = 'http://localhost:8000/api/get-category-by-id'; // URL của API backend
+$url = rtrim(BACKEND_URL, '/') . '/api/get-category-by-id'; // URL của API backend
 
 // Dữ liệu gửi đi
 $datacat = array('id' => 'CatAndCount');
@@ -48,7 +49,7 @@ $response2 = curl_exec($ch);
 
 // Kiểm tra nếu có lỗi khi gửi yêu cầu
 if ($response2 === FALSE) {
-    die('Lỗi khi gửi yêu cầu: ' . curl_error($ch));
+	die('Lỗi khi gửi yêu cầu: ' . curl_error($ch));
 }
 
 // Đóng cURL
@@ -62,12 +63,13 @@ if ($data2 === null) {
     die('Lỗi khi chuyển đổi JSON');
 }
 
+$url = rtrim(BACKEND_URL, '/') . '/api/get-news'; // URL của API backend
 
 ini_set('display_errors', 1);
 ini_set('display_startup_errors', 1);
 error_reporting(E_ALL);
 
-$url = 'http://localhost:8000/api/get-news'; // URL của API backend
+$url = rtrim(BACKEND_URL, '/') . '/api/get-news'; // URL của API backend
 
 // Dữ liệu gửi đi
 $datanew = array('id' => 'F7');
@@ -90,7 +92,7 @@ $response3 = curl_exec($ch);
 
 // Kiểm tra nếu có lỗi khi gửi yêu cầu
 if ($response3 === FALSE) {
-    die('Lỗi khi gửi yêu cầu: ' . curl_error($ch));
+	die('Lỗi khi gửi yêu cầu: ' . curl_error($ch));
 }
 
 // Đóng cURL
@@ -108,7 +110,7 @@ ini_set('display_errors', 1);
 ini_set('display_startup_errors', 1);
 error_reporting(E_ALL);
 
-$url = 'http://localhost:8000/api/search-book'; // URL của API backend
+$url = rtrim(BACKEND_URL, '/') . '/api/search-book'; // URL của API backend
 
 // Dữ liệu gửi đi
 $datanew4 = array('tukhoa' => $_COOKIE['tukhoa']);
@@ -131,7 +133,7 @@ $response4 = curl_exec($ch);
 
 // Kiểm tra nếu có lỗi khi gửi yêu cầu
 if ($response4 === FALSE) {
-    die('Lỗi khi gửi yêu cầu: ' . curl_error($ch));
+	die('Lỗi khi gửi yêu cầu: ' . curl_error($ch));
 }
 
 // Đóng cURL

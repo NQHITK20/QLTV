@@ -21,13 +21,14 @@
 	<script src="js/vendor/modernizr-2.8.3-respond-1.4.2.min.js"></script>
 	<script src="https://cdn.ckeditor.com/ckeditor5/36.0.0/classic/ckeditor.js"></script>
 </head>
-<?php
+<?php 
+require_once __DIR__ . '/config.php';
 
 ini_set('display_errors', 1);
 ini_set('display_startup_errors', 1);
 error_reporting(E_ALL);
 
-$url = 'http://localhost:8000/api/get-category-by-id'; // URL của API backend
+$url = rtrim(BACKEND_URL, '/') . '/api/get-category-by-id'; // URL của API backend
 
 // Dữ liệu gửi đi
 $datacat = array('id' => 'CatAndCount');
@@ -69,7 +70,7 @@ ini_set('display_errors', 1);
 ini_set('display_startup_errors', 1);
 error_reporting(E_ALL);
 
-$url = 'http://localhost:8000/api/get-news'; // URL của API backend
+$url = rtrim(BACKEND_URL, '/') . '/api/get-news'; // URL của API backend
 
 // Dữ liệu gửi đi
 $datanew = array('id' => 'F7');
@@ -110,7 +111,7 @@ ini_set('display_errors', 1);
 ini_set('display_startup_errors', 1);
 error_reporting(E_ALL);
 
-$url = 'http://localhost:8000/api/get-news'; // URL của API backend
+$url = rtrim(BACKEND_URL, '/') . '/api/get-news'; // URL của API backend
 
 // Dữ liệu gửi đi
 $allnew = array('id' => 'ALLSHOW');
@@ -1124,8 +1125,8 @@ $jsonDataNew = json_encode($data4);
     var id = urlParams.get('id');
 
     if (id) {
-        var xhr = new XMLHttpRequest();
-        xhr.open('POST', 'http://localhost:8000/api/get-news', true);
+	var xhr = new XMLHttpRequest();
+	xhr.open('POST', window.APP_CONFIG.backendUrl + '/api/get-news', true);
         xhr.setRequestHeader('Content-Type', 'application/json;charset=UTF-8');
         xhr.onreadystatechange = function () {
             if (xhr.readyState === 4) {

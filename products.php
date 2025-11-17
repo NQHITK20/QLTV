@@ -19,19 +19,20 @@
 	<link rel="stylesheet" href="css/responsive.css">
 	<script src="js/vendor/modernizr-2.8.3-respond-1.4.2.min.js"></script>
 </head>
-<?php 
+<?php
+require_once __DIR__ . '/config.php';
 
 ini_set('display_errors', 1);
 ini_set('display_startup_errors', 1);
 error_reporting(E_ALL);
 
-$url = 'http://localhost:8000/api/get-all-book'; // URL của API backend
+$url = rtrim(BACKEND_URL, '/') . '/api/get-all-book'; // URL của API backend
 
 // Lấy danh mục từ query string nếu có
 $category = isset($_GET['category']) ? $_GET['category'] : null;
 if ($category) {
 	// Nếu có category, gọi API lấy sách theo danh mục
-	$url = 'http://localhost:8000/api/get-books-by-category';
+	$url = rtrim(BACKEND_URL, '/') . '/api/get-books-by-category';
 	$databook = array('category' => $category);
 	$jsonData = json_encode($databook);
 	$ch = curl_init($url);
@@ -53,7 +54,7 @@ if ($category) {
 	}
 } else {
 	// Nếu không có category, lấy toàn bộ sách như cũ
-	$url = 'http://localhost:8000/api/get-all-book';
+	$url = rtrim(BACKEND_URL, '/') . '/api/get-all-book';
 	$databook = array('id' => 'ALLSHOW');
 	$jsonData = json_encode($databook);
 	$ch = curl_init($url);
@@ -79,7 +80,7 @@ ini_set('display_errors', 1);
 ini_set('display_startup_errors', 1);
 error_reporting(E_ALL);
 
-$url = 'http://localhost:8000/api/get-category-by-id'; // URL của API backend
+$url = rtrim(BACKEND_URL, '/') . '/api/get-category-by-id'; // URL của API backend
 
 // Dữ liệu gửi đi
 $datacat = array('id' => 'CatAndCount');
@@ -121,7 +122,7 @@ ini_set('display_errors', 1);
 ini_set('display_startup_errors', 1);
 error_reporting(E_ALL);
 
-$url = 'http://localhost:8000/api/get-news'; // URL của API backend
+$url = rtrim(BACKEND_URL, '/') . '/api/get-news'; // URL của API backend
 
 // Dữ liệu gửi đi
 $datanew = array('id' => 'F7');

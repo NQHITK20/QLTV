@@ -365,7 +365,7 @@ const handleExportClick = async () => {
   });
 
   // Fetch data with the headers
-  const response = await fetch('http://localhost:8000/api/export-data-user', {
+  const response = await fetch('http://localhost:8001/api/export-data-user', {
     method: 'POST',
     headers: headers
   });
@@ -426,7 +426,7 @@ let handleExportClick2 = async () => {
   });
 
   // Fetch data with the headers
-  const response = await fetch('http://localhost:8000/api/export-data-book', {
+  const response = await fetch('http://localhost:8001/api/export-data-book', {
     method: 'POST',
     headers: headers
   });
@@ -489,7 +489,7 @@ document.getElementById('loadingOverlay').style.display = 'none';
         if (token) {
             const fetchData = () => {
                 const xhr = new XMLHttpRequest();
-                xhr.open('GET', 'http://localhost:8000/api/get-count', true);
+                xhr.open('GET', 'http://localhost:8001/api/get-count', true);
                 xhr.setRequestHeader('Authorization', 'Bearer ' + token);
                 xhr.setRequestHeader('Content-Type', 'application/json');
 

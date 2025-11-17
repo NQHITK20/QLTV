@@ -1,5 +1,6 @@
 
 <?php
+require_once __DIR__ . '/../config.php';
 ini_set('display_errors', 1);
 ini_set('display_startup_errors', 1);
 error_reporting(E_ALL);
@@ -8,7 +9,7 @@ error_reporting(E_ALL);
 $token = isset($_COOKIE['jwtToken']) ? $_COOKIE['jwtToken'] : '';
 
 
-$url = 'http://localhost:8000/api/get-all-user'; // URL của API backend
+$url = rtrim(BACKEND_URL, '/') . '/api/get-all-user'; // URL của API backend
 
 // Khởi tạo context để gửi yêu cầu HTTP
 $context = stream_context_create([
@@ -86,7 +87,7 @@ if ($data === null) {
             z-index: 999;
         }
     </style>
-    
+
 </head>
 
 <body>
@@ -214,7 +215,7 @@ if ($data === null) {
                                             <th>Hành động</th>
                                         </tr>
                                     </thead>
-                                    <tbody>   
+                                    <tbody>
                                     <?php
             // Kiểm tra nếu dữ liệu có chứa key 'data'
             if (isset($data['data'])) {
@@ -252,7 +253,7 @@ if ($data === null) {
                 echo '<tr><td colspan="4">Không có dữ liệu</td></tr>';
             }
             ?>
-                                    </tbody>     
+                                    </tbody>
                                 </table>
                                 <script type="text/javascript">
         // Chuyển đổi dữ liệu PHP sang JSON và gán cho biến JavaScript
@@ -308,13 +309,13 @@ try {
         // Người dùng chọn không xóa
         return;
     }
-    
+
     let userId={
         id:id
     }
 
     const xhr = new XMLHttpRequest();
-    xhr.open('DELETE', `http://localhost:8000/api/delete-user`, true);
+    xhr.open('DELETE', window.APP_CONFIG.backendUrl + '/api/delete-user', true);
     xhr.setRequestHeader('Content-Type', 'application/json');
     const token = localStorage.getItem('jwtToken');
     xhr.setRequestHeader('Authorization', `Bearer ${token}`);
@@ -353,7 +354,7 @@ try {
     {
         localStorage.removeItem('userData')
         localStorage.removeItem('jwtToken')
-        
+
     }
     document.getElementById('span-avatar').innerText = 'Hi ' + JSON.parse(localStorage.getItem('userData')).lastName
     if (JSON.parse(localStorage.getItem('userData')).roleId !== "3") {

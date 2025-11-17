@@ -7,7 +7,7 @@ error_reporting(E_ALL);
 // Kiểm tra và lấy token từ cookie hoặc localStorage
 $token = isset($_COOKIE['jwtToken']) ? $_COOKIE['jwtToken'] : '';
 
-$url = 'http://localhost:8000/api/get-news'; // URL của API backend
+$url = 'http://localhost:8001/api/get-news'; // URL của API backend
 
 // Tạo body của yêu cầu với id = "ALL"
 $data = json_encode(['id' => 'ALL']);
@@ -316,7 +316,7 @@ try {
     }
 
     const xhr = new XMLHttpRequest();
-    xhr.open('DELETE', `http://localhost:8000/api/delete-news`, true);
+    xhr.open('DELETE', `http://localhost:8001/api/delete-news`, true);
     xhr.setRequestHeader('Content-Type', 'application/json');
     const token = localStorage.getItem('jwtToken');
     xhr.setRequestHeader('Authorization', `Bearer ${token}`);
@@ -372,7 +372,7 @@ let showNew = async (id, name , buttonId) => {
         }
 
         // Gọi API để xác thực JWT
-        const response = await fetch('http://localhost:8000/api/show-hide-new', {
+        const response = await fetch('http://localhost:8001/api/show-hide-new', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -409,7 +409,7 @@ let hideNew = async (id, name , buttonId) => {
         }
 
         // Gọi API để xác thực JWT
-        const response = await fetch('http://localhost:8000/api/show-hide-new', {
+        const response = await fetch('http://localhost:8001/api/show-hide-new', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',

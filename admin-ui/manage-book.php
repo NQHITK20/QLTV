@@ -1,9 +1,10 @@
 <?php
+require_once __DIR__ . '/../config.php';
 ini_set('display_errors', 1);
 ini_set('display_startup_errors', 1);
 error_reporting(E_ALL);
 
-$url = 'http://localhost:8000/api/get-all-book'; // URL của API backend
+$url = rtrim(BACKEND_URL, '/') . '/api/get-all-book'; // URL của API backend
 
 // Dữ liệu gửi đi
 $data = array('id' => 'ALL');
@@ -308,7 +309,7 @@ if ($data === null) {
         if (confirm(`Bạn có chắc là muốn xoá sách tên ${name}?`)) {
             const token = localStorage.getItem('jwtToken');
             try {
-                const response = await fetch('http://localhost:8000/api/delete-book', {
+                const response = await fetch(window.APP_CONFIG.backendUrl + '/api/delete-book', {
                     method: 'DELETE',
                     headers: {
                         'Content-Type': 'application/json',
@@ -347,7 +348,7 @@ if ($data === null) {
         }
 
         // Gọi API để xác thực JWT
-        const response = await fetch('http://localhost:8000/api/show-hide-book', {
+    const response = await fetch(window.APP_CONFIG.backendUrl + '/api/show-hide-book', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -384,7 +385,7 @@ let hideBook = async (id, name , buttonId) => {
         }
 
         // Gọi API để xác thực JWT
-        const response = await fetch('http://localhost:8000/api/show-hide-book', {
+    const response = await fetch(window.APP_CONFIG.backendUrl + '/api/show-hide-book', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',

@@ -1,250 +1,453 @@
-<!doctype html>
+<!DOCTYPE html>
 <!--[if lt IE 7]>      <html class="no-js lt-ie9 lt-ie8 lt-ie7" lang=""> <![endif]-->
 <!--[if IE 7]>         <html class="no-js lt-ie9 lt-ie8" lang=""> <![endif]-->
 <!--[if IE 8]>         <html class="no-js lt-ie9" lang=""> <![endif]-->
 <!--[if gt IE 8]><!-->
 <html class="no-js" lang="en">
-<!--<![endif]-->
+    <!--<![endif]-->
 
-<head>
-    <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <title>Quản lý thư viện</title>
-    <meta name="description" content="Quản lý thư viện - HTML5 Admin Template">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <head>
+        <meta charset="utf-8" />
+        <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+        <title>Quản lý thư viện</title>
+        <meta
+            name="description"
+            content="Quản lý thư viện - HTML5 Admin Template"
+        />
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <link rel="apple-touch-icon" href="apple-icon.png">
-    <link rel="shortcut icon" href="favicon.ico">
+        <link rel="apple-touch-icon" href="apple-icon.png" />
+        <link rel="shortcut icon" href="favicon.ico" />
 
-    <link rel="stylesheet" href="vendors/bootstrap/dist/css/bootstrap.min.css">
-    <link rel="stylesheet" href="vendors/font-awesome/css/font-awesome.min.css">
-    <link rel="stylesheet" href="vendors/themify-icons/css/themify-icons.css">
-    <link rel="stylesheet" href="vendors/flag-icon-css/css/flag-icon.min.css">
-    <link rel="stylesheet" href="vendors/selectFX/css/cs-skin-elastic.css">
-    <link rel="stylesheet" href="vendors/jqvmap/dist/jqvmap.min.css">
+        <link
+            rel="stylesheet"
+            href="vendors/bootstrap/dist/css/bootstrap.min.css"
+        />
+        <link
+            rel="stylesheet"
+            href="vendors/font-awesome/css/font-awesome.min.css"
+        />
+        <link
+            rel="stylesheet"
+            href="vendors/themify-icons/css/themify-icons.css"
+        />
+        <link
+            rel="stylesheet"
+            href="vendors/flag-icon-css/css/flag-icon.min.css"
+        />
+        <link
+            rel="stylesheet"
+            href="vendors/selectFX/css/cs-skin-elastic.css"
+        />
+        <link rel="stylesheet" href="vendors/jqvmap/dist/jqvmap.min.css" />
 
+        <link rel="stylesheet" href="assets/css/style.css" />
 
-    <link rel="stylesheet" href="assets/css/style.css">
+        <link
+            href="https://fonts.googleapis.com/css?family=Open+Sans:400,600,700,800"
+            rel="stylesheet"
+            type="text/css"
+        />
+    </head>
 
-    <link href='https://fonts.googleapis.com/css?family=Open+Sans:400,600,700,800' rel='stylesheet' type='text/css'>
-    
-
-</head>
-
-<body>
-    <div class="overlay" id="loadingOverlay">
-        <div class="spinner-border text-light" role="status">
-            <span class="sr-only">Loading...</span>
-        </div>
-    </div>
-    <!-- Left Panel -->
-
-    <aside id="left-panel" class="left-panel">
-        <nav class="navbar navbar-expand-sm navbar-default">
-
-            <div class="navbar-header">
-                <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#main-menu" aria-controls="main-menu" aria-expanded="false" aria-label="Toggle navigation">
-                    <i class="fa fa-bars"></i>
-                </button>
-                <a class="navbar-brand" href="../index.php"><img src="images/logo.png" alt="Logo"></a>
-                <a class="navbar-brand hidden" href="./"><img src="images/logo2.png" alt="Logo"></a>
+    <body>
+        <div class="overlay" id="loadingOverlay">
+            <div class="spinner-border text-light" role="status">
+                <span class="sr-only">Loading...</span>
             </div>
+        </div>
+        <!-- Left Panel -->
 
-            <div id="main-menu" class="main-menu collapse navbar-collapse">
-                <ul class="nav navbar-nav">
-                    <li class="active">
-                        <a href="index.html"> <i class="menu-icon fa fa-dashboard"></i>Dashboard </a>
-                    </li>
-                    <h3 class="menu-title">Các mục chính</h3><!-- /.menu-title -->
-                    <li class="menu-item-has-children dropdown hidden-user">
-                        <a href="#" class="dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"> <i class="menu-icon fa fa-user"></i>Đơn mượn sách</a>
-                        <ul class="sub-menu children dropdown-menu">
-                            <li><i class="fa fa-user"></i><a href="manage-user.php">Quản lý tài khoản</a></li>
-                            <li><i class="fa fa-plus"></i><a href="add-user.html">Thêm tài khoản</a></li>
-                        </ul>
-                    </li>
-                    <li class="menu-item-has-children dropdown hidden-user">
-                        <a href="#" class="dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"> <i class="menu-icon fa fa fa-file-text-o"></i>Bài viết</a>
-                        <ul class="sub-menu children dropdown-menu">
-                            <li><i class="fa fa-file-text-o"></i><a href="manage-content.php">Quản lý bài viết</a></li>
-                            <li><i class="fa fa-plus"></i><a href="add-content.html">Thêm bài viết</a></li>
-                        </ul>
-                    </li>
-                    <li class="menu-item-has-children dropdown">
-                        <a href="#" class="dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"> <i class="menu-icon fa fa-book"></i>Sách</a>
-                        <ul class="sub-menu children dropdown-menu">
-                            <li><i class="fa fa-book"></i><a href="manage-book.php">Quản lý sách</a></li>
-                            <li><i class="fa fa-plus"></i><a href="add-book-borrow.html">Thêm đơn mượn sách</a></li>
-                        </ul>
-                    </li>
-                    <li class="menu-item-has-children dropdown">
-                        <a href="#" class="dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"> <i class="menu-icon fa fa-tags"></i>Danh mục sách</a>
-                        <ul class="sub-menu children dropdown-menu">
-                            <li><i class="fa fa-tags"></i><a href="manage-category.php">Quản lý danh mục</a></li>
-                            <li><i class="fa fa-plus"></i><a href="add-category.html">Thêm danh mục</a></li>
-                        </ul>
-                    </li>
-                </ul>
-            </div><!-- /.navbar-collapse -->
-        </nav>
-    </aside><!-- /#left-panel -->
-
-    <!-- Left Panel -->
-
-    <!-- Right Panel -->
-
-    <div id="right-panel" class="right-panel">
-
-        <!-- Header-->
-        <header id="header" class="header">
-            <div class="header-menu">
-
-                <div class="col-sm-7" >
-                    <a id="menuToggle" class="menutoggle pull-left"><i class="fa fa fa-tasks"></i></a>
+        <aside id="left-panel" class="left-panel">
+            <nav class="navbar navbar-expand-sm navbar-default">
+                <div class="navbar-header">
+                    <button
+                        class="navbar-toggler"
+                        type="button"
+                        data-toggle="collapse"
+                        data-target="#main-menu"
+                        aria-controls="main-menu"
+                        aria-expanded="false"
+                        aria-label="Toggle navigation"
+                    >
+                        <i class="fa fa-bars"></i>
+                    </button>
+                    <a class="navbar-brand" href="../index.php"
+                        ><img src="images/logo.png" alt="Logo"
+                    /></a>
+                    <a class="navbar-brand hidden" href="./"
+                        ><img src="images/logo2.png" alt="Logo"
+                    /></a>
                 </div>
 
-                <div class="col-sm-5">
-                    <div class="user-area dropdown float-right">
-                        <span id="span-avatar"></span>
-                        <a href="#" class="dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                            <img class="user-avatar rounded-circle" src="images/admin.jpg" alt="User Avatar">
-                        </a>
-                        <div class="user-menu dropdown-menu">
-                            <a class="nav-link" href="page-login.html" onclick="logout()"><i class="fa fa-sign-out"></i> Đăng xuất </a>
-                            <a class="nav-link" href="../index.php"><i class="fa fa-newspaper-o"></i> Về trang chủ </a>
+                <div id="main-menu" class="main-menu collapse navbar-collapse">
+                    <ul class="nav navbar-nav">
+                        <li class="active">
+                            <a href="index.html">
+                                <i class="menu-icon fa fa-dashboard"></i
+                                >Dashboard
+                            </a>
+                        </li>
+                        <h3 class="menu-title">Các mục chính</h3>
+                        <!-- /.menu-title -->
+                        <li class="menu-item-has-children dropdown hidden-user">
+                            <a
+                                href="#"
+                                class="dropdown-toggle"
+                                data-toggle="dropdown"
+                                aria-haspopup="true"
+                                aria-expanded="false"
+                            >
+                                <i class="menu-icon fa fa-user"></i>Đơn mượn
+                                sách</a
+                            >
+                            <ul class="sub-menu children dropdown-menu">
+                                <li>
+                                    <i class="fa fa-user"></i
+                                    ><a href="manage-user.php"
+                                        >Quản lý tài khoản</a
+                                    >
+                                </li>
+                                <li>
+                                    <i class="fa fa-plus"></i
+                                    ><a href="add-user.html">Thêm tài khoản</a>
+                                </li>
+                            </ul>
+                        </li>
+                        <li class="menu-item-has-children dropdown hidden-user">
+                            <a
+                                href="#"
+                                class="dropdown-toggle"
+                                data-toggle="dropdown"
+                                aria-haspopup="true"
+                                aria-expanded="false"
+                            >
+                                <i class="menu-icon fa fa fa-file-text-o"></i
+                                >Bài viết</a
+                            >
+                            <ul class="sub-menu children dropdown-menu">
+                                <li>
+                                    <i class="fa fa-file-text-o"></i
+                                    ><a href="manage-content.php"
+                                        >Quản lý bài viết</a
+                                    >
+                                </li>
+                                <li>
+                                    <i class="fa fa-plus"></i
+                                    ><a href="add-content.html"
+                                        >Thêm bài viết</a
+                                    >
+                                </li>
+                            </ul>
+                        </li>
+                        <li class="menu-item-has-children dropdown">
+                            <a
+                                href="#"
+                                class="dropdown-toggle"
+                                data-toggle="dropdown"
+                                aria-haspopup="true"
+                                aria-expanded="false"
+                            >
+                                <i class="menu-icon fa fa-book"></i>Sách</a
+                            >
+                            <ul class="sub-menu children dropdown-menu">
+                                <li>
+                                    <i class="fa fa-book"></i
+                                    ><a href="manage-book.php">Quản lý sách</a>
+                                </li>
+                                <li>
+                                    <i class="fa fa-plus"></i
+                                    ><a href="add-book-borrow.html"
+                                        >Thêm đơn mượn sách</a
+                                    >
+                                </li>
+                            </ul>
+                        </li>
+                        <li class="menu-item-has-children dropdown">
+                            <a
+                                href="#"
+                                class="dropdown-toggle"
+                                data-toggle="dropdown"
+                                aria-haspopup="true"
+                                aria-expanded="false"
+                            >
+                                <i class="menu-icon fa fa-tags"></i>Danh mục
+                                sách</a
+                            >
+                            <ul class="sub-menu children dropdown-menu">
+                                <li>
+                                    <i class="fa fa-tags"></i
+                                    ><a href="manage-category.php"
+                                        >Quản lý danh mục</a
+                                    >
+                                </li>
+                                <li>
+                                    <i class="fa fa-plus"></i
+                                    ><a href="add-category.html"
+                                        >Thêm danh mục</a
+                                    >
+                                </li>
+                            </ul>
+                        </li>
+                    </ul>
+                </div>
+                <!-- /.navbar-collapse -->
+            </nav>
+        </aside>
+        <!-- /#left-panel -->
+
+        <!-- Left Panel -->
+
+        <!-- Right Panel -->
+
+        <div id="right-panel" class="right-panel">
+            <!-- Header-->
+            <header id="header" class="header">
+                <div class="header-menu">
+                    <div class="col-sm-7">
+                        <a id="menuToggle" class="menutoggle pull-left"
+                            ><i class="fa fa fa-tasks"></i
+                        ></a>
+                    </div>
+
+                    <div class="col-sm-5">
+                        <div class="user-area dropdown float-right">
+                            <span id="span-avatar"></span>
+                            <a
+                                href="#"
+                                class="dropdown-toggle"
+                                data-toggle="dropdown"
+                                aria-haspopup="true"
+                                aria-expanded="false"
+                            >
+                                <img
+                                    class="user-avatar rounded-circle"
+                                    src="images/admin.jpg"
+                                    alt="User Avatar"
+                                />
+                            </a>
+                            <div class="user-menu dropdown-menu">
+                                <a
+                                    class="nav-link"
+                                    href="page-login.html"
+                                    onclick="logout()"
+                                    ><i class="fa fa-sign-out"></i> Đăng xuất
+                                </a>
+                                <a class="nav-link" href="../index.php"
+                                    ><i class="fa fa-newspaper-o"></i> Về trang
+                                    chủ
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </header>
+            <!-- /header -->
+            <!-- Header-->
+
+            <div class="breadcrumbs">
+                <div class="col-sm-4">
+                    <div class="page-header float-left">
+                        <div class="page-title">
+                            <h1>Thêm đơn mượn sách</h1>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-sm-8">
+                    <div class="page-header float-right">
+                        <div class="page-title">
+                            <ol class="breadcrumb text-right">
+                                <li>
+                                    <a href="manage-book.php">Đơn mượn sách</a>
+                                </li>
+                                <li class="active">Thêm đơn mượn sách</li>
+                            </ol>
                         </div>
                     </div>
                 </div>
             </div>
-        </header><!-- /header -->
-        <!-- Header-->
 
-        <div class="breadcrumbs">
-            <div class="col-sm-4">
-                <div class="page-header float-left">
-                    <div class="page-title">
-                        <h1>Thêm đơn mượn sách</h1>
-                    </div>
-                </div>
-            </div>
-            <div class="col-sm-8">
-                <div class="page-header float-right">
-                    <div class="page-title">
-                        <ol class="breadcrumb text-right">
-                            <li><a href="manage-book.php">Đơn mượn sách</a></li>
-                            <li class="active">Thêm đơn mượn sách</li>
-                        </ol>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <div class="content mt-3">
-
-            <div class="col-lg-12">
-                <div class="card">
-                    <div class="card-header">
-                        <strong>Thêm đơn mượn sách</strong>
-                    </div>
-                    <div class="card-body card-block">
-                        <form id="registerForm" action="" method="post" enctype="multipart/form-data" class="form-horizontal">
-                            <div class="row form-group">
-                                <div class="col col-md-3"><label for="text-input" class=" form-control-label">Họ và tên</label></div>
-                                <div class="col-12 col-md-3"><input type="text" id="username" name="bookName" placeholder="" class="form-control"></div>
-                            </div>
-                            <div class="row form-group">
-                                <div class="col col-md-3"><label for="text-input" class=" form-control-label">Đơn sách</label></div>
-                            </div>
-                        <div id="form-container">
-                            <div class="row form-group">
-                            </div>
-                            
+            <div class="content mt-3">
+                <div class="col-lg-12">
+                    <div class="card">
+                        <div class="card-header">
+                            <strong>Thêm đơn mượn sách</strong>
                         </div>
-                        <button id="add-button" type="button" class="btn btn-secondary btn-sm">
-                            <i class="fa fa-plus"></i> Thêm
-                        </button>
-                        <button id="delete-button" type="button" class="btn btn-danger btn-sm">
-                            <i class="fa fa-minus"></i> Xóa
-                        </button>
+                        <div class="card-body card-block">
+                            <form
+                                id="registerForm"
+                                action=""
+                                method="post"
+                                enctype="multipart/form-data"
+                                class="form-horizontal"
+                            >
                                 <div class="row form-group">
+                                    <div class="col col-md-3">
+                                        <label
+                                            for="text-input"
+                                            class="form-control-label"
+                                            >Họ và tên</label
+                                        >
+                                    </div>
+                                    <div class="col-12 col-md-3">
+                                        <input
+                                            type="text"
+                                            id="username"
+                                            name="bookName"
+                                            placeholder=""
+                                            class="form-control"
+                                        />
+                                    </div>
                                 </div>
                                 <div class="row form-group">
-                                        <div class="col col-md-3"><label for="select" class=" form-control-label">Ngày mượn</label></div>
-                                        <div class="col-12 col-md-2"><input type="date" id="time-borrow" name="time-borrow" class="form-control"></div>
+                                    <div class="col col-md-3">
+                                        <label
+                                            for="text-input"
+                                            class="form-control-label"
+                                            >Đơn sách</label
+                                        >
+                                    </div>
+                                </div>
+                                <div id="form-container">
+                                    <div class="row form-group"></div>
+                                </div>
+                                <button
+                                    id="add-button"
+                                    type="button"
+                                    class="btn btn-secondary btn-sm"
+                                >
+                                    <i class="fa fa-plus"></i> Thêm
+                                </button>
+                                <button
+                                    id="delete-button"
+                                    type="button"
+                                    class="btn btn-danger btn-sm"
+                                >
+                                    <i class="fa fa-minus"></i> Xóa
+                                </button>
+                                <div class="row form-group"></div>
+                                <div class="row form-group">
+                                    <div class="col col-md-3">
+                                        <label
+                                            for="select"
+                                            class="form-control-label"
+                                            >Ngày mượn</label
+                                        >
+                                    </div>
+                                    <div class="col-12 col-md-2">
+                                        <input
+                                            type="date"
+                                            id="time-borrow"
+                                            name="time-borrow"
+                                            class="form-control"
+                                        />
+                                    </div>
                                 </div>
                                 <div class="row form-group">
-                                    <div class="col col-md-3"><label for="select" class=" form-control-label">Ngày trả</label></div>
-                                    <div class="col-12 col-md-2"><input type="date" id="time-return" name="time-return" class="form-control"></div>
+                                    <div class="col col-md-3">
+                                        <label
+                                            for="select"
+                                            class="form-control-label"
+                                            >Ngày trả</label
+                                        >
+                                    </div>
+                                    <div class="col-12 col-md-2">
+                                        <input
+                                            type="date"
+                                            id="time-return"
+                                            name="time-return"
+                                            class="form-control"
+                                        />
+                                    </div>
                                 </div>
                                 <div class="row form-group">
-                                    <div class="col col-md-3"><label for="select" class=" form-control-label">Thông tin thêm</label></div>
-                                    <div class="col-12 col-md-8"><input type="text" id="description" name="description" class="form-control"></div>
+                                    <div class="col col-md-3">
+                                        <label
+                                            for="select"
+                                            class="form-control-label"
+                                            >Thông tin thêm</label
+                                        >
+                                    </div>
+                                    <div class="col-12 col-md-8">
+                                        <input
+                                            type="text"
+                                            id="description"
+                                            name="description"
+                                            class="form-control"
+                                        />
+                                    </div>
                                 </div>
-                        </form>
-                    </div>
-                    <div class="card-footer">
-                        <button id="submit-button" type="submit" class="btn btn-primary btn-sm">
-                            <i class="fa fa-dot-circle-o"></i> Xác nhận
-                        </button>
+                            </form>
+                        </div>
+                        <div class="card-footer">
+                            <button
+                                id="submit-button"
+                                type="submit"
+                                class="btn btn-primary btn-sm"
+                            >
+                                <i class="fa fa-dot-circle-o"></i> Xác nhận
+                            </button>
+                        </div>
                     </div>
                 </div>
             </div>
+            <!-- .content -->
+        </div>
+        <!-- /#right-panel -->
 
-        </div> <!-- .content -->
-    </div><!-- /#right-panel -->
+        <!-- Right Panel -->
 
-    <!-- Right Panel -->
+        <script src="vendors/jquery/dist/jquery.min.js"></script>
+        <script src="vendors/popper.js/dist/umd/popper.min.js"></script>
+        <script src="vendors/bootstrap/dist/js/bootstrap.min.js"></script>
+        <script src="assets/js/main.js"></script>
+        <script src="vendors/chart.js/dist/Chart.bundle.min.js"></script>
+        <script src="assets/js/dashboard.js"></script>
+        <script src="assets/js/widgets.js"></script>
+        <script src="vendors/jqvmap/dist/jquery.vmap.min.js"></script>
+        <script src="vendors/jqvmap/examples/js/jquery.vmap.sampledata.js"></script>
+        <script src="vendors/jqvmap/dist/maps/jquery.vmap.world.js"></script>
+        <script>
+            (function ($) {
+                "use strict";
+                jQuery("#vmap").vectorMap({
+                    map: "world_en",
+                    backgroundColor: null,
+                    color: "#ffffff",
+                    hoverOpacity: 0.7,
+                    selectedColor: "#1de9b6",
+                    enableZoom: true,
+                    showTooltip: true,
+                    values: sample_data,
+                    scaleColors: ["#1de9b6", "#03a9f5"],
+                    normalizeFunction: "polynomial",
+                });
+            })(jQuery);
+            function logout() {
+                localStorage.removeItem("userData");
+                localStorage.removeItem("jwtToken");
+            }
+            document.getElementById("span-avatar").innerText =
+                "Hi " + JSON.parse(localStorage.getItem("userData")).lastName;
+            if (JSON.parse(localStorage.getItem("userData")).roleId !== "3") {
+                document.querySelectorAll(".hidden-user").forEach((element) => {
+                    element.style.display = "none";
+                });
+            }
+        </script>
+        <script>
+            document.addEventListener("DOMContentLoaded", function () {
+                const formContainer = document.getElementById("form-container");
+                let addedGroups = [];
+                let idCounter = 1; // Biến đếm để tạo ID duy nhất
 
-    <script src="vendors/jquery/dist/jquery.min.js"></script>
-    <script src="vendors/popper.js/dist/umd/popper.min.js"></script>
-    <script src="vendors/bootstrap/dist/js/bootstrap.min.js"></script>
-    <script src="assets/js/main.js"></script>
-    <script src="vendors/chart.js/dist/Chart.bundle.min.js"></script>
-    <script src="assets/js/dashboard.js"></script>
-    <script src="assets/js/widgets.js"></script>
-    <script src="vendors/jqvmap/dist/jquery.vmap.min.js"></script>
-    <script src="vendors/jqvmap/examples/js/jquery.vmap.sampledata.js"></script>
-    <script src="vendors/jqvmap/dist/maps/jquery.vmap.world.js"></script>
-    <script>
-        (function($) {
-            "use strict";
-            jQuery('#vmap').vectorMap({
-                map: 'world_en',
-                backgroundColor: null,
-                color: '#ffffff',
-                hoverOpacity: 0.7,
-                selectedColor: '#1de9b6',
-                enableZoom: true,
-                showTooltip: true,
-                values: sample_data,
-                scaleColors: ['#1de9b6', '#03a9f5'],
-                normalizeFunction: 'polynomial'
-            });
-        })(jQuery);
-    function logout()
-    {
-        localStorage.removeItem('userData')
-        localStorage.removeItem('jwtToken')
-        
-    }
-    document.getElementById('span-avatar').innerText = 'Hi ' + JSON.parse(localStorage.getItem('userData')).lastName
-    if (JSON.parse(localStorage.getItem('userData')).roleId !== "3") {
-    document.querySelectorAll('.hidden-user').forEach(element => {
-        element.style.display = "none";
-    });
-}
-    </script>
-    <script>
-   document.addEventListener('DOMContentLoaded', function() {
-    const formContainer = document.getElementById('form-container');
-    let addedGroups = [];
-    let idCounter = 1; // Biến đếm để tạo ID duy nhất
+                document
+                    .getElementById("add-button")
+                    .addEventListener("click", function (event) {
+                        event.preventDefault();
 
-    document.getElementById('add-button').addEventListener('click', function(event) {
-        event.preventDefault();
-
-        // Tạo các nhóm form mới với ID duy nhất
-        const newFormGroups = `
+                        // Tạo các nhóm form mới với ID duy nhất
+                        const newFormGroups = `
             <div class="row form-group">
             </div>
             <div class="row form-group">
@@ -263,200 +466,269 @@
             </div>
         `;
 
-        formContainer.insertAdjacentHTML('beforeend', newFormGroups);
+                        formContainer.insertAdjacentHTML(
+                            "beforeend",
+                            newFormGroups
+                        );
 
-        // Lưu lại nhóm đã thêm vào danh sách để quản lý việc xóa
-        addedGroups.push(idCounter);
-        idCounter += 1; // Tăng biến đếm để đảm bảo ID duy nhất
-    });
+                        // Lưu lại nhóm đã thêm vào danh sách để quản lý việc xóa
+                        addedGroups.push(idCounter);
+                        idCounter += 1; // Tăng biến đếm để đảm bảo ID duy nhất
+                    });
 
-    document.getElementById('delete-button').addEventListener('click', function(event) {
-        event.preventDefault();
+                document
+                    .getElementById("delete-button")
+                    .addEventListener("click", function (event) {
+                        event.preventDefault();
 
-        if (addedGroups.length > 0) {
-            // Lấy ID của nhóm cuối cùng đã thêm
-            const lastId = addedGroups.pop();
+                        if (addedGroups.length > 0) {
+                            // Lấy ID của nhóm cuối cùng đã thêm
+                            const lastId = addedGroups.pop();
 
-            // Xóa các nhóm div tương ứng với ID cuối cùng
-            for (let i = 0; i < 3; i++) {
-                const element = formContainer.querySelector(`#book-code-${lastId}, #book-name-${lastId}, #so-luong-${lastId}`);
-                if (element) {
-                    element.closest('.row').remove();
-                }
-            }
+                            // Xóa các nhóm div tương ứng với ID cuối cùng
+                            for (let i = 0; i < 3; i++) {
+                                const element = formContainer.querySelector(
+                                    `#book-code-${lastId}, #book-name-${lastId}, #so-luong-${lastId}`
+                                );
+                                if (element) {
+                                    element.closest(".row").remove();
+                                }
+                            }
+                        }
+                    });
+
+                document
+                    .getElementById("submit-button")
+                    .addEventListener("click", function (event) {
+                        event.preventDefault();
+
+                        let username =
+                            document.getElementById("username").value;
+                        let timeborrow =
+                            document.getElementById("time-borrow").value;
+                        let timereturn =
+                            document.getElementById("time-return").value;
+                        let description =
+                            document.getElementById("description").value;
+
+                        if (!username) {
+                            alert("Vui lòng nhập tên người mượn.");
+                            return;
+                        } else if (!timeborrow) {
+                            alert("Vui lòng nhập ngày mượn.");
+                            return;
+                        } else if (!timereturn) {
+                            alert("Vui lòng nhập ngày trả.");
+                            return;
+                        }
+                        var generateRandomCode = (length) => {
+                            const characters =
+                                "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+                            let result = "";
+                            for (let i = 0; i < length; i++) {
+                                const randomIndex = Math.floor(
+                                    Math.random() * characters.length
+                                );
+                                result += characters.charAt(randomIndex);
+                            }
+                            return result;
+                        };
+
+                        var bookOrderUserData = {
+                            username: username,
+                            orderCode: generateRandomCode(6),
+                            timeborrow: new Date(timeborrow),
+                            timereturn: new Date(timereturn),
+                            description: description,
+                        };
+                        console.log(
+                            "check data user",
+                            bookOrderUserData.orderCode
+                        );
+
+                        const xhr = new XMLHttpRequest(); // Tạo đối tượng XMLHttpRequest
+                        xhr.open(
+                            "POST",
+                            "http://localhost:8001/api/create-borrow-user",
+                            true
+                        ); // Gửi yêu cầu POST đến đường dẫn '/api/users'
+                        xhr.setRequestHeader(
+                            "Content-Type",
+                            "application/json"
+                        ); // Thiết lập tiêu đề 'Content-Type'
+                        const token = localStorage.getItem("jwtToken");
+                        xhr.setRequestHeader(
+                            "Authorization",
+                            `Bearer ${token}`
+                        );
+
+                        xhr.onload = function () {
+                            document.getElementById(
+                                "loadingOverlay"
+                            ).style.display = "none";
+                            try {
+                                var responseData = JSON.parse(xhr.responseText);
+                                if (
+                                    xhr.status !== 200 &&
+                                    responseData.errCode !== 0
+                                ) {
+                                    // Kiểm tra nếu mã trạng thái là 201 (Created)
+                                    alert(responseData.errMessage);
+                                }
+                            } catch (error) {
+                                console.log(error);
+                                alert("Lỗi sever");
+                            }
+                        };
+                        xhr.onerror = function () {
+                            console.error("Request failed");
+                            alert(
+                                "Có lỗi xảy ra khi gửi yêu cầu. Vui lòng thử lại sau."
+                            );
+                            document.getElementById(
+                                "loadingOverlay"
+                            ).style.display = "none";
+                        };
+                        document.getElementById(
+                            "loadingOverlay"
+                        ).style.display = "flex";
+                        xhr.send(JSON.stringify(bookOrderUserData));
+
+                        // Lấy tất cả các input từ form-container
+                        let inputs = formContainer.querySelectorAll("input");
+                        let data = {};
+
+                        inputs.forEach((input) => {
+                            let id = input.id;
+                            let name = input.name;
+                            let value = input.value.trim(); // Loại bỏ khoảng trắng đầu và cuối
+
+                            // Tạo đối tượng dữ liệu theo cấu trúc books[ID][field]
+                            let match = name.match(/books\[(\d+)\]\[(\w+)\]/);
+                            if (match) {
+                                let [, index, field] = match;
+                                if (!data[index]) data[index] = {};
+
+                                // Validate dữ liệu theo từng trường (field)
+                                switch (field) {
+                                    case "bookcode": // Mã sách
+                                        if (value === "") {
+                                            alert(
+                                                `Mã sách không được để trống (Thứ tự: ${index})`
+                                            );
+                                            break;
+                                        } else {
+                                            data[index][field] = value; // Nếu hợp lệ, lưu giá trị
+                                        }
+                                        break;
+
+                                    case "bookname": // Tên sách
+                                        if (value.length < 3) {
+                                            alert(
+                                                `Tên sách phải có ít nhất 3 ký tự (Thứ tự: ${index})`
+                                            );
+                                            break;
+                                        } else {
+                                            data[index][field] = value;
+                                        }
+                                        break;
+
+                                    case "soluong": // Số lượng
+                                        if (isNaN(value) || value <= 0) {
+                                            alert(
+                                                `Vui lòng nhập số lượng (Thứ tự: ${index})`
+                                            );
+                                            break;
+                                        } else {
+                                            data[index][field] = parseInt(
+                                                value,
+                                                10
+                                            ); // Chuyển giá trị về số nguyên
+                                        }
+                                        break;
+
+                                    default:
+                                        data[index][field] = value; // Lưu giá trị cho các trường khác nếu có
+                                        break;
+                                }
+                            }
+                        });
+
+                        let bookborrowData = {
+                            borrowcode: bookOrderUserData.orderCode,
+                            data,
+                        };
+                        console.log("check data ", bookborrowData);
+
+                        const xhr2 = new XMLHttpRequest(); // Tạo đối tượng XMLHttpRequest
+                        xhr2.open(
+                            "POST",
+                            "http://localhost:8001/api/create-borrow-book",
+                            true
+                        ); // Gửi yêu cầu POST đến đường dẫn '/api/users'
+                        xhr2.setRequestHeader(
+                            "Content-Type",
+                            "application/json"
+                        ); // Thiết lập tiêu đề 'Content-Type'
+                        const token2 = localStorage.getItem("jwtToken");
+                        xhr2.setRequestHeader(
+                            "Authorization",
+                            `Bearer ${token2}`
+                        );
+
+                        xhr2.onload = function () {
+                            document.getElementById(
+                                "loadingOverlay"
+                            ).style.display = "none";
+                            try {
+                                var responseData2 = JSON.parse(
+                                    xhr2.responseText
+                                );
+                                if (
+                                    xhr2.status == 200 &&
+                                    responseData2.errCode === 0
+                                ) {
+                                    // Kiểm tra nếu mã trạng thái là 201 (Created)
+                                    alert("Tạo đơn mượn sách thành công");
+                                    window.location.href = "manage-content.php";
+                                }
+                            } catch (error) {
+                                console.log(error);
+                                alert("Lỗi sever");
+                            }
+                        };
+                        xhr2.onerror = function () {
+                            console.error("Request failed");
+                            alert(
+                                "Có lỗi xảy ra khi gửi yêu cầu. Vui lòng thử lại sau."
+                            );
+                            document.getElementById(
+                                "loadingOverlay"
+                            ).style.display = "none";
+                        };
+                        document.getElementById(
+                            "loadingOverlay"
+                        ).style.display = "flex";
+                        xhr2.send(JSON.stringify(bookborrowData));
+
+                        // Gửi dữ liệu dưới dạng JSON
+                        console.log("check data sách", data);
+                    });
+            });
+        </script>
+    </body>
+    <style>
+        .overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 999;
         }
-    });
-
-    document.getElementById('submit-button').addEventListener('click', function(event) {
-        event.preventDefault();
-
-            let username = document.getElementById('username').value;
-            let timeborrow = document.getElementById('time-borrow').value;
-            let timereturn = document.getElementById('time-return').value;
-            let description = document.getElementById('description').value;
-
-            if (!username) {
-                alert("Vui lòng nhập tên người mượn.");
-                return ;
-            }else if (!timeborrow) {
-                alert("Vui lòng nhập ngày mượn.");
-                return ;
-            } 
-           else if (!timereturn) {
-                alert("Vui lòng nhập ngày trả.");
-                return ;
-            }
-            var generateRandomCode=(length)=> {
-            const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
-            let result = '';
-            for (let i = 0; i < length; i++) {
-            const randomIndex = Math.floor(Math.random() * characters.length);
-            result += characters.charAt(randomIndex);
-            }
-            return result;
-            }
-
-            var bookOrderUserData = {
-               username: username,
-               orderCode:generateRandomCode(6),
-               timeborrow: new Date(timeborrow),
-               timereturn: new Date(timereturn),
-               description: description,
-            };
-            console.log('check data user',bookOrderUserData.orderCode)
-            
-            const xhr = new XMLHttpRequest(); // Tạo đối tượng XMLHttpRequest
-            xhr.open('POST', 'http://localhost:8000/api/create-borrow-user',true); // Gửi yêu cầu POST đến đường dẫn '/api/users'
-            xhr.setRequestHeader("Content-Type", "application/json"); // Thiết lập tiêu đề 'Content-Type'
-            const token = localStorage.getItem('jwtToken');
-            xhr.setRequestHeader('Authorization', `Bearer ${token}`);
-
-            xhr.onload = function() {
-                document.getElementById('loadingOverlay').style.display = 'none';
-                try {
-                    var responseData = JSON.parse(xhr.responseText);
-                    if (xhr.status !== 200 && responseData.errCode !== 0) { // Kiểm tra nếu mã trạng thái là 201 (Created)
-                         alert(responseData.errMessage)
-                    }
-                } catch (error) {
-                    console.log(error)
-                    alert('Lỗi sever');
-                }
-            };
-            xhr.onerror = function () {
-                console.error('Request failed');
-                alert('Có lỗi xảy ra khi gửi yêu cầu. Vui lòng thử lại sau.');
-                document.getElementById('loadingOverlay').style.display = 'none';
-            };
-            document.getElementById('loadingOverlay').style.display = 'flex';
-            xhr.send(JSON.stringify(bookOrderUserData));
-
-    // Lấy tất cả các input từ form-container
-        let inputs = formContainer.querySelectorAll('input');
-        let data = {};
-
-    inputs.forEach(input => {
-    let id = input.id;
-    let name = input.name;
-    let value = input.value.trim(); // Loại bỏ khoảng trắng đầu và cuối
-
-    // Tạo đối tượng dữ liệu theo cấu trúc books[ID][field]
-    let match = name.match(/books\[(\d+)\]\[(\w+)\]/);
-    if (match) {
-        let [, index, field] = match;
-        if (!data[index]) data[index] = {};
-
-        // Validate dữ liệu theo từng trường (field)
-        switch (field) {
-            case 'bookcode': // Mã sách
-                if (value === '') {
-                    alert(`Mã sách không được để trống (Thứ tự: ${index})`);
-                    break;
-                } else {
-                    data[index][field] = value; // Nếu hợp lệ, lưu giá trị
-                }
-                break;
-
-            case 'bookname': // Tên sách
-                if (value.length < 3) {
-                    alert(`Tên sách phải có ít nhất 3 ký tự (Thứ tự: ${index})`);
-                    break;
-                } else {
-                    data[index][field] = value;
-                }
-                break;
-
-            case 'soluong': // Số lượng
-                if (isNaN(value) || value <= 0) {
-                    alert(`Vui lòng nhập số lượng (Thứ tự: ${index})`);
-                    break;
-                } else {
-                    data[index][field] = parseInt(value, 10); // Chuyển giá trị về số nguyên
-                }
-                break;
-
-            default:
-                data[index][field] = value; // Lưu giá trị cho các trường khác nếu có
-                break;
-        }
-    }
-});
-
-            let bookborrowData = {
-               borrowcode: bookOrderUserData.orderCode,
-               data
-            };
-            console.log('check data ',bookborrowData)
-
-            const xhr2 = new XMLHttpRequest(); // Tạo đối tượng XMLHttpRequest
-            xhr2.open('POST', 'http://localhost:8000/api/create-borrow-book',true); // Gửi yêu cầu POST đến đường dẫn '/api/users'
-            xhr2.setRequestHeader("Content-Type", "application/json"); // Thiết lập tiêu đề 'Content-Type'
-            const token2 = localStorage.getItem('jwtToken');
-            xhr2.setRequestHeader('Authorization', `Bearer ${token2}`);
-
-            xhr2.onload = function() {
-                document.getElementById('loadingOverlay').style.display = 'none';
-                try {
-                    var responseData2 = JSON.parse(xhr2.responseText);
-                    if (xhr2.status == 200 && responseData2.errCode === 0) { // Kiểm tra nếu mã trạng thái là 201 (Created)
-                         alert('Tạo đơn mượn sách thành công')
-                         window.location.href = "manage-content.php";
-                    }
-                } catch (error) {
-                    console.log(error)
-                    alert('Lỗi sever');
-                }
-            };
-            xhr2.onerror = function () {
-                console.error('Request failed');
-                alert('Có lỗi xảy ra khi gửi yêu cầu. Vui lòng thử lại sau.');
-                document.getElementById('loadingOverlay').style.display = 'none';
-            };
-            document.getElementById('loadingOverlay').style.display = 'flex';
-            xhr2.send(JSON.stringify(bookborrowData));
-
-
-        // Gửi dữ liệu dưới dạng JSON
-        console.log('check data sách',data)
-    });
-
-    });
-
- 
-    </script>
-</body>
-<style>
-    .overlay {
-        position: fixed;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        background-color: rgba(0, 0, 0, 0.5);
-        display: none;
-        justify-content: center;
-        align-items: center;
-        z-index: 999;
-    }
-</style>
+    </style>
 </html>

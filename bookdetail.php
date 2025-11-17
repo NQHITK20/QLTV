@@ -20,12 +20,13 @@
 	<script src="js/vendor/modernizr-2.8.3-respond-1.4.2.min.js"></script>
 </head>
 <?php 
+require_once __DIR__ . '/config.php';
 
 ini_set('display_errors', 1);
 ini_set('display_startup_errors', 1);
 error_reporting(E_ALL);
 
-$url = 'http://localhost:8000/api/get-category-by-id'; // URL của API backend
+$url = rtrim(BACKEND_URL, '/') . '/api/get-category-by-id'; // URL của API backend
 
 // Dữ liệu gửi đi
 $datacat = array('id' => 'CatAndCount');
@@ -56,6 +57,7 @@ curl_close($ch);
 
 // Chuyển đổi JSON thành mảng dữ liệu trong PHP
 $data2 = json_decode($response2, true);
+echo '<script>console.log('.json_encode($data2).')</script>';	
 
 // Kiểm tra nếu có lỗi khi chuyển đổi JSON
 if ($data2 === null) {
@@ -67,7 +69,7 @@ ini_set('display_errors', 1);
 ini_set('display_startup_errors', 1);
 error_reporting(E_ALL);
 
-$url = 'http://localhost:8000/api/get-news'; // URL của API backend
+$url = rtrim(BACKEND_URL, '/') . '/api/get-news'; // URL của API backend
 
 // Dữ liệu gửi đi
 $datanew = array('id' => 'F7');
@@ -108,7 +110,7 @@ ini_set('display_errors', 1);
 ini_set('display_startup_errors', 1);
 error_reporting(E_ALL);
 
-$url = 'http://localhost:8000/api/get-related-book'; // URL của API backend
+$url = rtrim(BACKEND_URL, '/') . '/api/get-related-book'; // URL của API backend
 
 if (isset($_COOKIE['categoryBook']) && isset($_COOKIE['bookId'])) {
     $categoryBook = $_COOKIE['categoryBook'];
@@ -164,7 +166,7 @@ ini_set('display_errors', 1);
 ini_set('display_startup_errors', 1);
 error_reporting(E_ALL);
 
-$url = 'http://localhost:8000/api/check-fvbook'; // URL của API backend
+$url = rtrim(BACKEND_URL, '/') . '/api/check-fvbook'; // URL của API backend
 
 if (isset($_COOKIE['idusername']) && isset($_COOKIE['bookId'])) {
     $idusername = $_COOKIE['idusername'];
@@ -554,24 +556,21 @@ if (isset($_COOKIE['idusername']) && isset($_COOKIE['bookId'])) {
 												<div class="tg-postbook">
 													<figure class="tg-featureimg"><img id="imageBook" alt="image description"></figure>
 													<div class="tg-postbookcontent">
-														<?php if (isset($data5['check'])) {
+														<?php
+														if (isset($data5['check'])) {
 															if ($data5['check'] === 1) {
-																?>
-																<a class="tg-btnaddtowishlist" onclick="XoaKhoiYeuthich()" style="cursor:pointer;">
-															        <span>Xoá khỏi yêu thích</span>
-														        </a>
-																<?php
-															}
-															else{
-																?>
-																<a class="tg-btnaddtowishlist" onclick="themVaoYeuthich()" style="cursor:pointer;background:aqua;">
-															        <span>Thêm vào yêu thích</span>
-														        </a>
-																<?php
+																echo '<a class="tg-btnaddtowishlist" onclick="XoaKhoiYeuthich()" style="cursor:pointer;"><span>Xoá khỏi yêu thích</span></a>';
+															} else {
+																echo '<a class="tg-btnaddtowishlist" onclick="themVaoYeuthich()" style="cursor:pointer;background:aqua;"><span>Thêm vào yêu thích</span></a>';
 															}
 														}
-															?>
+														?>
 													</div>
+													<!-- Order button placed under wishlist button -->
+														<a class="tg-btn tg-btnstyletwo tg-orderbtn" href="javascript:void(0);" onclick="orderBookDetail()">
+															<i class="fa fa-shopping-basket"></i>
+															<em>Đặt sách</em>
+														</a>
 												</div>
 											</div>
 											<div class="col-xs-12 col-sm-12 col-md-8 col-lg-8">
@@ -600,41 +599,46 @@ if (isset($_COOKIE['idusername']) && isset($_COOKIE['bookId'])) {
 												</div>
 												<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
 													<div id="tg-relatedproductslider" class="tg-relatedproductslider tg-relatedbooks owl-carousel">
-													<?php foreach($data4['relatedbook'] as $book){
-														?>
-														<div class="item">
-															<div class="tg-postbook">
-																<figure class="tg-featureimg">
-																	<div class="tg-bookimg">
-																		<div class="tg-frontcover"><img src="images/books/<?php echo $book['image'] ?>" alt="image description"></div>
-																		<div class="tg-backcover"><img src="images/books/<?php echo $book['image'] ?>" alt="image description"></div>
+													<?php if (isset($data4['relatedbook']) && is_array($data4['relatedbook'])) {
+														foreach($data4['relatedbook'] as $book){
+															// normalize nested array shapes
+															$book = is_array($book) && isset($book[0]) ? $book[0] : $book;
+															$img = !empty($book['image']) ? htmlspecialchars($book['image']) : 'no-image.png';
+															$category = $book['category'] ?? '';
+															$id = $book['id'] ?? '';
+															$categoryJson = htmlspecialchars(json_encode($category), ENT_QUOTES, 'UTF-8');
+															$idJson = htmlspecialchars(json_encode($id), ENT_QUOTES, 'UTF-8');
+															?>
+															<div class="item">
+																<div class="tg-postbook">
+																	<figure class="tg-featureimg">
+																		<div class="tg-bookimg">
+																			<div class="tg-frontcover"><img src="images/books/<?php echo $img ?>" alt="<?php echo htmlspecialchars($book['bookName'] ?? 'book'); ?>"></div>
+																			<div class="tg-backcover"><img src="images/books/<?php echo $img ?>" alt="<?php echo htmlspecialchars($book['bookName'] ?? 'book'); ?>"></div>
+																		</div>
+																		<a class="tg-btnaddtowishlist" href="bookdetail.php?id=<?php echo $idJson ?>" onClick="setCookiesBook(<?php echo $categoryJson ?>,<?php echo $idJson ?>)">
+																			<span>Xem thêm</span>
+																		</a>
+																	</figure>
+																	<div class="tg-postbookcontent">
+																		<ul class="tg-bookscategories">
+																			<li><a><?php echo htmlspecialchars($book['category'] ?? '') ?></a></li>
+																		</ul>
+																		<div class="tg-booktitle">
+																			<h3><a href="bookdetail.php?id=<?php echo $idJson ?>" onClick="setCookiesBook(<?php echo $categoryJson ?>,<?php echo $idJson ?>)"><?php echo htmlspecialchars($book['bookName'] ?? '') ?></a></h3>
+																		</div>
+																		<span class="tg-bookwriter"> <a><?php echo htmlspecialchars($book['author'] ?? '') ?></a></span>
+																		<span class="tg-bookprice">
+																			<ins><?php echo htmlspecialchars($book['price'] ?? '0'); ?> vnđ</ins>
+																		</span>
 																	</div>
-																	<?php
-						                                            $category = $book['category'];
-						                                            $id = $book['id'];
-						                                            // Sử dụng json_encode và htmlspecialchars để đảm bảo chuỗi an toàn cho JavaScript và HTML
-						                                            $categoryJson = htmlspecialchars(json_encode($category), ENT_QUOTES, 'UTF-8');
-						                                            $idJson = htmlspecialchars(json_encode($id), ENT_QUOTES, 'UTF-8');
-						                                            ?>
-																	<a class="tg-btnaddtowishlist" href="bookdetail.php?id=<?php echo $idJson ?>" onClick="setCookiesBook(<?php echo $categoryJson ?>,<?php echo $idJson ?>)">
-																		<span>Xem thêm</span>
-																	</a>
-																</figure>
-																<div class="tg-postbookcontent">
-																	<ul class="tg-bookscategories">
-																		<li><a><?php echo $book['category'] ?></a></li>
-																	</ul>
-																	<div class="tg-booktitle">
-																		<h3><a href="bookdetail.php?id=<?php echo $idJson ?>" onClick="setCookiesBook(<?php echo $categoryJson ?>,<?php echo $idJson ?>)"><?php echo $book['bookName'] ?></a></h3>
-																	</div>
-																	<span class="tg-bookwriter"> <a><?php echo $book['author'] ?></a></span>
-																	<span class="tg-bookprice">
-															            <ins><?php echo htmlspecialchars($book['price']); ?> vnđ</ins>
-														            </span>																	
 																</div>
 															</div>
-														</div>
-														<?php }?>
+													<?php }
+													} else {
+														echo '<div class="item"><p>Không có sách liên quan</p></div>';
+													}
+													?>
 													</div>
 												</div>
 											</div>
@@ -651,9 +655,14 @@ if (isset($_COOKIE['idusername']) && isset($_COOKIE['bookId'])) {
 										<div class="tg-widgetcontent">
 											<ul>
 												<?php 
-												foreach($data2['data'] as $cat) {?>
-												<li><a href="<?php echo $cat['category'] ?>"><span> <?php echo $cat['category'] ?></span><em><?php echo $cat['booksCount'] ?></em></a></li>
-												<?php }?>
+												if (isset($data2['data']) && is_array($data2['data'])) {
+													foreach($data2['data'] as $cat) { ?>
+														<li><a href="<?php echo htmlspecialchars($cat['category'] ?? '') ?>"><span> <?php echo htmlspecialchars($cat['category'] ?? '') ?></span><em><?php echo htmlspecialchars($cat['booksCount'] ?? 0) ?></em></a></li>
+													<?php }
+												} else {
+													echo '<li>Không có danh mục</li>';
+												}
+												?>
 											</ul>
 										</div>
 									</div>
@@ -663,19 +672,24 @@ if (isset($_COOKIE['idusername']) && isset($_COOKIE['bookId'])) {
 										</div>
 										<div class="tg-widgetcontent">
 											<ul>
-												<?php foreach($data3['data'] as $new){?>
-												<li>
-													<article class="tg-post">
-														<figure style="width:112px;"><a style="width:100px;" href="newsdetail.php?id=<?php echo $new['id']?>" alt="<?php echo $new['image']?>"><img src="images/blog/<?php echo $new['image'] ?>" alt="<?php echo $new['image'] ?>"></a></figure>
-														<div class="tg-postcontent">
-															<div class="tg-posttitle">
-																<h3><a href="newsdetail.php?id=<?php echo $new['id']?>"><?php echo $new['title']?></a></h3>
-															</div>
-															<span class="tg-bookwriter"> <a><?php echo $new['author'] ?></a></span>
-														</div>
-													</article>
-												</li>
-												<?php }?>
+												<?php if (isset($data3['data']) && is_array($data3['data'])) {
+													foreach($data3['data'] as $new){ ?>
+														<li>
+															<article class="tg-post">
+																<figure style="width:112px;"><a style="width:100px;" href="newsdetail.php?id=<?php echo htmlspecialchars($new['id'] ?? '')?>" alt="<?php echo htmlspecialchars($new['image'] ?? '')?>"><img src="images/blog/<?php echo htmlspecialchars($new['image'] ?? 'no-image.png') ?>" alt="<?php echo htmlspecialchars($new['image'] ?? '') ?>"></a></figure>
+																<div class="tg-postcontent">
+																	<div class="tg-posttitle">
+																		<h3><a href="newsdetail.php?id=<?php echo htmlspecialchars($new['id'] ?? '')?>"><?php echo htmlspecialchars($new['title'] ?? '')?></a></h3>
+																	</div>
+																	<span class="tg-bookwriter"> <a><?php echo htmlspecialchars($new['author'] ?? '') ?></a></span>
+																</div>
+															</article>
+														</li>
+													<?php }
+												} else {
+													echo '<li>Không có tin tức</li>';
+												}
+												?>
 											</ul>
 										</div>
 									</div>
@@ -878,7 +892,7 @@ function fetchData() {
             id:bookId
         }
         
-        xhr.open("POST", "http://localhost:8000/api/get-all-book", true);
+	xhr.open("POST", window.APP_CONFIG.backendUrl + "/api/get-all-book", true);
         xhr.setRequestHeader("Content-Type", "application/json");
         xhr.setRequestHeader('Authorization', 'Bearer');
         xhr.onreadystatechange = function () {
@@ -896,12 +910,17 @@ document.addEventListener("DOMContentLoaded", async function() {
     try {
         const responseData = await fetchData();
         if (responseData) {
-            document.getElementById("category").innerText = responseData.data.category;
-            document.getElementById("bookName").innerText = responseData.data.bookName;
-            document.getElementById("imageBook").src = "images/books/" + responseData.data.image;
-            document.getElementById("author").innerText = responseData.data.author;
-            document.getElementById("description").innerText = responseData.data.description;
-            document.getElementById("price").innerText = responseData.data.price + ' vnđ';
+			// normalize response shape
+			const book = (responseData.data) ? responseData.data : responseData;
+			window.currentBook = book; // keep for ordering
+			document.getElementById("category").innerText = book.category || '';
+			document.getElementById("bookName").innerText = book.bookName || '';
+			document.getElementById("imageBook").src = "images/books/" + (book.image || 'no-image.png');
+			document.getElementById("author").innerText = book.author || '';
+			document.getElementById("description").innerText = book.description || '';
+			document.getElementById("price").innerText = (book.price || 0) + ' vnđ';
+			// refresh cart badge if header present
+			if (typeof refreshCart === 'function') refreshCart();
         } 
     } catch (error) {
         console.error(error);
@@ -978,7 +997,7 @@ function themVaoYeuthich()
 			fvIdBook:bookId
         }
 
-        xhr.open("POST", "http://localhost:8000/api/create-fvbook", true);
+	xhr.open("POST", window.APP_CONFIG.backendUrl + "/api/create-fvbook", true);
         xhr.setRequestHeader("Content-Type", "application/json");
         xhr.setRequestHeader('Authorization', 'Bearer');
         xhr.onreadystatechange = function () {
@@ -1010,7 +1029,7 @@ function XoaKhoiYeuthich()
             idusername: data.id,
 			bookId:bookId
         }
-        xhr.open("POST", "http://localhost:8000/api/delete-fvbook", true);
+	xhr.open("POST", window.APP_CONFIG.backendUrl + "/api/delete-fvbook", true);
         xhr.setRequestHeader("Content-Type", "application/json");
         xhr.setRequestHeader('Authorization', 'Bearer');
         xhr.onreadystatechange = function () {
@@ -1029,6 +1048,80 @@ function XoaKhoiYeuthich()
 
 </script>
 
+<script>
+	// Minimal cart/order helpers for bookdetail page
+	async function orderBookDetail() {
+		try {
+			const user = JSON.parse(localStorage.getItem('userData') || 'null');
+			if (!user || !user.id) {
+				alert('Vui lòng đăng nhập để đặt sách.');
+				window.location.href = 'admin-ui/page-login.html';
+				return;
+			}
+			const book = window.currentBook || {};
+			const payload = {
+				userId: user.id,
+				bookId: book.id || (new URLSearchParams(window.location.search)).get('id'),
+				qty: 1,
+				bookName: book.bookName || '',
+				category: book.category || '',
+				image: book.image || null
+			};
+			const resp = await fetch('/QLTV/api/cart.php?action=add', {
+				method: 'POST',
+				headers: { 'Content-Type': 'application/json' },
+				body: JSON.stringify(payload)
+			});
+			const result = await resp.json();
+			if (resp.ok && result.success) {
+				alert(result.message || 'Đã thêm sách vào danh sách đặt.');
+				if (typeof refreshCart === 'function') refreshCart();
+			} else {
+				alert(result.message || 'Không thể thêm sách.');
+			}
+		} catch (err) {
+			console.error(err);
+			alert('Lỗi khi thêm sách. Vui lòng thử lại.');
+		}
+	}
+
+	async function refreshCart() {
+		try {
+			const user = JSON.parse(localStorage.getItem('userData') || 'null');
+			if (!user || !user.id) return;
+			const resp = await fetch('/QLTV/api/cart.php?action=get&userId=' + encodeURIComponent(user.id));
+			if (!resp.ok) return;
+			const data = await resp.json();
+			renderCartDropdown(data.items || []);
+		} catch (err) {
+			console.error('refreshCart error', err);
+		}
+	}
+
+	function renderCartDropdown(items) {
+		const badgeEls = document.querySelectorAll('.tg-themebadge');
+		const count = items.reduce((s, it) => s + (it.qty || 1), 0);
+		badgeEls.forEach(el => el.textContent = count);
+		const mini = document.querySelector('.tg-minicartdropdown .tg-minicartbody');
+		if (!mini) return;
+		if (items.length === 0) {
+			mini.innerHTML = '<div class="tg-description"><p>Chưa có sách đặt</p></div>';
+			return;
+		}
+		let html = '';
+		items.forEach(it => {
+			const img = it.image ? 'images/books/' + it.image : 'images/books/no-image.png';
+			html += `<div class="tg-minicarproduct"><figure><img src="${img}" style="width:65px"></figure><div class="tg-minicarproductdata"><h5><a>${escapeHtml(it.bookName || '')}</a></h5><h6><a>${escapeHtml(it.category || '')}</a></h6></div></div>`;
+		});
+		mini.innerHTML = html;
+	}
+
+	function escapeHtml(s) { if (!s) return ''; return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#39;'); }
+
+	// Ensure cart updates on load
+	document.addEventListener('DOMContentLoaded', function() { try { refreshCart(); } catch(e){} });
+</script>
+
 <style>
     .overlay {
         position: fixed;
@@ -1042,6 +1135,39 @@ function XoaKhoiYeuthich()
         align-items: center;
         z-index: 999;
     }
+	/* Center the order button and keep the book card layout stable */
+	.tg-postbook {
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+	}
+
+	.tg-postbook .tg-postbookcontent {
+		width: 100%;
+		text-align: center;
+	}
+
+	.tg-orderbtn {
+		display: inline-flex;
+		align-items: center;
+		justify-content: center;
+		margin-top: 12px;
+		padding: 10px 18px;
+		border-radius: 4px;
+		background: transparent; /* default: no fill, like original */
+		color: #2a7bd6; /* blue text/outline */
+		border: 1px solid #2a7bd6;
+		text-decoration: none;
+		transition: background-color 150ms ease, color 150ms ease, border-color 150ms ease;
+	}
+
+	.tg-orderbtn:hover {
+		background: #2a7bd6; /* blue on hover */
+		color: #fff;
+		border-color: #2a7bd6;
+	}
+
+	.tg-orderbtn i { margin-right: 8px; }
 </style>
 		
 </body>

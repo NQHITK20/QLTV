@@ -3,7 +3,7 @@
 <head>
 	<meta charset="utf-8">
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
-	 <title>Thư viện sách</title>
+	 <title>nhà sách sách</title>
 	<meta name="description" content="">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<link rel="apple-touch-icon" href="apple-touch-icon.png">
@@ -20,12 +20,13 @@
 	<script src="js/vendor/modernizr-2.8.3-respond-1.4.2.min.js"></script>
 </head>
 <?php
+require_once __DIR__ . '/config.php';
 
 ini_set('display_errors', 1);
 ini_set('display_startup_errors', 1);
 error_reporting(E_ALL);
 
-$url = 'http://localhost:8000/api/get-all-book'; // URL của API backend
+$url = rtrim(BACKEND_URL, '/') . '/api/get-all-book'; // URL của API backend
 
 // Dữ liệu gửi đi
 $databook = array('id' => 'ALLSHOW');
@@ -66,7 +67,7 @@ ini_set('display_errors', 1);
 ini_set('display_startup_errors', 1);
 error_reporting(E_ALL);
 
-$url = 'http://localhost:8000/api/get-all-book'; // URL của API backend
+$url = rtrim(BACKEND_URL, '/') . '/api/get-all-book'; // URL của API backend
 
 // Dữ liệu gửi đi
 $databook = array('id' => 'F10');
@@ -104,7 +105,7 @@ if ($data9 === null) {
     die('Lỗi khi chuyển đổi JSON');
 }
 
-$url = 'http://localhost:8000/api/get-category-by-id'; // URL của API backend
+$url = rtrim(BACKEND_URL, '/') . '/api/get-category-by-id'; // URL của API backend
 
 // Dữ liệu gửi đi
 $datacat = array('id' => 'F10');
@@ -142,7 +143,7 @@ if ($data2 === null) {
     die('Lỗi khi chuyển đổi JSON');
 }
 
-$url = 'http://localhost:8000/api/get-news'; // URL của API backend
+$url = rtrim(BACKEND_URL, '/') . '/api/get-news'; // URL của API backend
 
 // Dữ liệu gửi đi
 $datanew = array('id' => 'F7');
@@ -186,7 +187,7 @@ if ($data3 === null) {
 }
 
 
-$url = 'http://localhost:8000/api/get-news'; // URL của API backend
+$url = rtrim(BACKEND_URL, '/') . '/api/get-news'; // URL của API backend
 
 // Dữ liệu gửi đi
 $datanew2 = array('id' => 'ALLSHOW');
@@ -233,7 +234,7 @@ ini_set('display_errors', 1);
 ini_set('display_startup_errors', 1);
 error_reporting(E_ALL);
 
-$url = 'http://localhost:8000/api/get-fv3'; // URL của API backend
+$url = rtrim(BACKEND_URL, '/') . '/api/get-fv3'; // URL của API backend
 
 // Lấy dữ liệu từ cookies
 $idusername = $_COOKIE['idusername'] ?? -1;
@@ -279,7 +280,7 @@ ini_set('display_errors', 1);
 ini_set('display_startup_errors', 1);
 error_reporting(E_ALL);
 
-$url = 'http://localhost:8000/api/get-all-book'; // URL của API backend
+$url = rtrim(BACKEND_URL, '/') . '/api/get-all-book'; // URL của API backend
 
 // Dữ liệu gửi đi
 $databook12 = array('id' => 'L12');
@@ -625,7 +626,7 @@ if (isset($data12['data'])) {
 				<div class="row">
 					<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
 						<div class="tg-innerbannercontent">
-							<h1>Chào mừng bạn đến với thư viện</h1>
+							<h1>Chào mừng bạn đến với nhà sách</h1>
 						</div>
 					</div>
 				</div>
@@ -766,7 +767,7 @@ if (isset($data['data'])) {
 														<h3><a href="bookdetail.php?id=<?php echo $idJson; ?>" onClick="setCookiesBook(<?php echo $categoryJson; ?>,<?php echo $idJson; ?>)"><?php echo htmlspecialchars($book['bookName'] ?? ''); ?></a></h3>
 													</div>
 													<span class="tg-bookwriter">Tác giả: <?php echo htmlspecialchars($book['author'] ?? ''); ?></span>
-													<a class="tg-btn tg-btnstyletwo" href="bookdetail.php?id=<?php echo $idJson; ?>" onClick="setCookiesBook(<?php echo $categoryJson; ?>,<?php echo $idJson; ?>)">
+													<a class="tg-btn tg-btnstyletwo" href="javascript:void(0);" onclick="setCookiesBook(<?php echo $categoryJson; ?>,<?php echo $idJson; ?>); orderBook(<?php echo $idJson; ?>, <?php echo $categoryJson; ?>);">
 														<i class="fa fa-shopping-basket"></i>
 														<em>Đặt sách</em>
 													</a>
@@ -852,7 +853,7 @@ if (isset($data3['data'])) {
 							<div class="col-xs-12 col-sm-12 col-md-6 col-lg-6">
 								<div class="tg-aboutusshortcode">
 									<div class="tg-sectionhead">
-										<h2><span>Thông tin &amp; Liên hệ</span>Về thư viện chúng tôi</h2>
+										<h2><span>Thông tin &amp; Liên hệ</span>Về nhà sách chúng tôi</h2>
 									</div>
 									<div class="tg-description">
 										<p style="font-size: 17px;">Consectetur adipisicing elit sed do 
@@ -926,7 +927,7 @@ if (isset($data3['data'])) {
 							<div class="col-xs-12 col-sm-6 col-md-4 col-lg-4">
 								<div class="tg-footercol tg-widget tg-widgetnavigation">
 									<div class="tg-widgettitle">
-										<h3>Thông tin thư viện</h3>
+										<h3>Thông tin nhà sách</h3>
 									</div>
 									<div class="tg-widgetcontent">
 										<ul>
@@ -943,7 +944,7 @@ if (isset($data3['data'])) {
 							<div class="col-xs-12 col-sm-12 col-md-4 col-lg-4">
 								<div class="tg-footercol tg-widget tg-widgettopsellingauthors">
 									<div class="tg-widgettitle">
-										<h3>Địa chỉ thư viện</h3>
+										<h3>Địa chỉ nhà sách</h3>
 									</div>
 									<div class="tg-widgetcontent">
 										<iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d31128.146215294513!2d107.98092368277744!3d12.777324925658137!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x31720307f3b00899%3A0x7becd56a8bc51f81!2sQu%C3%A1n%20Chay%20Eabar!5e0!3m2!1svi!2s!4v1714987477736!5m2!1svi!2s" width="600" height="450" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
@@ -1118,6 +1119,95 @@ let token = localStorage.getItem('jwtToken');
                 console.error('Thiếu dữ liệu người dùng hoặc token.');
             }
 
+	</script>
+
+	<script>
+		// ----- Shopping cart frontend helpers -----
+		async function orderBook(bookId, category) {
+			// bookId and category are expected to be JS values (strings / numbers)
+			try {
+				const user = JSON.parse(localStorage.getItem('userData') || 'null');
+				if (!user || !user.id) {
+					// not logged in -> redirect to login page
+					alert('Vui lòng đăng nhập để đặt sách.');
+					window.location.href = 'admin-ui/page-login.html';
+					return;
+				}
+
+				// payload for our sample local cart API
+				const payload = {
+					userId: user.id,
+					bookId: bookId,
+					category: category,
+					qty: 1
+				};
+
+				const resp = await fetch('/QLTV/api/cart.php?action=add', {
+					method: 'POST',
+					headers: {
+						'Content-Type': 'application/json'
+					},
+					body: JSON.stringify(payload)
+				});
+				const result = await resp.json();
+				if (resp.ok && result.success) {
+					alert(result.message || 'Đã thêm sách vào danh sách đặt.');
+					refreshCart();
+				} else {
+					alert(result.message || 'Không thể thêm sách.');
+				}
+			} catch (err) {
+				console.error(err);
+				alert('Lỗi khi thêm sách. Vui lòng thử lại.');
+			}
+		}
+
+		async function refreshCart() {
+			try {
+				const user = JSON.parse(localStorage.getItem('userData') || 'null');
+				if (!user || !user.id) return; // nothing to load
+				const resp = await fetch('/QLTV/api/cart.php?action=get&userId=' + encodeURIComponent(user.id));
+				if (!resp.ok) return;
+				const data = await resp.json();
+				renderCartDropdown(data.items || []);
+			} catch (err) {
+				console.error('refreshCart error', err);
+			}
+		}
+
+		function renderCartDropdown(items) {
+			// update badge
+			const badgeEls = document.querySelectorAll('.tg-themebadge');
+			const count = items.reduce((s, it) => s + (it.qty || 1), 0);
+			badgeEls.forEach(el => el.textContent = count);
+
+			// update mini cart dropdown if present (first dropdown-menu with tg-minicartbody)
+			const mini = document.querySelector('.tg-minicartdropdown .tg-minicartbody');
+			if (!mini) return;
+			if (items.length === 0) {
+				mini.innerHTML = '<div class="tg-description"><p>Chưa có sách đặt</p></div>';
+				return;
+			}
+			let html = '';
+			items.forEach(it => {
+				const img = it.image ? 'images/books/' + it.image : 'images/books/no-image.png';
+				html += `<div class="tg-minicarproduct">` +
+					`<figure><img src="${img}" alt="${escapeHtml(it.bookName || '')}" style="width:65px"></figure>` +
+					`<div class="tg-minicarproductdata"><h5><a>${escapeHtml(it.bookName || '')}</a></h5><h6><a>${escapeHtml(it.category || '')}</a></h6></div>` +
+					`</div>`;
+			});
+			mini.innerHTML = html;
+		}
+
+		function escapeHtml(s) {
+			if (!s) return '';
+			return String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&#39;');
+		}
+
+		// refresh cart on page load
+		document.addEventListener('DOMContentLoaded', function () {
+			refreshCart();
+		});
 	</script>
 
 </body>

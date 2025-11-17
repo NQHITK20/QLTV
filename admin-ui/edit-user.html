@@ -1,298 +1,516 @@
-<!doctype html>
+<!DOCTYPE html>
 <!--[if lt IE 7]>      <html class="no-js lt-ie9 lt-ie8 lt-ie7" lang=""> <![endif]-->
 <!--[if IE 7]>         <html class="no-js lt-ie9 lt-ie8" lang=""> <![endif]-->
 <!--[if IE 8]>         <html class="no-js lt-ie9" lang=""> <![endif]-->
 <!--[if gt IE 8]><!-->
 <html class="no-js" lang="en">
-<!--<![endif]-->
+    <!--<![endif]-->
 
-<head>
-    <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <title>Quản lý thư viện</title>
-    <meta name="description" content="Quản lý thư viện - HTML5 Admin Template">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <head>
+        <meta charset="utf-8" />
+        <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+        <title>Quản lý thư viện</title>
+        <meta
+            name="description"
+            content="Quản lý thư viện - HTML5 Admin Template"
+        />
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <link rel="apple-touch-icon" href="apple-icon.png">
-    <link rel="shortcut icon" href="favicon.ico">
+        <link rel="apple-touch-icon" href="apple-icon.png" />
+        <link rel="shortcut icon" href="favicon.ico" />
 
-    <link rel="stylesheet" href="vendors/bootstrap/dist/css/bootstrap.min.css">
-    <link rel="stylesheet" href="vendors/font-awesome/css/font-awesome.min.css">
-    <link rel="stylesheet" href="vendors/themify-icons/css/themify-icons.css">
-    <link rel="stylesheet" href="vendors/flag-icon-css/css/flag-icon.min.css">
-    <link rel="stylesheet" href="vendors/selectFX/css/cs-skin-elastic.css">
-    <link rel="stylesheet" href="vendors/jqvmap/dist/jqvmap.min.css">
+        <link
+            rel="stylesheet"
+            href="vendors/bootstrap/dist/css/bootstrap.min.css"
+        />
+        <link
+            rel="stylesheet"
+            href="vendors/font-awesome/css/font-awesome.min.css"
+        />
+        <link
+            rel="stylesheet"
+            href="vendors/themify-icons/css/themify-icons.css"
+        />
+        <link
+            rel="stylesheet"
+            href="vendors/flag-icon-css/css/flag-icon.min.css"
+        />
+        <link
+            rel="stylesheet"
+            href="vendors/selectFX/css/cs-skin-elastic.css"
+        />
+        <link rel="stylesheet" href="vendors/jqvmap/dist/jqvmap.min.css" />
 
+        <link rel="stylesheet" href="assets/css/style.css" />
 
-    <link rel="stylesheet" href="assets/css/style.css">
-
-    <link href='https://fonts.googleapis.com/css?family=Open+Sans:400,600,700,800' rel='stylesheet' type='text/css'>
-    <script>
-  function fetchData() {
-    document.getElementById('loadingOverlay').style.display = 'flex';
-    return new Promise(function(resolve, reject) {
-        let xhr = new XMLHttpRequest();
-        let urlParams = new URLSearchParams(window.location.search);
-        let userId = urlParams.get('id');
-        let userData = {
-            id:userId
-        }
-        xhr.open("POST", "http://localhost:8000/api/get-user-by-id", true);
-        xhr.setRequestHeader("Content-Type", "application/json");
-        const token = localStorage.getItem('jwtToken');
-        xhr.setRequestHeader('Authorization', `Bearer ${token}`);
-        xhr.onreadystatechange = function () {
-            if (xhr.readyState === 4 && xhr.status === 200) {
-                var responseData = JSON.parse(xhr.responseText);
-                resolve(responseData);
-             document.getElementById('loadingOverlay').style.display = 'none';
-
+        <link
+            href="https://fonts.googleapis.com/css?family=Open+Sans:400,600,700,800"
+            rel="stylesheet"
+            type="text/css"
+        />
+        <script>
+            function fetchData() {
+                document.getElementById("loadingOverlay").style.display =
+                    "flex";
+                return new Promise(function (resolve, reject) {
+                    let xhr = new XMLHttpRequest();
+                    let urlParams = new URLSearchParams(window.location.search);
+                    let userId = urlParams.get("id");
+                    let userData = {
+                        id: userId,
+                    };
+                    xhr.open(
+                        "POST",
+                        "http://localhost:8001/api/get-user-by-id",
+                        true
+                    );
+                    xhr.setRequestHeader("Content-Type", "application/json");
+                    const token = localStorage.getItem("jwtToken");
+                    xhr.setRequestHeader("Authorization", `Bearer ${token}`);
+                    xhr.onreadystatechange = function () {
+                        if (xhr.readyState === 4 && xhr.status === 200) {
+                            var responseData = JSON.parse(xhr.responseText);
+                            resolve(responseData);
+                            document.getElementById(
+                                "loadingOverlay"
+                            ).style.display = "none";
+                        }
+                    };
+                    xhr.send(JSON.stringify(userData));
+                });
             }
-        };
-        xhr.send(JSON.stringify(userData));
-    });
-}
 
-document.addEventListener("DOMContentLoaded", async function() {
-    try {
-        const responseData = await fetchData();
-        console.log('check res data',responseData)
-        if (responseData.errCode === 0) {
-            document.getElementById("firstName").value = responseData.data.firstName;
-            document.getElementById("lastName").value = responseData.data.lastName;
-            document.getElementById("email").value = responseData.data.email;
-            document.getElementById("roleId").value = responseData.data.roleId;
-            document.getElementById("nationalId").value = responseData.data.nationalId;
-            document.getElementById("phoneNumber").value = responseData.data.phoneNumber;
-            document.getElementById("address").value = responseData.data.address;us
-        }
-    } catch (error) {
-        console.error(error);
-    }
-});
-
-    // Gửi request API
-
-         function submitForm() {
-            let firstName = document.getElementById('firstName').value;
-            let lastName = document.getElementById('lastName').value;
-            let roleId = document.getElementById('roleId').value;
-            let nationalId = document.getElementById('nationalId').value;
-            let email = document.getElementById('email').value;
-            let phoneNumber = document.getElementById('phoneNumber').value;
-            let address = document.getElementById('address').value;
-
-            if (firstName === "") {
-                alert("Vui lòng nhập họ và tên đệm.");
-                return ;
-            }else if (lastName === "") {
-                alert("Vui lòng nhập tên.");
-                return ;
-            }else if (email === "") {
-                alert("Vui lòng chọn vai trò");
-                return ;
-            }
-            else if (nationalId === "") {
-                alert("Vui lòng nhập CCCD");
-                return ;
-            }else if (roleId === "") {
-                alert("Vui lòng chọn vai trò");
-                return ;
-            }
-            
-            let userData = {
-                firstName: firstName,
-                lastName: lastName,
-                roleId:roleId,
-                email:email,
-                phoneNumber:phoneNumber,
-                nationalId:nationalId,
-                address:address,
-            };
-
-            let xhr = new XMLHttpRequest(); // Tạo đối tượng XMLHttpRequest
-            xhr.open('POST', 'http://localhost:8000/api/edit-user',true); // Gửi yêu cầu POST đến đường dẫn '/api/users'
-            xhr.setRequestHeader("Content-Type", "application/json"); // Thiết lập tiêu đề 'Content-Type'
-            const token = localStorage.getItem('jwtToken');
-            xhr.setRequestHeader('Authorization', `Bearer ${token}`);
-
-            xhr.onload = function() {
-            document.getElementById('loadingOverlay').style.display = 'none';
+            document.addEventListener("DOMContentLoaded", async function () {
                 try {
-                    var responseData = JSON.parse(xhr.responseText);
-                    if (xhr.status === 200 && responseData.errCode === 0) { // Kiểm tra nếu mã trạng thái là 201 (Created)
-                        alert('Thay đổi thông tin thành công')
-                        window.location.href = "manage-user.php";
-                } else {
-                    alert(responseData.errMessage)
-                }
+                    const responseData = await fetchData();
+                    console.log("check res data", responseData);
+                    if (responseData.errCode === 0) {
+                        document.getElementById("firstName").value =
+                            responseData.data.firstName;
+                        document.getElementById("lastName").value =
+                            responseData.data.lastName;
+                        document.getElementById("email").value =
+                            responseData.data.email;
+                        document.getElementById("roleId").value =
+                            responseData.data.roleId;
+                        document.getElementById("nationalId").value =
+                            responseData.data.nationalId;
+                        document.getElementById("phoneNumber").value =
+                            responseData.data.phoneNumber;
+                        document.getElementById("address").value =
+                            responseData.data.address;
+                        us;
+                    }
                 } catch (error) {
-                    console.log(error)
-                    alert('Lỗi sever');
+                    console.error(error);
                 }
-            };
-            xhr.onerror = function () {
-            console.error('Request failed');
-            alert('Có lỗi xảy ra khi gửi yêu cầu. Vui lòng thử lại sau.');
-            document.getElementById('loadingOverlay').style.display = 'none';
-            };
-            document.getElementById('loadingOverlay').style.display = 'none';
-            xhr.send(JSON.stringify(userData));
-        }
-    </script>
-     <script>
-        //check vai trò hiện tên các thứ
-     document.addEventListener('DOMContentLoaded', function() {
-        // check role
-        let userData = JSON.parse(localStorage.getItem('userData'))
-        if (userData.roleId !== "3") {
-            window.location.href ="../index.php"
-        }
-        //load data ra page
-        document.getElementById("span-avatar").innerText = 'Hi ' + userData.lastName;
-    });
-    </script>
+            });
 
-</head>
+            // Gửi request API
 
-<body>
-    <div class="overlay" id="loadingOverlay">
-        <div class="spinner-border text-light" role="status">
-            <span class="sr-only">Loading...</span>
-        </div>
-    </div>
-    <!-- Left Panel -->
+            function submitForm() {
+                let firstName = document.getElementById("firstName").value;
+                let lastName = document.getElementById("lastName").value;
+                let roleId = document.getElementById("roleId").value;
+                let nationalId = document.getElementById("nationalId").value;
+                let email = document.getElementById("email").value;
+                let phoneNumber = document.getElementById("phoneNumber").value;
+                let address = document.getElementById("address").value;
 
-    <aside id="left-panel" class="left-panel">
-        <nav class="navbar navbar-expand-sm navbar-default">
+                if (firstName === "") {
+                    alert("Vui lòng nhập họ và tên đệm.");
+                    return;
+                } else if (lastName === "") {
+                    alert("Vui lòng nhập tên.");
+                    return;
+                } else if (email === "") {
+                    alert("Vui lòng chọn vai trò");
+                    return;
+                } else if (nationalId === "") {
+                    alert("Vui lòng nhập CCCD");
+                    return;
+                } else if (roleId === "") {
+                    alert("Vui lòng chọn vai trò");
+                    return;
+                }
 
-            <div class="navbar-header">
-                <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#main-menu" aria-controls="main-menu" aria-expanded="false" aria-label="Toggle navigation">
-                    <i class="fa fa-bars"></i>
-                </button>
-                <a class="navbar-brand" href="../index.php"><img src="images/logo.png" alt="Logo"></a>
-                <a class="navbar-brand hidden" href="./"><img src="images/logo2.png" alt="Logo"></a>
+                let userData = {
+                    firstName: firstName,
+                    lastName: lastName,
+                    roleId: roleId,
+                    email: email,
+                    phoneNumber: phoneNumber,
+                    nationalId: nationalId,
+                    address: address,
+                };
+
+                let xhr = new XMLHttpRequest(); // Tạo đối tượng XMLHttpRequest
+                xhr.open("POST", "http://localhost:8001/api/edit-user", true); // Gửi yêu cầu POST đến đường dẫn '/api/users'
+                xhr.setRequestHeader("Content-Type", "application/json"); // Thiết lập tiêu đề 'Content-Type'
+                const token = localStorage.getItem("jwtToken");
+                xhr.setRequestHeader("Authorization", `Bearer ${token}`);
+
+                xhr.onload = function () {
+                    document.getElementById("loadingOverlay").style.display =
+                        "none";
+                    try {
+                        var responseData = JSON.parse(xhr.responseText);
+                        if (xhr.status === 200 && responseData.errCode === 0) {
+                            // Kiểm tra nếu mã trạng thái là 201 (Created)
+                            alert("Thay đổi thông tin thành công");
+                            window.location.href = "manage-user.php";
+                        } else {
+                            alert(responseData.errMessage);
+                        }
+                    } catch (error) {
+                        console.log(error);
+                        alert("Lỗi sever");
+                    }
+                };
+                xhr.onerror = function () {
+                    console.error("Request failed");
+                    alert(
+                        "Có lỗi xảy ra khi gửi yêu cầu. Vui lòng thử lại sau."
+                    );
+                    document.getElementById("loadingOverlay").style.display =
+                        "none";
+                };
+                document.getElementById("loadingOverlay").style.display =
+                    "none";
+                xhr.send(JSON.stringify(userData));
+            }
+        </script>
+        <script>
+            //check vai trò hiện tên các thứ
+            document.addEventListener("DOMContentLoaded", function () {
+                // check role
+                let userData = JSON.parse(localStorage.getItem("userData"));
+                if (userData.roleId !== "3") {
+                    window.location.href = "../index.php";
+                }
+                //load data ra page
+                document.getElementById("span-avatar").innerText =
+                    "Hi " + userData.lastName;
+            });
+        </script>
+    </head>
+
+    <body>
+        <div class="overlay" id="loadingOverlay">
+            <div class="spinner-border text-light" role="status">
+                <span class="sr-only">Loading...</span>
             </div>
+        </div>
+        <!-- Left Panel -->
 
-            <div id="main-menu" class="main-menu collapse navbar-collapse">
-                <ul class="nav navbar-nav">
-                    <li class="active">
-                        <a href="index.html"> <i class="menu-icon fa fa-dashboard"></i>Dashboard </a>
-                    </li>
-                    <h3 class="menu-title">Các mục chính</h3><!-- /.menu-title -->
-                    <li class="menu-item-has-children dropdown hidden-user">
-                        <a href="#" class="dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"> <i class="menu-icon fa fa-user"></i>Tài khoản</a>
-                        <ul class="sub-menu children dropdown-menu">
-                            <li><i class="fa fa-user"></i><a href="manage-user.php">Quản lý tài khoản</a></li>
-                            <li><i class="fa fa-plus"></i><a href="add-user.html">Thêm tài khoản</a></li>
-                        </ul>
-                    </li>
-                    <li class="menu-item-has-children dropdown hidden-user">
-                        <a href="#" class="dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"> <i class="menu-icon fa fa fa-file-text-o"></i>Bài viết</a>
-                        <ul class="sub-menu children dropdown-menu">
-                            <li><i class="fa fa-file-text-o"></i><a href="manage-content.php">Quản lý bài viết</a></li>
-                            <li><i class="fa fa-plus"></i><a href="add-content.html">Thêm bài viết</a></li>
-                        </ul>
-                    </li>
-                    <li class="menu-item-has-children dropdown">
-                        <a href="#" class="dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"> <i class="menu-icon fa fa-book"></i>Sách</a>
-                        <ul class="sub-menu children dropdown-menu">
-                            <li><i class="fa fa-book"></i><a href="manage-book.php">Quản lý sách</a></li>
-                            <li><i class="fa fa-plus"></i><a href="add-book.html">Thêm sách</a></li>
-                        </ul>
-                    </li>
-                    <li class="menu-item-has-children dropdown">
-                        <a href="#" class="dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"> <i class="menu-icon fa fa-tags"></i>Danh mục sách</a>
-                        <ul class="sub-menu children dropdown-menu">
-                           <li><i class="fa fa-tags"></i><a href="manage-category.php">Quản lý danh mục</a></li>
-                            <li><i class="fa fa-plus"></i><a href="add-category.html">Thêm danh mục</a></li>
-                        </ul>
-                    </li>
-                </ul>
-            </div><!-- /.navbar-collapse -->
-        </nav>
-    </aside><!-- /#left-panel -->
-
-    <!-- Left Panel -->
-
-    <!-- Right Panel -->
-
-    <div id="right-panel" class="right-panel">
-
-        <!-- Header-->
-        <header id="header" class="header">
-            <div class="header-menu">
-
-                <div class="col-sm-7" >
-                   
+        <aside id="left-panel" class="left-panel">
+            <nav class="navbar navbar-expand-sm navbar-default">
+                <div class="navbar-header">
+                    <button
+                        class="navbar-toggler"
+                        type="button"
+                        data-toggle="collapse"
+                        data-target="#main-menu"
+                        aria-controls="main-menu"
+                        aria-expanded="false"
+                        aria-label="Toggle navigation"
+                    >
+                        <i class="fa fa-bars"></i>
+                    </button>
+                    <a class="navbar-brand" href="../index.php"
+                        ><img src="images/logo.png" alt="Logo"
+                    /></a>
+                    <a class="navbar-brand hidden" href="./"
+                        ><img src="images/logo2.png" alt="Logo"
+                    /></a>
                 </div>
 
-                <div class="col-sm-5">
-                    <div class="user-area dropdown float-right">
-                        <span id="span-avatar"></span>
-                        <a href="#" class="dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                            <img class="user-avatar rounded-circle" src="images/admin.jpg" alt="User Avatar">
-                        </a>
-                        <div class="user-menu dropdown-menu">
-                            <a class="nav-link" href="page-login.html" onclick="logout()"><i class="fa fa-sign-out"></i> Đăng xuất </a>
-                            <a class="nav-link" href="../index.php"><i class="fa fa-newspaper-o"></i> Về trang chủ </a>
+                <div id="main-menu" class="main-menu collapse navbar-collapse">
+                    <ul class="nav navbar-nav">
+                        <li class="active">
+                            <a href="index.html">
+                                <i class="menu-icon fa fa-dashboard"></i
+                                >Dashboard
+                            </a>
+                        </li>
+                        <h3 class="menu-title">Các mục chính</h3>
+                        <!-- /.menu-title -->
+                        <li class="menu-item-has-children dropdown hidden-user">
+                            <a
+                                href="#"
+                                class="dropdown-toggle"
+                                data-toggle="dropdown"
+                                aria-haspopup="true"
+                                aria-expanded="false"
+                            >
+                                <i class="menu-icon fa fa-user"></i>Tài khoản</a
+                            >
+                            <ul class="sub-menu children dropdown-menu">
+                                <li>
+                                    <i class="fa fa-user"></i
+                                    ><a href="manage-user.php"
+                                        >Quản lý tài khoản</a
+                                    >
+                                </li>
+                                <li>
+                                    <i class="fa fa-plus"></i
+                                    ><a href="add-user.html">Thêm tài khoản</a>
+                                </li>
+                            </ul>
+                        </li>
+                        <li class="menu-item-has-children dropdown hidden-user">
+                            <a
+                                href="#"
+                                class="dropdown-toggle"
+                                data-toggle="dropdown"
+                                aria-haspopup="true"
+                                aria-expanded="false"
+                            >
+                                <i class="menu-icon fa fa fa-file-text-o"></i
+                                >Bài viết</a
+                            >
+                            <ul class="sub-menu children dropdown-menu">
+                                <li>
+                                    <i class="fa fa-file-text-o"></i
+                                    ><a href="manage-content.php"
+                                        >Quản lý bài viết</a
+                                    >
+                                </li>
+                                <li>
+                                    <i class="fa fa-plus"></i
+                                    ><a href="add-content.html"
+                                        >Thêm bài viết</a
+                                    >
+                                </li>
+                            </ul>
+                        </li>
+                        <li class="menu-item-has-children dropdown">
+                            <a
+                                href="#"
+                                class="dropdown-toggle"
+                                data-toggle="dropdown"
+                                aria-haspopup="true"
+                                aria-expanded="false"
+                            >
+                                <i class="menu-icon fa fa-book"></i>Sách</a
+                            >
+                            <ul class="sub-menu children dropdown-menu">
+                                <li>
+                                    <i class="fa fa-book"></i
+                                    ><a href="manage-book.php">Quản lý sách</a>
+                                </li>
+                                <li>
+                                    <i class="fa fa-plus"></i
+                                    ><a href="add-book.html">Thêm sách</a>
+                                </li>
+                            </ul>
+                        </li>
+                        <li class="menu-item-has-children dropdown">
+                            <a
+                                href="#"
+                                class="dropdown-toggle"
+                                data-toggle="dropdown"
+                                aria-haspopup="true"
+                                aria-expanded="false"
+                            >
+                                <i class="menu-icon fa fa-tags"></i>Danh mục
+                                sách</a
+                            >
+                            <ul class="sub-menu children dropdown-menu">
+                                <li>
+                                    <i class="fa fa-tags"></i
+                                    ><a href="manage-category.php"
+                                        >Quản lý danh mục</a
+                                    >
+                                </li>
+                                <li>
+                                    <i class="fa fa-plus"></i
+                                    ><a href="add-category.html"
+                                        >Thêm danh mục</a
+                                    >
+                                </li>
+                            </ul>
+                        </li>
+                    </ul>
+                </div>
+                <!-- /.navbar-collapse -->
+            </nav>
+        </aside>
+        <!-- /#left-panel -->
+
+        <!-- Left Panel -->
+
+        <!-- Right Panel -->
+
+        <div id="right-panel" class="right-panel">
+            <!-- Header-->
+            <header id="header" class="header">
+                <div class="header-menu">
+                    <div class="col-sm-7"></div>
+
+                    <div class="col-sm-5">
+                        <div class="user-area dropdown float-right">
+                            <span id="span-avatar"></span>
+                            <a
+                                href="#"
+                                class="dropdown-toggle"
+                                data-toggle="dropdown"
+                                aria-haspopup="true"
+                                aria-expanded="false"
+                            >
+                                <img
+                                    class="user-avatar rounded-circle"
+                                    src="images/admin.jpg"
+                                    alt="User Avatar"
+                                />
+                            </a>
+                            <div class="user-menu dropdown-menu">
+                                <a
+                                    class="nav-link"
+                                    href="page-login.html"
+                                    onclick="logout()"
+                                    ><i class="fa fa-sign-out"></i> Đăng xuất
+                                </a>
+                                <a class="nav-link" href="../index.php"
+                                    ><i class="fa fa-newspaper-o"></i> Về trang
+                                    chủ
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </header>
+            <!-- /header -->
+            <!-- Header-->
+            <!-- Header-->
+
+            <div class="breadcrumbs">
+                <div class="col-sm-4">
+                    <div class="page-header float-left">
+                        <div class="page-title">
+                            <h1>Tài khoản</h1>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-sm-8">
+                    <div class="page-header float-right">
+                        <div class="page-title">
+                            <ol class="breadcrumb text-right">
+                                <li><a href="manage-user.php">Tài khoản</a></li>
+                                <li class="active">Sửa tài khoản</li>
+                            </ol>
                         </div>
                     </div>
                 </div>
             </div>
-        </header><!-- /header -->
-        <!-- Header-->
-        <!-- Header-->
 
-        <div class="breadcrumbs">
-            <div class="col-sm-4">
-                <div class="page-header float-left">
-                    <div class="page-title">
-                        <h1>Tài khoản</h1>
-                    </div>
-                </div>
-            </div>
-            <div class="col-sm-8">
-                <div class="page-header float-right">
-                    <div class="page-title">
-                        <ol class="breadcrumb text-right">
-                            <li><a href="manage-user.php">Tài khoản</a></li>
-                            <li class="active">Sửa tài khoản</li>
-                        </ol>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <div class="content mt-3">
-
-            <div class="col-lg-12">
-                <div class="card">
-                    <div class="card-header">
-                        <strong>Sửa tài khoản</strong>
-                    </div>
-                    <div class="card-body card-block">
-                        <form id="registerForm" action="" method="post" enctype="multipart/form-data" class="form-horizontal">
-                            <div class="row form-group">
-                                <div class="col col-md-3"><label for="text-input" class=" form-control-label">Họ và tên đệm</label></div>
-                                <div class="col-12 col-md-2"><input type="text" id="firstName" name="firstName" placeholder="Nhập họ" class="form-control" value=""></div>
-                            </div>
-                            <div class="row form-group">
-                                <div class="col col-md-3"><label for="text-input" class=" form-control-label">Tên</label></div>
-                                <div class="col-12 col-md-2"><input type="text" id="lastName" name="lastName" placeholder="Nhập tên" class="form-control" value=""></div>
-                            </div>
-                            <div class="row form-group">
-                                <div class="col col-md-3"><label for="email-input" class=" form-control-label"></label>Email</div>
-                                <div class="col-12 col-md-3"><input type="email" id="email" name="email" placeholder="Nhập email" class="form-control" value="" disabled></div>
-                            </div>
-                            <div class="row form-group">
-                                <div class="col col-md-3"><label for="password-input" class=" form-control-label">Mât khẩu</label></div>
-                                <div class="col-12 col-md-3"><input type="disabled-input" id="disabled-input" name="disabled-input" placeholder="nhập mật khẩu" class="form-control" style="background-color: #e9ecef;" disabled></div>
-                            </div>
+            <div class="content mt-3">
+                <div class="col-lg-12">
+                    <div class="card">
+                        <div class="card-header">
+                            <strong>Sửa tài khoản</strong>
+                        </div>
+                        <div class="card-body card-block">
+                            <form
+                                id="registerForm"
+                                action=""
+                                method="post"
+                                enctype="multipart/form-data"
+                                class="form-horizontal"
+                            >
                                 <div class="row form-group">
-                                    <div class="col col-md-3"><label for="select" class=" form-control-label">Vai trò</label></div>
+                                    <div class="col col-md-3">
+                                        <label
+                                            for="text-input"
+                                            class="form-control-label"
+                                            >Họ và tên đệm</label
+                                        >
+                                    </div>
                                     <div class="col-12 col-md-2">
-                                        <select name="roleId" id="roleId" class="form-control" value="">
+                                        <input
+                                            type="text"
+                                            id="firstName"
+                                            name="firstName"
+                                            placeholder="Nhập họ"
+                                            class="form-control"
+                                            value=""
+                                        />
+                                    </div>
+                                </div>
+                                <div class="row form-group">
+                                    <div class="col col-md-3">
+                                        <label
+                                            for="text-input"
+                                            class="form-control-label"
+                                            >Tên</label
+                                        >
+                                    </div>
+                                    <div class="col-12 col-md-2">
+                                        <input
+                                            type="text"
+                                            id="lastName"
+                                            name="lastName"
+                                            placeholder="Nhập tên"
+                                            class="form-control"
+                                            value=""
+                                        />
+                                    </div>
+                                </div>
+                                <div class="row form-group">
+                                    <div class="col col-md-3">
+                                        <label
+                                            for="email-input"
+                                            class="form-control-label"
+                                        ></label
+                                        >Email
+                                    </div>
+                                    <div class="col-12 col-md-3">
+                                        <input
+                                            type="email"
+                                            id="email"
+                                            name="email"
+                                            placeholder="Nhập email"
+                                            class="form-control"
+                                            value=""
+                                            disabled
+                                        />
+                                    </div>
+                                </div>
+                                <div class="row form-group">
+                                    <div class="col col-md-3">
+                                        <label
+                                            for="password-input"
+                                            class="form-control-label"
+                                            >Mât khẩu</label
+                                        >
+                                    </div>
+                                    <div class="col-12 col-md-3">
+                                        <input
+                                            type="disabled-input"
+                                            id="disabled-input"
+                                            name="disabled-input"
+                                            placeholder="nhập mật khẩu"
+                                            class="form-control"
+                                            style="background-color: #e9ecef"
+                                            disabled
+                                        />
+                                    </div>
+                                </div>
+                                <div class="row form-group">
+                                    <div class="col col-md-3">
+                                        <label
+                                            for="select"
+                                            class="form-control-label"
+                                            >Vai trò</label
+                                        >
+                                    </div>
+                                    <div class="col-12 col-md-2">
+                                        <select
+                                            name="roleId"
+                                            id="roleId"
+                                            class="form-control"
+                                            value=""
+                                        >
                                             <option value="0">Vai trò</option>
                                             <option value="1">Khách</option>
                                             <option value="2">Thủ thư</option>
@@ -301,76 +519,123 @@ document.addEventListener("DOMContentLoaded", async function() {
                                     </div>
                                 </div>
                                 <div class="row form-group">
-                                    <div class="col col-md-3"><label for="text-input" class=" form-control-label">CCCD</label></div>
-                                    <div class="col-12 col-md-3"><input type="text" id="nationalId" name="nationalId" placeholder="nhập cccd" class="form-control" value=""></div>
+                                    <div class="col col-md-3">
+                                        <label
+                                            for="text-input"
+                                            class="form-control-label"
+                                            >CCCD</label
+                                        >
+                                    </div>
+                                    <div class="col-12 col-md-3">
+                                        <input
+                                            type="text"
+                                            id="nationalId"
+                                            name="nationalId"
+                                            placeholder="nhập cccd"
+                                            class="form-control"
+                                            value=""
+                                        />
+                                    </div>
                                 </div>
                                 <div class="row form-group">
-                                    <div class="col col-md-3"><label for="text-input" class=" form-control-label">Số điện thoại</label></div>
-                                    <div class="col-12 col-md-3"><input type="text" id="phoneNumber" name="phoneNumber" placeholder="nhập số điện thoại" class="form-control" value=""></div>
+                                    <div class="col col-md-3">
+                                        <label
+                                            for="text-input"
+                                            class="form-control-label"
+                                            >Số điện thoại</label
+                                        >
+                                    </div>
+                                    <div class="col-12 col-md-3">
+                                        <input
+                                            type="text"
+                                            id="phoneNumber"
+                                            name="phoneNumber"
+                                            placeholder="nhập số điện thoại"
+                                            class="form-control"
+                                            value=""
+                                        />
+                                    </div>
                                 </div>
                                 <div class="row form-group">
-                                    <div class="col col-md-3"><label for="text-input" class=" form-control-label">Địa chỉ</label></div>
-                                    <div class="col-12 col-md-6"><input type="text" id="address" name="address" placeholder="nhập địa chỉ" class="form-control" value=""></div>
+                                    <div class="col col-md-3">
+                                        <label
+                                            for="text-input"
+                                            class="form-control-label"
+                                            >Địa chỉ</label
+                                        >
+                                    </div>
+                                    <div class="col-12 col-md-6">
+                                        <input
+                                            type="text"
+                                            id="address"
+                                            name="address"
+                                            placeholder="nhập địa chỉ"
+                                            class="form-control"
+                                            value=""
+                                        />
+                                    </div>
                                 </div>
-                        </form>
-                    </div>
-                    <div class="card-footer">
-                        <button type="submit" class="btn btn-primary btn-sm" onclick="submitForm()">
-                            <i class="fa fa-dot-circle-o"></i> Xác nhận
-                        </button>
-                       
+                            </form>
+                        </div>
+                        <div class="card-footer">
+                            <button
+                                type="submit"
+                                class="btn btn-primary btn-sm"
+                                onclick="submitForm()"
+                            >
+                                <i class="fa fa-dot-circle-o"></i> Xác nhận
+                            </button>
+                        </div>
                     </div>
                 </div>
             </div>
+            <!-- .content -->
+        </div>
+        <!-- /#right-panel -->
 
-        </div> <!-- .content -->
-    </div><!-- /#right-panel -->
+        <!-- Right Panel -->
 
-    <!-- Right Panel -->
+        <script src="vendors/jquery/dist/jquery.min.js"></script>
+        <script src="vendors/popper.js/dist/umd/popper.min.js"></script>
+        <script src="vendors/bootstrap/dist/js/bootstrap.min.js"></script>
+        <script src="assets/js/main.js"></script>
+        <script src="vendors/chart.js/dist/Chart.bundle.min.js"></script>
+        <script src="assets/js/dashboard.js"></script>
+        <script src="assets/js/widgets.js"></script>
+        <script src="vendors/jqvmap/dist/jquery.vmap.min.js"></script>
+        <script src="vendors/jqvmap/examples/js/jquery.vmap.sampledata.js"></script>
+        <script src="vendors/jqvmap/dist/maps/jquery.vmap.world.js"></script>
+        <script>
+            (function ($) {
+                "use strict";
 
-    <script src="vendors/jquery/dist/jquery.min.js"></script>
-    <script src="vendors/popper.js/dist/umd/popper.min.js"></script>
-    <script src="vendors/bootstrap/dist/js/bootstrap.min.js"></script>
-    <script src="assets/js/main.js"></script>
-    <script src="vendors/chart.js/dist/Chart.bundle.min.js"></script>
-    <script src="assets/js/dashboard.js"></script>
-    <script src="assets/js/widgets.js"></script>
-    <script src="vendors/jqvmap/dist/jquery.vmap.min.js"></script>
-    <script src="vendors/jqvmap/examples/js/jquery.vmap.sampledata.js"></script>
-    <script src="vendors/jqvmap/dist/maps/jquery.vmap.world.js"></script>
-    <script>
-        (function($) {
-            "use strict";
-
-            jQuery('#vmap').vectorMap({
-                map: 'world_en',
-                backgroundColor: null,
-                color: '#ffffff',
-                hoverOpacity: 0.7,
-                selectedColor: '#1de9b6',
-                enableZoom: true,
-                showTooltip: true,
-                values: sample_data,
-                scaleColors: ['#1de9b6', '#03a9f5'],
-                normalizeFunction: 'polynomial'
-            });
-        })(jQuery);
-    </script>
-
-</body>
-<style>
-    .overlay {
-        position: fixed;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        background-color: rgba(0, 0, 0, 0.5);
-        display: none;
-        justify-content: center;
-        align-items: center;
-        z-index: 999;
-    }
-</style>
-
+                jQuery("#vmap").vectorMap({
+                    map: "world_en",
+                    backgroundColor: null,
+                    color: "#ffffff",
+                    hoverOpacity: 0.7,
+                    selectedColor: "#1de9b6",
+                    enableZoom: true,
+                    showTooltip: true,
+                    values: sample_data,
+                    scaleColors: ["#1de9b6", "#03a9f5"],
+                    normalizeFunction: "polynomial",
+                });
+            })(jQuery);
+        </script>
+    </body>
+    <style>
+        .overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 999;
+        }
+    </style>
 </html>
