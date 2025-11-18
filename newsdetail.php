@@ -865,7 +865,7 @@ $jsonDataNew = json_encode($data4);
 												</div>
 											</div>
 											<div class="tg-minicartfoot">
-												<span class="tg-subtotal">Đang mượn: <strong> 3</strong></span>
+												<span class="tg-subtotal">Trong giỏ: <strong> 3</strong></span>
 												<div class="tg-btns">
 													<a class="tg-btn" href="javascript:void(0);">Xem thêm</a>
 													<a class="tg-btn" href="javascript:void(0);">Đóng</a>

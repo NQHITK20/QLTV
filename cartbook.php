@@ -1,6 +1,5 @@
 <!doctype html>
 <html class="no-js" lang="">
-
 <head>
 	<meta charset="utf-8">
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -18,9 +17,28 @@
 	<link rel="stylesheet" href="css/main.css">
 	<link rel="stylesheet" href="css/color.css">
 	<link rel="stylesheet" href="css/responsive.css">
+	<style>
+	/* Cart table column sizing for better layout */
+	.table.cart-table td, .table.cart-table th{vertical-align:middle;white-space:normal}
+	.table.cart-table td img{width:70px;height:auto;display:block}
+	/* Columns: 1=STT, 2=Ảnh, 3=Tên sách, 4=Danh mục, 5=Giá, 6=Số lượng, 7=Thành tiền, 8=Hành động */
+	.table.cart-table th:nth-child(1), .table.cart-table td:nth-child(1){width:5%}
+	.table.cart-table th:nth-child(2), .table.cart-table td:nth-child(2){width:20%}
+	.table.cart-table th:nth-child(3), .table.cart-table td:nth-child(3){width:20%}
+	.table.cart-table th:nth-child(4), .table.cart-table td:nth-child(4){width:12%}
+	.table.cart-table th:nth-child(5), .table.cart-table td:nth-child(5){width:10%}
+	.table.cart-table th:nth-child(6), .table.cart-table td:nth-child(6){width:8%}
+	.table.cart-table th:nth-child(7), .table.cart-table td:nth-child(7){width:15%}
+	.table.cart-table th:nth-child(8), .table.cart-table td:nth-child(8){width:6%}
+	@media (max-width: 767px){
+		.table.cart-table thead{display:none}
+		.table.cart-table tr{display:block;margin-bottom:10px}
+		.table.cart-table td{display:block;text-align:left}
+	}
+	</style>
 	<script src="js/vendor/modernizr-2.8.3-respond-1.4.2.min.js"></script>
 </head>
-<?php 
+<?php
 require_once __DIR__ . '/config.php';
 
 ini_set('display_errors', 1);
@@ -99,10 +117,10 @@ if ($response3 === FALSE) {
 curl_close($ch);
 
 // Chuyển đổi JSON thành mảng dữ liệu trong PHP
-$data4 = json_decode($response3, true);
+$data3 = json_decode($response3, true);
 
 // Kiểm tra nếu có lỗi khi chuyển đổi JSON
-if ($data4 === null) {
+if ($data3 === null) {
     die('Lỗi khi chuyển đổi JSON');
 }
 
@@ -110,44 +128,47 @@ ini_set('display_errors', 1);
 ini_set('display_startup_errors', 1);
 error_reporting(E_ALL);
 
-$url = rtrim(BACKEND_URL, '/') . '/api/get-news'; // URL của API backend
+$url = rtrim(BACKEND_URL, '/') . '/api/get-fvbook'; // URL của API backend
 
-// Dữ liệu gửi đi
-$allnew = array('id' => 'ALLSHOW');
+// Lấy dữ liệu từ cookies
+$idusername = $_COOKIE['idusername'] ?? null;
 
-// Chuyển đổi mảng dữ liệu thành JSON
-$jsonData4 = json_encode($allnew);
+if ($idusername) {
+    // Dữ liệu để gửi
+    $datanew4 = array('idusername' => $idusername);
 
-// Cấu hình cURL
-$ch = curl_init($url);
-curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-curl_setopt($ch, CURLOPT_HTTPHEADER, array(
-    'Content-Type: application/json',
-    'Authorization: Bearer' // Thêm token vào header Authorization
-));
-curl_setopt($ch, CURLOPT_POST, true);
-curl_setopt($ch, CURLOPT_POSTFIELDS, $jsonData4);
+    // Chuyển đổi mảng dữ liệu thành JSON
+    $jsonData4 = json_encode($datanew4);
 
-// Thực hiện yêu cầu POST và nhận phản hồi
-$response4 = curl_exec($ch);
+    // Cấu hình cURL
+    $ch = curl_init($url);
+    curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+    curl_setopt($ch, CURLOPT_HTTPHEADER, array(
+        'Content-Type: application/json',
+        'Authorization: ' . 'Bearer' // Thêm token vào header Authorization
+    ));
+    curl_setopt($ch, CURLOPT_POST, true);
+    curl_setopt($ch, CURLOPT_POSTFIELDS, $jsonData4);
 
-// Kiểm tra nếu có lỗi khi gửi yêu cầu
-if ($response4 === FALSE) {
-    die('Lỗi khi gửi yêu cầu: ' . curl_error($ch));
+    // Thực hiện yêu cầu POST và nhận phản hồi
+    $response4 = curl_exec($ch);
+
+    // Kiểm tra nếu có lỗi khi gửi yêu cầu
+    if ($response4 === FALSE) {
+        die('Lỗi khi gửi yêu cầu: ' . curl_error($ch));
+    }
+
+    // Đóng cURL
+    curl_close($ch);
+
+    // Chuyển đổi JSON thành mảng dữ liệu trong PHP
+    $data4 = json_decode($response4, true);
+
+    // Kiểm tra nếu có lỗi khi chuyển đổi JSON
+    if ($data4 === null) {
+        die('Lỗi khi chuyển đổi JSON');
+    }
 }
-
-// Đóng cURL
-curl_close($ch);
-
-// Chuyển đổi JSON thành mảng dữ liệu trong PHP
-$data4 = json_decode($response4, true);
-
-// Kiểm tra nếu có lỗi khi chuyển đổi JSON
-if ($data4 === null) {
-    die('Lỗi khi chuyển đổi JSON');
-}
-
-$jsonDataNew = json_encode($data4);
 
 ?>
 
@@ -178,9 +199,8 @@ $jsonDataNew = json_encode($data4);
 							<div class="tg-userlogin">
 								<figure><a href="javascript:void(0);"><img src="images/users/img-01.jpg" alt="image description"></a></figure>
 								<span onclick="profileBar()" class="dropbtn">Hi, John</span>
-								<div id="myDropdown" class="dropdown-content">
-									
-									<a href="#about"><b><i class="icon-exit" ></i> Đăng xuất</b></a>
+								<div id="myDropdown" class="dropdown-content">								
+									<a href="#about"><i class="icon-exit" ></i> Đăng xuất</a>
 								  </div>
 							</div>
 						</div>
@@ -193,9 +213,9 @@ $jsonDataNew = json_encode($data4);
 						<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
 							<strong class="tg-logo"><a href="index.html"><img src="images/logo.png" alt="company name here"></a></strong>
 							<div class="tg-searchbox">
-								<form class="tg-formtheme tg-formsearch">
+								<form class="tg-formtheme tg-formsearch" id="searchForm">
 									<fieldset>
-										<input type="text" name="search" class="typeahead form-control" placeholder="Tìm kiếm sách tốt . . .">
+										<input type="text" name="search" class="typeahead form-control" placeholder="Sách hay..." >
 										<button type="submit" class="tg-btn">Search</button>
 									</fieldset>
 								</form>
@@ -268,7 +288,6 @@ $jsonDataNew = json_encode($data4);
 																	<li><a href="products.php">Bulldozer Boyz</a></li>
 																	<li><a href="products.php">Build Or Leave On Us</a></li>
 																</ul>
-																<a class="tg-btnviewall" href="products.php">View All</a>
 															</li>
 															<li>
 																<div class="tg-linkstitle">
@@ -863,13 +882,13 @@ $jsonDataNew = json_encode($data4);
 													</div>
 												</div>
 											</div>
-											<div class="tg-minicartfoot">
-												<span class="tg-subtotal">Trong giỏ: <strong> 3</strong></span>
-												<div class="tg-btns">
-													<a class="tg-btn" href="javascript:void(0);">Xem thêm</a>
-													<a class="tg-btn" href="javascript:void(0);">Đóng</a>
+												<div class="tg-minicartfoot">
+													<span class="tg-subtotal">Trong giỏ: <strong id="miniCartCount">0</strong></span>
+													<div class="tg-btns">
+														<a class="tg-btn" href="products.php">Xem giỏ</a>
+														<a class="tg-btn" href="javascript:void(0);">Đóng</a>
+													</div>
 												</div>
-											</div>
 										</div>
 									</div>
 									<div class="dropdown tg-themedropdown tg-wishlistdropdown">
@@ -899,10 +918,10 @@ $jsonDataNew = json_encode($data4);
 				<div class="row">
 					<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
 						<div class="tg-innerbannercontent">
-							<h1>Tin tức</h1>
+							<h1>Sách</h1>
 							<ol class="tg-breadcrumb">
-								<li><a href="index.php">home</a></li>
-								<li class="tg-active">Tin tức</li>
+								<li><a href="javascript:void(0);">home</a></li>
+								<li class="tg-active">Sách</li>
 							</ol>
 						</div>
 					</div>
@@ -925,39 +944,42 @@ $jsonDataNew = json_encode($data4);
 						<div id="tg-twocolumns" class="tg-twocolumns">
 							<div class="col-xs-12 col-sm-8 col-md-8 col-lg-9 pull-right">
 								<div id="tg-content" class="tg-content">
-									<div class="tg-newslist">
-										<div class="tg-sectionhead">
-											<h2><span>Mới &amp; Hot</span>Tin tức mới nhất</h2>
-										</div>
-										<div class="row">
-											<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
-										        <?php 
-												if (isset($_COOKIE['listing_new'])) {
-													$cookie_value = $_COOKIE['listing_new'];
-	                                                $listing_table_news = json_decode($cookie_value, true);
-													foreach($listing_table_news as $new) {
-													 $dateString = $new['publicAt'];
-
-													 // Tạo một đối tượng DateTime từ chuỗi ngày giờ
-													 $datetime = new DateTime($dateString);
-										  
-													 // Định dạng lại ngày giờ theo định dạng mong muốn
-													 $formattedDatetime = $datetime->format('d/m/Y - H:i');												
-													?>
-												<article class="tg-post">
-													<figure style="width: 80%;"><a href="newsdetail.php?id=<?php echo $new['id'] ?>"><img src="images/blog/<?php echo $new['image'] ?>" alt="<?php echo $new['image'] ?>"></a></figure>
-													<div class="tg-postcontent">
-														<div class="tg-posttitle">
-															<h3><a href="newsdetail.php?id=<?php echo $new['id'] ?>"><?php echo $new['title'] ?></a></h3>
-														</div>
-														<a><?php echo $formattedDatetime ?></a>
-														<div class="tg-description">
-															<p><?php echo $new['description'] ?></p>
-														</div>
-														<span class="tg-bookwriter">By: <a><?php echo $new['author'] ?></a></span>
+									<div class="tg-products">
+                                            <div class="tg-sectionhead">
+                                            	<h2>Giỏ Hàng</h2>
+                                        	</div>
+										<div class="tg-productgrid">
+											<div id="cartRoot" class="container-fluid px-0">
+												<table class="table table-striped cart-table">
+													<thead>
+														<tr>
+															<th>STT</th>
+															<th>Ảnh</th>
+															<th>Tên sách</th>
+															<th>Danh mục</th>
+															<th>Giá</th>
+															<th style="width:120px">Số lượng</th>
+															<th>Thành tiền</th>
+															<th>Hành động</th>
+														</tr>
+													</thead>
+													<tbody id="cartBody">
+														<tr><td colspan="8" class="empty-note">Đang tải giỏ...</td></tr>
+													</tbody>
+												</table>
+												<div class="d-flex justify-content-between align-items-center mt-3">
+													<div>
+														<button id="btnClear" class="btn btn-outline-danger">Xóa hết</button>
+														<a href="products.php" class="btn btn-secondary">Tiếp tục mua sắm</a>
 													</div>
-												</article>
-												<?php }}?>
+													<div class="checkout-box text-right">
+														<div>Số mặt hàng: <strong id="cartCount">0</strong></div>
+														<div class="mt-1">Tổng tiền: <strong id="cartTotal">0₫</strong></div>
+														<div class="mt-2">
+															<button id="btnCheckout" class="btn btn-outline-primary">Thanh toán</button>
+														</div>
+													</div>
+												</div>
 											</div>
 										</div>
 									</div>
@@ -984,7 +1006,7 @@ $jsonDataNew = json_encode($data4);
 										</div>
 										<div class="tg-widgetcontent">
 											<ul>
-												<?php foreach($data4['data'] as $new){?>
+												<?php foreach($data3['data'] as $new){?>
 												<li>
 													<article class="tg-post">
 														<figure style="width:112px;"><a style="width:100px;" href="newsdetail.php?id=<?php echo $new['id']?>" alt="<?php echo $new['image']?>"><img src="images/blog/<?php echo $new['image'] ?>" alt="<?php echo $new['image'] ?>"></a></figure>
@@ -992,7 +1014,7 @@ $jsonDataNew = json_encode($data4);
 															<div class="tg-posttitle">
 																<h3><a href="newsdetail.php?id=<?php echo $new['id']?>"><?php echo $new['title']?></a></h3>
 															</div>
-															<span class="tg-bookwriter">By: <a><?php echo $new['author'] ?></a></span>
+															<span class="tg-bookwriter"> <a><?php echo $new['author'] ?></a></span>
 														</div>
 													</article>
 												</li>
@@ -1004,38 +1026,7 @@ $jsonDataNew = json_encode($data4);
 							</div>
 						</div>
 					</div>
-					<div class="pagination" style="margin-left: 25vw;">
-										<a onclick="prevPage()" id="btn_prev" style="cursor: pointer;">&laquo;</a>
-										<?php
-										if (isset($_COOKIE['page_index_new']) && isset($_COOKIE['last_page_new'])) {
-										$last_page_new = isset($_COOKIE['last_page_new']) ? $_COOKIE['last_page_new'] : 0;
-										$page_index_new = isset($_COOKIE['page_index_new']) ? $_COOKIE['page_index_new'] : 0;
-										if ($page_index_new < 5 ) {
-										    $count1 = 0;
-											for ($i = 1;$i <= min($page_index_new + 8, $last_page_new) && $count1 < 10; $i++) {
-												?>
-												<a class="pag-child" onclick="changePageClick(<?php echo $i ?>)" style="cursor:pointer"><?php echo $i ?></a>
-												<?php
-												$count1++;
-											}
-										}else{
-											if ($page_index_new >= 5) {
-												$count2 = 0;
-												for ($i = $page_index_new-4;$i <= min($page_index_new + 4, $last_page_new) && $count2 < 10; $i++) {
-													?>
-													<a class="pag-child" onclick="changePageClick(<?php echo $i ?>)" style="cursor:pointer"><?php echo $i ?></a>
-													<?php
-													$count2++;
-												}	
-											}
-										}
-											?>
-										<?php } else {
-                                          echo '<p>Không có dữ liệu tổng số trang và trang hiện tại</p>';
-                                            }?>
-										<a onclick="nextPage()" id="btn_next" style="cursor: pointer;">&raquo;</a>
-									</div>
-				            </div>
+				</div>
 			</div>
 			<!--************************************
 					News Grid End
@@ -1140,7 +1131,7 @@ $jsonDataNew = json_encode($data4);
 	*************************************-->
 	<script src="js/vendor/jquery-library.js"></script>
 	<script src="js/vendor/bootstrap.min.js"></script>
-	<script src="https://maps.google.com/maps/api/js?key=AIzaSyCR-KEWAVCn52mSdeVeTqZjtqbmVJyfSus&amp;language=en"></script>
+	<script src="https://maps.google.com/maps/api/js?key=AIzaSyCR-KEWAVCn52mSdeVeTqZjtqbmVJyfSus&amp;language=vi"></script>
 	<script src="js/owl.carousel.min.js"></script>
 	<script src="js/jquery.vide.min.js"></script>
 	<script src="js/countdown.js"></script>
@@ -1160,10 +1151,10 @@ $jsonDataNew = json_encode($data4);
 		// Close the dropdown if the user clicks outside of it
 		window.onclick = function(event) {
 		  if (!event.target.matches('.dropbtn')) {
-			var dropdowns = document.getElementsByClassName("dropdown-content");
-			var i;
+			let dropdowns = document.getElementsByClassName("dropdown-content");
+			let i;
 			for (i = 0; i < dropdowns.length; i++) {
-			  var openDropdown = dropdowns[i];
+			  let openDropdown = dropdowns[i];
 			  if (openDropdown.classList.contains('show')) {
 				openDropdown.classList.remove('show');
 			  }
@@ -1171,99 +1162,35 @@ $jsonDataNew = json_encode($data4);
 		  }
 		}
 
-let urlParams = new URLSearchParams(window.location.search);
-let current_page = urlParams.get('pageIndex');
-let records_per_page = 4;
-
-let objJson = <?php echo $jsonDataNew; ?>;
-
-	 // Can be obtained from another source, such as your objJson letiable
-
-function prevPage()
-{
-    if (current_page > 1) {
-    current_page--;
-    changePage(current_page);
-    window.location.href = "newslist.php?pageIndex=" + current_page;
+		function setCookie(name, value, days) {
+	var expires = "";
+	if (days) {
+		var date = new Date();
+		date.setTime(date.getTime() + (days * 24 * 60 * 60 * 1000));
+		expires = "; expires=" + date.toUTCString();
 	}
+	document.cookie = name + "=" + (value || "") + expires + "; path=/";
 }
 
-function nextPage()
-{
-    if (current_page < numPages()) {
-        current_page++;
-        changePage(current_page);
-		window.location.href = "newslist.php?pageIndex=" + current_page;
-    }
-}
-    
-function changePage(page){
-    let btn_next = document.getElementById("btn_next");
-    let btn_prev = document.getElementById("btn_prev");
- 
-    // Validate page
-    if (page < 1) page = 1;
-    if (page > numPages()) page = numPages();
+		document.getElementById('searchForm').addEventListener('submit', function(event) {
+        event.preventDefault(); // Ngăn chặn hành động gửi biểu mẫu mặc định
 
-    listing_new = [];
-	document.cookie = 'listing_new=' + '' + '; expires=Fri, 31 Dec 9999 23:59:59 GMT; path=/;';
-	document.cookie = 'page_index_new=' + '' + '; expires=Fri, 31 Dec 9999 23:59:59 GMT; path=/;';
-
-
-	let startIndex = (page - 1) * records_per_page;
-    let endIndex = startIndex + records_per_page;
-    
-    
-    listing_new = [];
-
-    
-    for (let i = startIndex; i < endIndex && i < objJson.data.length; i++) {
-        listing_new.push(objJson.data[i]);
-    }
-	document.cookie = 'listing_new=' + JSON.stringify(listing_new) + '; expires=Fri, 31 Dec 9999 23:59:59 GMT; path=/;';
-	document.cookie = 'page_index_new=' + current_page + '; expires=Fri, 31 Dec 9999 23:59:59 GMT; path=/;';
-
-    if (page == 1) {
-        btn_prev.style.visibility = "hidden";
-    } else {
-        btn_prev.style.visibility = "visible";
-    }
-
-    if (page == numPages()) {
-        btn_next.style.visibility = "hidden";
-    } else {
-        btn_next.style.visibility = "visible";
-    }
-	let pagChild = document.querySelectorAll('.pag-child');
-
-    pagChild.forEach(function(pag) {
-    if (pag.innerText === current_page) {
-        pag.className = "active";
-    }
-	let targetDiv = document.getElementById('tg-main');
-        if (targetDiv) {
-        // Cuộn đến thẻ div
-        targetDiv.scrollIntoView({ behavior: 'smooth' });
-        }
-
+        let searchQuery = document.querySelector('input[name="search"]').value;
+		setCookie('tukhoa', searchQuery, 30);
+        let url = `/QuanLyThuVien/findingbook.php?tukhoa=${encodeURIComponent(searchQuery)}`;
+        
+        // Điều hướng đến URL mới với từ khóa tìm kiếm
+        window.location.href = url;
 });
-}
-
-function changePageClick(page){
-	current_page = page;
-	changePage(current_page);
-	window.location.href = "newslist.php?pageIndex=" + current_page;
-}
-
-function numPages()
+let targetDiv = document.getElementById('tg-main');
+    if (targetDiv) {
+        targetDiv.scrollIntoView({ behavior: 'smooth' });
+    }
+function setCookiesBook(category,bookId)
 {
-    return Math.ceil(objJson.data.length / records_per_page);
+	setCookie('categoryBook', category, 30);
+	setCookie('bookId', bookId, 30);
 }
-
-changePage(current_page)
-
-</script>
 
 </body>
-
 </html>
