@@ -775,7 +775,7 @@ if (isset($data['data'])) {
 																	 // Ensure book id is taken from the prepared $id variable
 																	 $safeId = isset($id) ? (string)$id : '';
 																	 ?>
-																	 <a class="tg-btn tg-btnstyletwo btn-order" href="javascript:void(0);"
+																	 <a class="tg-btn tg-btnstyletwo btn-order" href="bookdetail.php?id=<?php echo $idAttr; ?>"
 																		 data-bookid="<?php echo htmlspecialchars($safeId, ENT_QUOTES); ?>"
 																		 data-category="<?php echo htmlspecialchars($category ?? '', ENT_QUOTES); ?>"
 																		 data-bookname="<?php echo htmlspecialchars($bookName ?? '', ENT_QUOTES); ?>">
