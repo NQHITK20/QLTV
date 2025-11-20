@@ -742,8 +742,12 @@ if (isset($data['data'])) {
 										if (isset($book['showing']) && (string)$book['showing'] !== '1') continue;
 										$category = $book['category'] ?? '';
 										$id = $book['id'] ?? '';
-										$categoryJson = htmlspecialchars(json_encode($category), ENT_QUOTES, 'UTF-8');
-										$idJson = htmlspecialchars(json_encode($id), ENT_QUOTES, 'UTF-8');
+										$bookName = $book['bookName'] ?? '';
+										// Prepare values: URL-encoded id for href, JSON-encoded strings for JS calls
+										$categoryJson = json_encode((string)$category);
+										$idAttr = rawurlencode((string)$id);
+										$idJs = json_encode((string)$id);
+										$bookNameJson = json_encode((string)$bookName);
 										?>
 										<div class="item">
 											<div class="tg-postbook">
@@ -764,10 +768,17 @@ if (isset($data['data'])) {
 												</figure>
 												<div class="tg-postbookcontent">
 													<div class="tg-booktitle">
-														<h3><a href="bookdetail.php?id=<?php echo $idJson; ?>" onClick="setCookiesBook(<?php echo $categoryJson; ?>,<?php echo $idJson; ?>)"><?php echo htmlspecialchars($book['bookName'] ?? ''); ?></a></h3>
+														<h3><a href="bookdetail.php?id=<?php echo $idAttr; ?>" onClick="setCookiesBook(<?php echo $categoryJson; ?>,<?php echo $idJs; ?>)"><?php echo htmlspecialchars($book['bookName'] ?? ''); ?></a></h3>
 													</div>
 													<span class="tg-bookwriter">Tác giả: <?php echo htmlspecialchars($book['author'] ?? ''); ?></span>
-													<a class="tg-btn tg-btnstyletwo" href="javascript:void(0);" onclick="setCookiesBook(<?php echo $categoryJson; ?>,<?php echo $idJson; ?>); orderBook(<?php echo $idJson; ?>, <?php echo $categoryJson; ?>);">
+																	 <?php
+																	 // Ensure book id is taken from the prepared $id variable
+																	 $safeId = isset($id) ? (string)$id : '';
+																	 ?>
+																	 <a class="tg-btn tg-btnstyletwo btn-order" href="javascript:void(0);"
+																		 data-bookid="<?php echo htmlspecialchars($safeId, ENT_QUOTES); ?>"
+																		 data-category="<?php echo htmlspecialchars($category ?? '', ENT_QUOTES); ?>"
+																		 data-bookname="<?php echo htmlspecialchars($bookName ?? '', ENT_QUOTES); ?>">
 														<i class="fa fa-shopping-basket"></i>
 														<em>Đặt sách</em>
 													</a>
@@ -1123,50 +1134,57 @@ let token = localStorage.getItem('jwtToken');
 
 	<script>
 		// ----- Shopping cart frontend helpers -----
-		async function orderBook(bookId, category) {
-			// bookId and category are expected to be JS values (strings / numbers)
-			try {
-				const user = JSON.parse(localStorage.getItem('userData') || 'null');
-				if (!user || !user.id) {
-					// not logged in -> redirect to login page
-					alert('Vui lòng đăng nhập để đặt sách.');
-					window.location.href = 'admin-ui/page-login.html';
+		async function orderBook(bookId, category, bookName) {
+			// When user clicks 'Đặt sách' on homepage: check login and redirect to product detail page.
+			const user = JSON.parse(localStorage.getItem('userData') || 'null');
+			if (!user || !user.id) {
+				// not logged in -> prompt to register
+				if (confirm('Bạn chưa đăng nhập. Bạn muốn tạo tài khoản bây giờ?')) {
+					window.location.href = 'admin-ui/page-register.html';
 					return;
 				}
-
-				// payload for our sample local cart API
-				const payload = {
-					userId: user.id,
-					bookId: bookId,
-					category: category,
-					qty: 1
-				};
-
-				const resp = await fetch('/QLTV/api/cart.php?action=add', {
-					method: 'POST',
-					headers: {
-						'Content-Type': 'application/json'
-					},
-					body: JSON.stringify(payload)
-				});
-				const result = await resp.json();
-				if (resp.ok && result.success) {
-					alert(result.message || 'Đã thêm sách vào danh sách đặt.');
-					refreshCart();
-				} else {
-					alert(result.message || 'Không thể thêm sách.');
-				}
-			} catch (err) {
-				console.error(err);
-				alert('Lỗi khi thêm sách. Vui lòng thử lại.');
+				// user cancelled -> do nothing
+				return;
 			}
+
+			// Save selection cookies (maintain existing behavior)
+			try {
+				if (typeof setCookie === 'function') {
+					if (category !== undefined) setCookie('categoryBook', category, 30);
+					if (bookId !== undefined) setCookie('bookId', bookId, 30);
+				}
+			} catch (e) {
+				console.warn('Could not set selection cookies', e);
+			}
+
+			// Determine final book id: prefer passed value, fall back to cookie
+			let targetId = (bookId !== undefined && bookId !== null && String(bookId).trim() !== '') ? String(bookId) : null;
+			if (!targetId && typeof getCookie === 'function') {
+				const cookieVal = getCookie('bookId');
+				if (cookieVal) targetId = cookieVal;
+			}
+
+			if (!targetId || String(targetId).trim() === '') {
+				console.error('orderBook: missing bookId, cannot redirect to detail. bookId param:', bookId, 'cookie bookId:', getCookie && getCookie('bookId'));
+				alert('Không xác định được mã sách. Vui lòng thử lại.');
+				return;
+			}
+
+			// Redirect to the book detail page for the selected book
+			const target = 'bookdetail.php?id=' + encodeURIComponent(targetId);
+			window.location.href = target;
 		}
 
 		async function refreshCart() {
 			try {
 				const user = JSON.parse(localStorage.getItem('userData') || 'null');
 				if (!user || !user.id) return; // nothing to load
-				const resp = await fetch('/QLTV/api/cart.php?action=get&userId=' + encodeURIComponent(user.id));
+				// determine backend base and auth header (same logic as orderBook)
+				const backendBase = (window.APP_CONFIG && window.APP_CONFIG.backendUrl) ? String(window.APP_CONFIG.backendUrl).replace(/\/$/, '') : '';
+				const token = localStorage.getItem('jwtToken');
+				const authHeader = (token) ? { 'Authorization': 'Bearer ' + token } : {};
+				const cartUrl = backendBase ? `${backendBase}/api/cart?action=get&userId=${encodeURIComponent(user.id)}` : `/QLTV/api/cart.php?action=get&userId=${encodeURIComponent(user.id)}`;
+				const resp = await fetch(cartUrl, { headers: Object.assign({'Content-Type':'application/json'}, authHeader) });
 				if (!resp.ok) return;
 				const data = await resp.json();
 				renderCartDropdown(data.items || []);
@@ -1207,6 +1225,29 @@ let token = localStorage.getItem('jwtToken');
 		// refresh cart on page load
 		document.addEventListener('DOMContentLoaded', function () {
 			refreshCart();
+		});
+
+		// Delegated click handler for homepage 'Đặt sách' buttons.
+		// Uses data-attributes to avoid inline JS quoting issues and to ensure bookId is available.
+		document.addEventListener('click', function (e) {
+			var btn = e.target.closest && e.target.closest('.btn-order');
+			if (!btn) return;
+			e.preventDefault();
+			var bookId = btn.getAttribute('data-bookid') || getCookie('bookId');
+			var category = btn.getAttribute('data-category') || '';
+			var bookName = btn.getAttribute('data-bookname') || '';
+			if (typeof setCookie === 'function') {
+				setCookie('categoryBook', category, 30);
+				setCookie('bookId', bookId, 30);
+			}
+			if (!bookId) {
+				console.error('order click: missing bookId', { passed: btn.getAttribute('data-bookid'), cookie: getCookie('bookId') });
+				alert('ID sách không xác định. Vui lòng thử lại.');
+				return;
+			}
+			console.log('order click:', { bookId, category, bookName });
+			// call existing order handler (will check login and redirect to detail)
+			orderBook(bookId, category, bookName);
 		});
 	</script>
 

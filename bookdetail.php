@@ -112,21 +112,12 @@ error_reporting(E_ALL);
 
 $url = rtrim(BACKEND_URL, '/') . '/api/get-related-book'; // URL của API backend
 
-if (isset($_COOKIE['categoryBook']) && isset($_COOKIE['bookId'])) {
-    $categoryBook = $_COOKIE['categoryBook'];
-    $bookId = $_COOKIE['bookId'];
+// Read cookies safely as plain strings (they are not JSON encoded)
+$categoryBook = isset($_COOKIE['categoryBook']) ? trim($_COOKIE['categoryBook']) : '';
+$bookId = isset($_COOKIE['bookId']) ? trim($_COOKIE['bookId']) : '';
 
-    if ($categoryBook === null || $bookId === null) {
-        // Xử lý lỗi giải mã JSON nếu cần
-        echo "Lỗi: Không thể giải mã dữ liệu JSON từ cookie 'categoryBook' hoặc 'bookId'.";
-    } else {
-        // Sử dụng biến $categoryBook và $bookId
-        $datanew4 = array('categoryBook' => $categoryBook, 'bookId' => $bookId);
-        // Tiếp tục xử lý với mảng $datanew4
-    }
-} else {
-    echo "Cookie 'categoryBook' hoặc 'bookId' không tồn tại.";
-}
+// Always set $datanew4 (may contain empty strings if cookies are not present)
+$datanew4 = array('categoryBook' => $categoryBook, 'bookId' => $bookId);
 
 // Dữ liệu gửi đi
 
@@ -168,16 +159,13 @@ error_reporting(E_ALL);
 
 $url = rtrim(BACKEND_URL, '/') . '/api/check-fvbook'; // URL của API backend
 
-if (isset($_COOKIE['idusername']) && isset($_COOKIE['bookId'])) {
-    $idusername = $_COOKIE['idusername'];
-    $bookId = $_COOKIE['bookId'];
+// Read cookies safely (cookies here store plain values, not JSON)
+$idusername = isset($_COOKIE['idusername']) ? trim($_COOKIE['idusername']) : null;
+$bookId = isset($_COOKIE['bookId']) ? trim($_COOKIE['bookId']) : null;
 
-    if ($idusername === null || $idusername === '' || $bookId === null || $bookId === '') {
-        // Xử lý lỗi giải mã JSON nếu cần
-        echo "Lỗi: Không thể giải mã dữ liệu JSON từ cookie 'idusername' hoặc 'bookId'.";
-    } else {
-        // Sử dụng biến $idusername và $bookId
-        $datanew4 = array('idusername' => $idusername, 'bookId' => $bookId);
+if (!empty($idusername) && !empty($bookId)) {
+		// Sử dụng biến $idusername và $bookId
+		$datanew4 = array('idusername' => $idusername, 'bookId' => $bookId);
 
         // Chuyển đổi mảng dữ liệu thành JSON
         $jsonData5 = json_encode($datanew4);
@@ -211,14 +199,10 @@ if (isset($_COOKIE['idusername']) && isset($_COOKIE['bookId'])) {
         $data5 = json_decode($response5, true);
 
         // Kiểm tra nếu có lỗi khi chuyển đổi JSON
-        if ($data5 === null && json_last_error() !== JSON_ERROR_NONE) {
-            die('Lỗi khi chuyển đổi JSON: ' . json_last_error_msg());
-        }
-    }
-} else {
-    echo "Cookie 'idusername' hoặc 'bookId' không tồn tại.";
-}
-
+		if ($data5 === null && json_last_error() !== JSON_ERROR_NONE) {
+			die('Lỗi khi chuyển đổi JSON: ' . json_last_error_msg());
+		}
+	}
 
 ?>
 
