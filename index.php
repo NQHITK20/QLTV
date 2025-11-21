@@ -774,6 +774,8 @@ if (isset($data['data'])) {
 																	 <?php
 																	 // Ensure book id is taken from the prepared $id variable
 																	 $safeId = isset($id) ? (string)$id : '';
+																	 $safeBookcode = isset($book['bookcode']) ? (string)$book['bookcode'] : 'BOOK' . str_pad($safeId, 3, '0', STR_PAD_LEFT);
+																	 $safePrice = isset($book['price']) ? (string)$book['price'] : '0';
 																	 ?>
 																	 <a class="tg-btn tg-btnstyletwo btn-order" href="bookdetail.php?id=<?php echo $idAttr; ?>"
 																		 data-bookid="<?php echo htmlspecialchars($safeId, ENT_QUOTES); ?>"
@@ -781,6 +783,14 @@ if (isset($data['data'])) {
 																		 data-bookname="<?php echo htmlspecialchars($bookName ?? '', ENT_QUOTES); ?>">
 														<i class="fa fa-shopping-basket"></i>
 														<em>Đặt sách</em>
+													</a>
+													<a class="tg-btn tg-active btn-add-cart" href="javascript:void(0);"
+														 data-bookid="<?php echo htmlspecialchars($safeId, ENT_QUOTES); ?>"
+														 data-bookcode="<?php echo htmlspecialchars($safeBookcode, ENT_QUOTES); ?>"
+														 data-bookname="<?php echo htmlspecialchars($bookName ?? '', ENT_QUOTES); ?>"
+														 data-price="<?php echo htmlspecialchars($safePrice, ENT_QUOTES); ?>">
+														<i class="fa fa-shopping-cart"></i>
+														<em>Thêm vào giỏ</em>
 													</a>
 												</div>
 											</div>
@@ -1134,6 +1144,79 @@ let token = localStorage.getItem('jwtToken');
 
 	<script>
 		// ----- Shopping cart frontend helpers -----
+		async function addToCart(bookId, bookcode, bookname, price = 0) {
+			// Check login first
+			const user = JSON.parse(localStorage.getItem('userData') || 'null');
+			if (!user || !user.id) {
+				if (confirm('Bạn chưa đăng nhập. Bạn muốn tạo tài khoản bây giờ?')) {
+					window.location.href = 'admin-ui/page-register.html';
+				}
+				return;
+			}
+
+			// Validate required data
+			if (!bookId || !bookcode || !bookname) {
+				alert('Thiếu thông tin sách. Vui lòng thử lại.');
+				console.error('addToCart: missing data', { bookId, bookcode, bookname });
+				return;
+			}
+
+			// Get JWT token for authentication
+			const token = localStorage.getItem('jwtToken');
+			if (!token) {
+				alert('Phiên đăng nhập hết hạn. Vui lòng đăng nhập lại.');
+				window.location.href = 'admin-ui/page-login.html';
+				return;
+			}
+
+			// Prepare API request
+			const backendBase = (window.APP_CONFIG && window.APP_CONFIG.backendUrl) 
+				? String(window.APP_CONFIG.backendUrl).replace(/\/$/, '') 
+				: 'http://localhost:8001';
+			
+			const apiUrl = `${backendBase}/api/save-cart`;
+			const payload = {
+				items: [{
+					bookId: parseInt(bookId),
+					bookcode: bookcode,
+					bookname: bookname,
+					quantity: 1,
+					price: parseFloat(price) || 0
+				}]
+			};
+
+			console.log('addToCart API call:', { apiUrl, payload });
+
+			try {
+				const response = await fetch(apiUrl, {
+					method: 'POST',
+					headers: {
+						'Authorization': `Bearer ${token}`,
+						'Content-Type': 'application/json'
+					},
+					body: JSON.stringify(payload)
+				});
+
+				const result = await response.json();
+				console.log('addToCart response:', result);
+
+				if (response.ok && result.errCode === 0) {
+					alert('Đã thêm "' + bookname + '" vào giỏ hàng!');
+					// Refresh cart display if needed
+					if (typeof refreshCart === 'function') {
+						await refreshCart();
+					}
+				} else {
+					const errorMsg = result.message || result.errors || 'Không thể thêm vào giỏ hàng';
+					alert('Lỗi: ' + errorMsg);
+					console.error('addToCart failed:', result);
+				}
+			} catch (error) {
+				console.error('addToCart error:', error);
+				alert('Lỗi kết nối. Vui lòng thử lại.');
+			}
+		}
+
 		async function orderBook(bookId, category, bookName) {
 			// When user clicks 'Đặt sách' on homepage: check login and redirect to product detail page.
 			const user = JSON.parse(localStorage.getItem('userData') || 'null');
@@ -1227,27 +1310,50 @@ let token = localStorage.getItem('jwtToken');
 			refreshCart();
 		});
 
-		// Delegated click handler for homepage 'Đặt sách' buttons.
+		// Delegated click handler for homepage 'Đặt sách' and 'Thêm vào giỏ' buttons.
 		// Uses data-attributes to avoid inline JS quoting issues and to ensure bookId is available.
 		document.addEventListener('click', function (e) {
-			var btn = e.target.closest && e.target.closest('.btn-order');
-			if (!btn) return;
-			e.preventDefault();
-			var bookId = btn.getAttribute('data-bookid') || getCookie('bookId');
-			var category = btn.getAttribute('data-category') || '';
-			var bookName = btn.getAttribute('data-bookname') || '';
-			if (typeof setCookie === 'function') {
-				setCookie('categoryBook', category, 30);
-				setCookie('bookId', bookId, 30);
-			}
-			if (!bookId) {
-				console.error('order click: missing bookId', { passed: btn.getAttribute('data-bookid'), cookie: getCookie('bookId') });
-				alert('ID sách không xác định. Vui lòng thử lại.');
+			// Check for order button
+			var orderBtn = e.target.closest && e.target.closest('.btn-order');
+			if (orderBtn) {
+				e.preventDefault();
+				var bookId = orderBtn.getAttribute('data-bookid') || getCookie('bookId');
+				var category = orderBtn.getAttribute('data-category') || '';
+				var bookName = orderBtn.getAttribute('data-bookname') || '';
+				if (typeof setCookie === 'function') {
+					setCookie('categoryBook', category, 30);
+					setCookie('bookId', bookId, 30);
+				}
+				if (!bookId) {
+					console.error('order click: missing bookId', { passed: orderBtn.getAttribute('data-bookid'), cookie: getCookie('bookId') });
+					alert('ID sách không xác định. Vui lòng thử lại.');
+					return;
+				}
+				console.log('order click:', { bookId, category, bookName });
+				// call existing order handler (will check login and redirect to detail)
+				orderBook(bookId, category, bookName);
 				return;
 			}
-			console.log('order click:', { bookId, category, bookName });
-			// call existing order handler (will check login and redirect to detail)
-			orderBook(bookId, category, bookName);
+
+			// Check for add-to-cart button
+			var cartBtn = e.target.closest && e.target.closest('.btn-add-cart');
+			if (cartBtn) {
+				e.preventDefault();
+				var bookId = cartBtn.getAttribute('data-bookid');
+				var bookcode = cartBtn.getAttribute('data-bookcode');
+				var bookname = cartBtn.getAttribute('data-bookname');
+				var price = cartBtn.getAttribute('data-price') || '0';
+				
+				if (!bookId || !bookcode || !bookname) {
+					console.error('cart click: missing data', { bookId, bookcode, bookname });
+					alert('Thiếu thông tin sách. Vui lòng thử lại.');
+					return;
+				}
+				
+				console.log('cart click:', { bookId, bookcode, bookname, price });
+				addToCart(bookId, bookcode, bookname, price);
+				return;
+			}
 		});
 	</script>
 
