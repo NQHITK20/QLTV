@@ -899,9 +899,25 @@ function fetchData() {
 document.addEventListener("DOMContentLoaded", async function() {
     try {
         const responseData = await fetchData();
-        if (responseData) {
+		if (responseData) {
 			// normalize response shape
-			const book = (responseData.data) ? responseData.data : responseData;
+			let book = null;
+			if (responseData.data) {
+				book = responseData.data;
+			} else if (Array.isArray(responseData) && responseData.length) {
+				book = responseData[0];
+			} else {
+				book = responseData;
+			}
+
+			// ensure we have a plain object
+			if (!book || typeof book !== 'object') book = {};
+
+			// normalize image property names and ensure a filename exists
+			const imageCandidates = [book.image, book.img, book.imageName, book.filename, book.picture];
+			const imageName = imageCandidates.find(x => x && String(x).trim()) || 'no-image.png';
+			book.image = imageName;
+
 			window.currentBook = book; // keep for ordering
 			document.getElementById("category").innerText = book.category || '';
 			document.getElementById("bookName").innerText = book.bookName || '';
@@ -909,6 +925,8 @@ document.addEventListener("DOMContentLoaded", async function() {
 			document.getElementById("author").innerText = book.author || '';
 			document.getElementById("description").innerText = book.description || '';
 			document.getElementById("price").innerText = (book.price || 0) + ' vnđ';
+
+			console.log('fetchData: normalized book ->', book);
 			// refresh cart badge if header present
 			if (typeof refreshCart === 'function') refreshCart();
 			// check wishlist status
@@ -1187,19 +1205,36 @@ async function addToCartDetail() {
 		// Build payload compatible with backend expectations.
 		// Include top-level `userId` and single-item fields (bookId, qty, bookName, category, image)
 		// while also keeping an `items` array for backward compatibility.
+		function extractFilenameFromSrc(src) {
+			try {
+				const parts = String(src).split('/');
+				return parts[parts.length - 1] || null;
+			} catch (e) { return null; }
+		}
+
+		// Ensure we send a plain filename for the image (not full URL)
+		let imageFilename = null;
+		if (window.currentBook && window.currentBook.image) {
+			imageFilename = extractFilenameFromSrc(window.currentBook.image) || String(window.currentBook.image);
+		}
+		if (!imageFilename) {
+			imageFilename = extractFilenameFromSrc(document.getElementById('imageBook').src) || 'no-image.png';
+		}
+
 		const payload = {
 			userId: user.id,
 			bookId: parseInt(bookId),
 			qty: quantity,
 			bookName: bookname,
 			category: (window.currentBook && window.currentBook.category) ? window.currentBook.category : null,
-			image: (window.currentBook && window.currentBook.image) ? window.currentBook.image : null,
+			image: imageFilename,
 			items: [{
 				bookId: parseInt(bookId),
 				bookcode: bookcode,
 				bookname: bookname,
 				quantity: quantity,
-				price: parseFloat(price) || 0
+				price: parseFloat(price) || 0,
+				image: imageFilename
 			}]
 		};
 
@@ -1218,10 +1253,24 @@ async function addToCartDetail() {
 		console.log('addToCartDetail response:', result);
 
 		if (result.errCode === 0) {
-			const total = result.data?.total || 0;
-			alert('✓ Đã thêm ' + quantity + ' cuốn "' + bookname + '" vào giỏ hàng!\nTổng: ' + total.toLocaleString() + ' VNĐ');
+			// Prefer numeric server total if provided, otherwise compute locally
+			let serverTotal = Number(result.data && result.data.total);
+			let displayTotal;
+			if (Number.isFinite(serverTotal) && serverTotal > 0) {
+				displayTotal = serverTotal;
+			} else {
+				// Fallback: compute from known price * quantity
+				displayTotal = (Number(price) || 0) * Number(quantity);
+			}
+			alert('✓ Đã thêm ' + quantity + ' cuốn "' + bookname + '" vào giỏ hàng!');
 			if (quantityInput) quantityInput.value = 1;
-			await refreshCart();
+				try {
+					await refreshCart();
+				} catch (e) {
+					console.warn('refreshCart failed before redirect', e);
+				}
+				// Redirect user to cart page after successful add
+				window.location.href = 'cartbook.php';
 		} else {
 			alert('❌ Lỗi: ' + (result.errMessage || result.message || 'Không thể thêm vào giỏ hàng'));
 			console.error('addToCartDetail failed:', result);
@@ -1233,146 +1282,6 @@ async function addToCartDetail() {
 }
 
 
-</script>
-
-<script>
-	// Minimal cart/order helpers for bookdetail page
-	async function orderBookDetail() {
-		try {
-			const user = JSON.parse(localStorage.getItem('userData') || 'null');
-			if (!user || !user.id) {
-				alert('Vui lòng đăng nhập để đặt sách.');
-				window.location.href = 'admin-ui/page-login.html';
-				return;
-			}
-			const book = window.currentBook || {};
-			const payload = {
-				userId: user.id,
-				bookId: book.id || (new URLSearchParams(window.location.search)).get('id'),
-				qty: 1,
-				bookName: book.bookName || '',
-				category: book.category || '',
-				image: book.image || null
-			};
-			const resp = await fetch('/QLTV/api/cart.php?action=add', {
-				method: 'POST',
-				headers: { 'Content-Type': 'application/json' },
-				body: JSON.stringify(payload)
-			});
-			const result = await resp.json();
-			if (resp.ok && result.success) {
-				alert(result.message || 'Đã thêm sách vào danh sách đặt.');
-				if (typeof refreshCart === 'function') refreshCart();
-			} else {
-				alert(result.message || 'Không thể thêm sách.');
-			}
-		} catch (err) {
-			console.error(err);
-			alert('Lỗi khi thêm sách. Vui lòng thử lại.');
-		}
-	}
-
-	async function refreshCart() {
-		try {
-			const user = JSON.parse(localStorage.getItem('userData') || 'null');
-			if (!user || !user.id) return;
-			
-			const token = localStorage.getItem('jwtToken');
-			if (!token) return;
-			
-			const backendBase = (window.APP_CONFIG && window.APP_CONFIG.backendUrl) 
-				? String(window.APP_CONFIG.backendUrl).replace(/\/$/, '') 
-				: 'http://localhost:8001';
-			
-			const resp = await fetch(`${backendBase}/api/get-cart?userId=${user.id}`, {
-				method: 'GET',
-				headers: {
-					'Authorization': 'Bearer ' + token,
-					'Content-Type': 'application/json'
-				}
-			});
-			
-			if (!resp.ok) return;
-			const data = await resp.json();
-			console.log('Cart data:', data);
-			
-			if (data.errCode === 0 && data.data) {
-				renderCartDropdown(data.data);
-			}
-		} catch (err) {
-			console.error('refreshCart error', err);
-		}
-	}
-
-	function renderCartDropdown(items) {
-		const badgeEls = document.querySelectorAll('.tg-themebadge');
-
-		// items là array trả về từ backend (CartItem model)
-		if (!Array.isArray(items)) items = [];
-
-		const totalQty = items.reduce((sum, it) => sum + (parseInt(it.quantity) || 0), 0);
-
-		// update visual badges with a small bump animation
-		badgeEls.forEach(el => {
-			el.textContent = totalQty;
-			el.classList.add('badge-bump');
-			setTimeout(() => el.classList.remove('badge-bump'), 260);
-		});
-
-		// announce for screen readers
-		const cartLive = document.getElementById('cartLive');
-		if (cartLive) cartLive.textContent = `Giỏ hàng: ${totalQty} mục`;
-
-		// render mini cart body (pick the first available body)
-		const mini = document.querySelector('.tg-minicartbody');
-		if (!mini) return;
-
-		if (items.length === 0) {
-			mini.innerHTML = '<div class="tg-description"><p>Giỏ hàng trống</p></div>';
-			return;
-		}
-
-		let html = '';
-		items.forEach(it => {
-			const bookId = it.bookId || '';
-			const bookname = it.bookname || 'Sách';
-			const quantity = it.quantity || 1;
-			const price = it.price || 0;
-			const subtotal = it.subtotal || (quantity * price);
-
-			html += `<div class="tg-minicarproduct">
-				<figure><img src="images/books/no-image.png" style="width:65px"></figure>
-				<div class="tg-minicarproductdata">
-					<h5><a>${escapeHtml(bookname)}</a></h5>
-					<h6>Số lượng: ${quantity} × ${price.toLocaleString()} VNĐ</h6>
-				</div>
-			</div>`;
-		});
-		mini.innerHTML = html;
-	}
-
-	function escapeHtml(s) { if (!s) return ''; return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#39;'); }
-
-	// Ensure cart updates on load
-	document.addEventListener('DOMContentLoaded', function() { try { refreshCart(); } catch(e){} });
-
-	// Keyboard support and input validation for quantity input
-	(function setupQuantityKeyboard() {
-		const qtyInput = document.getElementById('bookQuantity');
-		if (!qtyInput) return;
-		qtyInput.addEventListener('keydown', function (ev) {
-			if (ev.key === 'ArrowUp') { ev.preventDefault(); increaseQuantity(); }
-			if (ev.key === 'ArrowDown') { ev.preventDefault(); decreaseQuantity(); }
-			if (ev.key === '+' || ev.key === '=') { ev.preventDefault(); increaseQuantity(); }
-			if (ev.key === '-') { ev.preventDefault(); decreaseQuantity(); }
-		});
-		qtyInput.addEventListener('change', function () {
-			let v = parseInt(qtyInput.value) || 1;
-			if (v < 1) v = 1;
-			if (v > 99) v = 99;
-			qtyInput.value = v;
-		});
-	})();
 </script>
 
 <style>

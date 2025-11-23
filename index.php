@@ -17,6 +17,17 @@
 	<link rel="stylesheet" href="css/main.css">
 	<link rel="stylesheet" href="css/color.css">
 	<link rel="stylesheet" href="css/responsive.css">
+
+	<!-- Temporary UI adjustments: hide Add-to-cart button and price without removing HTML -->
+	<style>
+		/* Ẩn nút 'Thêm vào giỏ' để không thay đổi cấu trúc DOM (an toàn cho JS) */
+		.btn-add-cart { display: none !important; }
+		/* Ẩn phần hiển thị giá nếu cần */
+		.tg-bookprice { display: none !important; }
+		/* Giữ khoảng trống và căn giữa nút còn lại (Đặt sách) nếu layout cần */
+		.tg-postbookcontent { min-height: 56px; }
+		.tg-postbookcontent .tg-btn { display: inline-block; margin: 6px auto 0; }
+	</style>
 	<script src="js/vendor/modernizr-2.8.3-respond-1.4.2.min.js"></script>
 </head>
 <?php
@@ -25,6 +36,11 @@ require_once __DIR__ . '/config.php';
 ini_set('display_errors', 1);
 ini_set('display_startup_errors', 1);
 error_reporting(E_ALL);
+
+// Compute site frontend base (used for image URLs) to avoid relative-path 404s
+$scheme = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off') ? 'https://' : 'http://';
+$host = isset($_SERVER['HTTP_HOST']) ? $_SERVER['HTTP_HOST'] : 'localhost';
+$siteBase = rtrim($scheme . $host, '/') . '/QLTV-ChatboxAi/frontend';
 
 $url = rtrim(BACKEND_URL, '/') . '/api/get-all-book'; // URL của API backend
 
@@ -784,11 +800,12 @@ if (isset($data['data'])) {
 														<i class="fa fa-shopping-basket"></i>
 														<em>Đặt sách</em>
 													</a>
-													<a class="tg-btn tg-active btn-add-cart" href="javascript:void(0);"
-														 data-bookid="<?php echo htmlspecialchars($safeId, ENT_QUOTES); ?>"
-														 data-bookcode="<?php echo htmlspecialchars($safeBookcode, ENT_QUOTES); ?>"
-														 data-bookname="<?php echo htmlspecialchars($bookName ?? '', ENT_QUOTES); ?>"
-														 data-price="<?php echo htmlspecialchars($safePrice, ENT_QUOTES); ?>">
+													  <a class="tg-btn tg-active btn-add-cart" href="javascript:void(0);"
+														  data-bookid="<?php echo htmlspecialchars($safeId, ENT_QUOTES); ?>"
+														  data-bookcode="<?php echo htmlspecialchars($safeBookcode, ENT_QUOTES); ?>"
+														  data-bookname="<?php echo htmlspecialchars($bookName ?? '', ENT_QUOTES); ?>"
+														  data-price="<?php echo htmlspecialchars($safePrice, ENT_QUOTES); ?>"
+														  data-image="<?php echo $imgFile; ?>">
 														<i class="fa fa-shopping-cart"></i>
 														<em>Thêm vào giỏ</em>
 													</a>
@@ -1144,7 +1161,7 @@ let token = localStorage.getItem('jwtToken');
 
 	<script>
 		// ----- Shopping cart frontend helpers -----
-		async function addToCart(bookId, bookcode, bookname, price = 0) {
+		async function addToCart(bookId, bookcode, bookname, price = 0, image = null) {
 			// Check login first
 			const user = JSON.parse(localStorage.getItem('userData') || 'null');
 			if (!user || !user.id) {
@@ -1181,7 +1198,8 @@ let token = localStorage.getItem('jwtToken');
 					bookcode: bookcode,
 					bookname: bookname,
 					quantity: 1,
-					price: parseFloat(price) || 0
+					price: parseFloat(price) || 0,
+					image: image || null
 				}]
 			};
 
@@ -1201,11 +1219,16 @@ let token = localStorage.getItem('jwtToken');
 				console.log('addToCart response:', result);
 
 				if (response.ok && result.errCode === 0) {
-					alert('Đã thêm "' + bookname + '" vào giỏ hàng!');
-					// Refresh cart display if needed
-					if (typeof refreshCart === 'function') {
-						await refreshCart();
+					// Optionally refresh cart in background then redirect user to cart page
+					try {
+						if (typeof refreshCart === 'function') {
+							await refreshCart();
+						}
+					} catch (e) {
+						console.warn('refreshCart failed before redirect', e);
 					}
+					// Redirect to the cart page after successful add
+					window.location.href = 'cartbook.php';
 				} else {
 					const errorMsg = result.message || result.errors || 'Không thể thêm vào giỏ hàng';
 					alert('Lỗi: ' + errorMsg);
@@ -1343,6 +1366,17 @@ let token = localStorage.getItem('jwtToken');
 				var bookcode = cartBtn.getAttribute('data-bookcode');
 				var bookname = cartBtn.getAttribute('data-bookname');
 				var price = cartBtn.getAttribute('data-price') || '0';
+				// image attribute added to button; fallback: try to find nearest img in the item
+				var image = cartBtn.getAttribute('data-image') || null;
+				if (!image) {
+					const frontImg = cartBtn.closest('.tg-postbook')?.querySelector('.tg-frontcover img');
+					if (frontImg && frontImg.getAttribute('src')) {
+						// extract filename from src if it's under images/books/
+						const s = frontImg.getAttribute('src');
+						const m = s.match(/images\/books\/(.+)$/);
+						if (m) image = m[1];
+					}
+				}
 				
 				if (!bookId || !bookcode || !bookname) {
 					console.error('cart click: missing data', { bookId, bookcode, bookname });
@@ -1351,7 +1385,7 @@ let token = localStorage.getItem('jwtToken');
 				}
 				
 				console.log('cart click:', { bookId, bookcode, bookname, price });
-				addToCart(bookId, bookcode, bookname, price);
+				addToCart(bookId, bookcode, bookname, price, image);
 				return;
 			}
 		});

@@ -21,15 +21,14 @@
 	/* Cart table column sizing for better layout */
 	.table.cart-table td, .table.cart-table th{vertical-align:middle;white-space:normal}
 	.table.cart-table td img{width:70px;height:auto;display:block}
-	/* Columns: 1=STT, 2=Ảnh, 3=Tên sách, 4=Danh mục, 5=Giá, 6=Số lượng, 7=Thành tiền, 8=Hành động */
+	/* Columns: 1=STT, 2=Ảnh, 3=Tên sách, 4=Giá, 5=Số lượng, 6=Thành tiền, 7=Hành động */
 	.table.cart-table th:nth-child(1), .table.cart-table td:nth-child(1){width:5%}
-	.table.cart-table th:nth-child(2), .table.cart-table td:nth-child(2){width:20%}
-	.table.cart-table th:nth-child(3), .table.cart-table td:nth-child(3){width:20%}
+	.table.cart-table th:nth-child(2), .table.cart-table td:nth-child(2){width:18%}
+	.table.cart-table th:nth-child(3), .table.cart-table td:nth-child(3){width:35%}
 	.table.cart-table th:nth-child(4), .table.cart-table td:nth-child(4){width:12%}
-	.table.cart-table th:nth-child(5), .table.cart-table td:nth-child(5){width:10%}
-	.table.cart-table th:nth-child(6), .table.cart-table td:nth-child(6){width:8%}
-	.table.cart-table th:nth-child(7), .table.cart-table td:nth-child(7){width:15%}
-	.table.cart-table th:nth-child(8), .table.cart-table td:nth-child(8){width:6%}
+	.table.cart-table th:nth-child(5), .table.cart-table td:nth-child(5){width:8%}
+	.table.cart-table th:nth-child(6), .table.cart-table td:nth-child(6){width:15%}
+	.table.cart-table th:nth-child(7), .table.cart-table td:nth-child(7){width:7%}
 	@media (max-width: 767px){
 		.table.cart-table thead{display:none}
 		.table.cart-table tr{display:block;margin-bottom:10px}
@@ -40,6 +39,11 @@
 </head>
 <?php
 require_once __DIR__ . '/config.php';
+
+// Compute frontend absolute base (e.g. http://localhost/QLTV-ChatboxAi/frontend)
+$scheme = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off') ? 'https://' : 'http://';
+$host = isset($_SERVER['HTTP_HOST']) ? $_SERVER['HTTP_HOST'] : 'localhost';
+$siteBase = rtrim($scheme . $host, '/') . '/QLTV-ChatboxAi/frontend';
 
 ini_set('display_errors', 1);
 ini_set('display_startup_errors', 1);
@@ -56,9 +60,10 @@ $jsonData = json_encode($datacat);
 // Cấu hình cURL
 $ch = curl_init($url);
 curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-curl_setopt($ch, CURLOPT_HTTPHEADER, array(
-    'Content-Type: application/json',
-    'Authorization: Bearer' // Thêm token vào header Authorization
+	$curlToken = isset($_COOKIE['token']) ? $_COOKIE['token'] : '';
+	curl_setopt($ch, CURLOPT_HTTPHEADER, array(
+	'Content-Type: application/json',
+	'Authorization: Bearer ' . $curlToken
 ));
 curl_setopt($ch, CURLOPT_POST, true);
 curl_setopt($ch, CURLOPT_POSTFIELDS, $jsonData);
@@ -98,9 +103,10 @@ $jsonData = json_encode($datanew);
 // Cấu hình cURL
 $ch = curl_init($url);
 curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-curl_setopt($ch, CURLOPT_HTTPHEADER, array(
-    'Content-Type: application/json',
-    'Authorization: Bearer' // Thêm token vào header Authorization
+	$curlToken = isset($_COOKIE['token']) ? $_COOKIE['token'] : '';
+	curl_setopt($ch, CURLOPT_HTTPHEADER, array(
+	'Content-Type: application/json',
+	'Authorization: Bearer ' . $curlToken
 ));
 curl_setopt($ch, CURLOPT_POST, true);
 curl_setopt($ch, CURLOPT_POSTFIELDS, $jsonData);
@@ -143,10 +149,11 @@ if ($idusername) {
     // Cấu hình cURL
     $ch = curl_init($url);
     curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-    curl_setopt($ch, CURLOPT_HTTPHEADER, array(
-        'Content-Type: application/json',
-        'Authorization: ' . 'Bearer' // Thêm token vào header Authorization
-    ));
+	$curlToken = isset($_COOKIE['token']) ? $_COOKIE['token'] : '';
+	curl_setopt($ch, CURLOPT_HTTPHEADER, array(
+		'Content-Type: application/json',
+		'Authorization: ' . 'Bearer ' . $curlToken
+	));
     curl_setopt($ch, CURLOPT_POST, true);
     curl_setopt($ch, CURLOPT_POSTFIELDS, $jsonData4);
 
@@ -197,7 +204,7 @@ if ($idusername) {
 								</li>
 							</ul>
 							<div class="tg-userlogin">
-								<figure><a href="javascript:void(0);"><img src="images/users/img-01.jpg" alt="image description"></a></figure>
+								<figure><a href="javascript:void(0);"><img src="<?php echo htmlspecialchars($siteBase . '/images/users/img-01.jpg'); ?>" alt="image description"></a></figure>
 								<span onclick="profileBar()" class="dropbtn">Hi, John</span>
 								<div id="myDropdown" class="dropdown-content">								
 									<a href="#about"><i class="icon-exit" ></i> Đăng xuất</a>
@@ -211,7 +218,7 @@ if ($idusername) {
 				<div class="container">
 					<div class="row">
 						<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
-							<strong class="tg-logo"><a href="index.html"><img src="images/logo.png" alt="company name here"></a></strong>
+							<strong class="tg-logo"><a href="index.html"><img src="<?php echo htmlspecialchars($siteBase . '/images/logo.png'); ?>" alt="company name here"></a></strong>
 							<div class="tg-searchbox">
 								<form class="tg-formtheme tg-formsearch" id="searchForm">
 									<fieldset>
@@ -318,7 +325,7 @@ if ($idusername) {
 														</ul>
 														<ul>
 															<li>
-																<figure><img src="images/img-01.png" alt="image description"></figure>
+																<figure><img src="<?php echo htmlspecialchars($siteBase . '/images/img-01.png'); ?>" alt="image description"></figure>
 																<div class="tg-textbox">
 																	<h3>More Than<span>12,0657,53</span>Books Collection</h3>
 																	<div class="tg-description">
@@ -373,7 +380,7 @@ if ($idusername) {
 														</ul>
 														<ul>
 															<li>
-																<figure><img src="images/img-01.png" alt="image description"></figure>
+																<figure><img src="<?php echo htmlspecialchars($siteBase . '/images/img-01.png'); ?>" alt="image description"></figure>
 																<div class="tg-textbox">
 																	<h3>More Than<span>12,0657,53</span>Books Collection</h3>
 																	<div class="tg-description">
@@ -428,7 +435,7 @@ if ($idusername) {
 														</ul>
 														<ul>
 															<li>
-																<figure><img src="images/img-01.png" alt="image description"></figure>
+																<figure><img src="<?php echo htmlspecialchars($siteBase . '/images/img-01.png'); ?>" alt="image description"></figure>
 																<div class="tg-textbox">
 																	<h3>More Than<span>12,0657,53</span>Books Collection</h3>
 																	<div class="tg-description">
@@ -483,7 +490,7 @@ if ($idusername) {
 														</ul>
 														<ul>
 															<li>
-																<figure><img src="images/img-01.png" alt="image description"></figure>
+																<figure><img src="<?php echo htmlspecialchars($siteBase . '/images/img-01.png'); ?>" alt="image description"></figure>
 																<div class="tg-textbox">
 																	<h3>More Than<span>12,0657,53</span>Books Collection</h3>
 																	<div class="tg-description">
@@ -538,7 +545,7 @@ if ($idusername) {
 														</ul>
 														<ul>
 															<li>
-																<figure><img src="images/img-01.png" alt="image description"></figure>
+																<figure><img src="<?php echo htmlspecialchars($siteBase . '/images/img-01.png'); ?>" alt="image description"></figure>
 																<div class="tg-textbox">
 																	<h3>More Than<span>12,0657,53</span>Books Collection</h3>
 																	<div class="tg-description">
@@ -593,7 +600,7 @@ if ($idusername) {
 														</ul>
 														<ul>
 															<li>
-																<figure><img src="images/img-01.png" alt="image description"></figure>
+																<figure><img src="<?php echo htmlspecialchars($siteBase . '/images/img-01.png'); ?>" alt="image description"></figure>
 																<div class="tg-textbox">
 																	<h3>More Than<span>12,0657,53</span>Books Collection</h3>
 																	<div class="tg-description">
@@ -648,7 +655,7 @@ if ($idusername) {
 														</ul>
 														<ul>
 															<li>
-																<figure><img src="images/img-01.png" alt="image description"></figure>
+																<figure><img src="<?php echo htmlspecialchars($siteBase . '/images/img-01.png'); ?>" alt="image description"></figure>
 																<div class="tg-textbox">
 																	<h3>More Than<span>12,0657,53</span>Books Collection</h3>
 																	<div class="tg-description">
@@ -703,7 +710,7 @@ if ($idusername) {
 														</ul>
 														<ul>
 															<li>
-																<figure><img src="images/img-01.png" alt="image description"></figure>
+																<figure><img src="<?php echo htmlspecialchars($siteBase . '/images/img-01.png'); ?>" alt="image description"></figure>
 																<div class="tg-textbox">
 																	<h3>More Than<span>12,0657,53</span>Books Collection</h3>
 																	<div class="tg-description">
@@ -758,7 +765,7 @@ if ($idusername) {
 														</ul>
 														<ul>
 															<li>
-																<figure><img src="images/img-01.png" alt="image description"></figure>
+																<figure><img src="<?php echo htmlspecialchars($siteBase . '/images/img-01.png'); ?>" alt="image description"></figure>
 																<div class="tg-textbox">
 																	<h3>More Than<span>12,0657,53</span>Books Collection</h3>
 																	<div class="tg-description">
@@ -813,7 +820,7 @@ if ($idusername) {
 														</ul>
 														<ul>
 															<li>
-																<figure><img src="images/img-01.png" alt="image description"></figure>
+																<figure><img src="<?php echo htmlspecialchars($siteBase . '/images/img-01.png'); ?>" alt="image description"></figure>
 																<div class="tg-textbox">
 																	<h3>More Than<span>12,0657,53</span>Books Collection</h3>
 																	<div class="tg-description">
@@ -855,7 +862,7 @@ if ($idusername) {
 											<div class="tg-minicartbody">
 												<div class="tg-minicarproduct">
 													<figure>
-														<img src="images/products/img-01.jpg" alt="image description">
+														<img src="<?php echo htmlspecialchars($siteBase . '/images/products/img-01.jpg'); ?>" alt="image description">
 														
 													</figure>
 													<div class="tg-minicarproductdata">
@@ -865,7 +872,7 @@ if ($idusername) {
 												</div>
 												<div class="tg-minicarproduct">
 													<figure>
-														<img src="images/products/img-02.jpg" alt="image description">
+														<img src="<?php echo htmlspecialchars($siteBase . '/images/products/img-02.jpg'); ?>" alt="image description">
 													</figure>
 													<div class="tg-minicarproductdata">
 														<h5><a href="javascript:void(0);">Bring Me To Light</a></h5>
@@ -874,7 +881,7 @@ if ($idusername) {
 												</div>
 												<div class="tg-minicarproduct">
 													<figure>
-														<img src="images/products/img-03.jpg" alt="image description">
+														<img src="<?php echo htmlspecialchars($siteBase . '/images/products/img-03.jpg'); ?>" alt="image description">
 													</figure>
 													<div class="tg-minicarproductdata">
 														<h5><a href="javascript:void(0);">Have Faith In Your Soul</a></h5>
@@ -913,7 +920,7 @@ if ($idusername) {
 		<!--************************************
 				Inner Banner Start
 		*************************************-->
-		<div class="tg-innerbanner tg-haslayout tg-parallax tg-bginnerbanner" data-z-index="-100" data-appear-top-offset="600" data-parallax="scroll" data-image-src="images/parallax/bgparallax-07.jpg">
+		<div class="tg-innerbanner tg-haslayout tg-parallax tg-bginnerbanner" data-z-index="-100" data-appear-top-offset="600" data-parallax="scroll" data-image-src="<?php echo htmlspecialchars($siteBase . '/images/parallax/bgparallax-07.jpg'); ?>">
 			<div class="container">
 				<div class="row">
 					<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
@@ -956,7 +963,6 @@ if ($idusername) {
 															<th>STT</th>
 															<th>Ảnh</th>
 															<th>Tên sách</th>
-															<th>Danh mục</th>
 															<th>Giá</th>
 															<th style="width:120px">Số lượng</th>
 															<th>Thành tiền</th>
@@ -964,7 +970,100 @@ if ($idusername) {
 														</tr>
 													</thead>
 													<tbody id="cartBody">
-														<tr><td colspan="8" class="empty-note">Đang tải giỏ...</td></tr>
+													<?php
+													// Server-side fetch of saved cart so page shows items even if JS token isn't available
+													$serverToken = isset($_COOKIE['token']) ? $_COOKIE['token'] : '';
+													$items = [];
+													$cartUrl = rtrim(BACKEND_URL, '/') . '/api/get-saved-cart';
+
+													// Helper to normalize cart response into $items array
+													$normalizeCart = function($cartData) {
+														$it = [];
+														if (!is_array($cartData)) return $it;
+														if (isset($cartData['errCode']) && $cartData['errCode'] === 0) {
+															if (isset($cartData['data']) && is_array($cartData['data'])) return $cartData['data'];
+															if (isset($cartData['data']['items']) && is_array($cartData['data']['items'])) return $cartData['data']['items'];
+															// some backends return direct items under data->items or data
+														}
+														return $it;
+													};
+
+													// Try GET with server token if available
+													if (!empty($serverToken)) {
+														$chCart = curl_init($cartUrl);
+														curl_setopt($chCart, CURLOPT_RETURNTRANSFER, true);
+														curl_setopt($chCart, CURLOPT_HTTPHEADER, array(
+															'Content-Type: application/json',
+															'Authorization: Bearer ' . $serverToken
+														));
+														curl_setopt($chCart, CURLOPT_HTTPGET, true);
+														$respCart = curl_exec($chCart);
+														if ($respCart !== FALSE) {
+															$cartData = json_decode($respCart, true);
+															$items = $normalizeCart($cartData);
+														}
+														curl_close($chCart);
+														// If GET didn't yield items and we have idusername, try POST fallback
+														if (empty($items) && !empty($idusername)) {
+															$chCart = curl_init($cartUrl);
+															$payload = json_encode(['userId' => $idusername]);
+															curl_setopt($chCart, CURLOPT_RETURNTRANSFER, true);
+															curl_setopt($chCart, CURLOPT_HTTPHEADER, array('Content-Type: application/json'));
+															curl_setopt($chCart, CURLOPT_POST, true);
+															curl_setopt($chCart, CURLOPT_POSTFIELDS, $payload);
+															$respCart = curl_exec($chCart);
+															if ($respCart !== FALSE) {
+																$cartData = json_decode($respCart, true);
+																$items = $normalizeCart($cartData);
+															}
+															curl_close($chCart);
+														}
+													} elseif (!empty($idusername)) {
+														// No server token, use POST with userId
+														$chCart = curl_init($cartUrl);
+														$payload = json_encode(['userId' => $idusername]);
+														curl_setopt($chCart, CURLOPT_RETURNTRANSFER, true);
+														curl_setopt($chCart, CURLOPT_HTTPHEADER, array('Content-Type: application/json'));
+														curl_setopt($chCart, CURLOPT_POST, true);
+														curl_setopt($chCart, CURLOPT_POSTFIELDS, $payload);
+														$respCart = curl_exec($chCart);
+														if ($respCart !== FALSE) {
+															$cartData = json_decode($respCart, true);
+															$items = $normalizeCart($cartData);
+														}
+														curl_close($chCart);
+													}
+
+													// Render rows
+														if (empty($items)) {
+														if (empty($serverToken) && empty($idusername)) {
+															echo '<tr><td colspan="7" class="empty-note">Vui lòng đăng nhập để xem giỏ.</td></tr>';
+														} else {
+															echo '<tr><td colspan="7">Giỏ hàng trống hoặc không thể tải giỏ.</td></tr>';
+														}
+													} else {
+														$idx = 1;
+														foreach ($items as $it) {
+																// Use relative path so files load the same as `index.php`
+																$imgBase = 'images/books/';
+															$img = !empty($it['image']) ? $imgBase . rawurlencode($it['image']) : $imgBase . 'no-image.png';
+															$name = htmlspecialchars($it['bookname'] ?? $it['bookName'] ?? 'Không tên');
+															$category = htmlspecialchars($it['category'] ?? '');
+															$qty = intval($it['quantity'] ?? $it['qty'] ?? 1);
+															$price = floatval($it['price'] ?? 0);
+															$subtotal = $price * $qty;
+															echo '<tr>';
+															echo '<td>' . $idx++ . '</td>';
+															echo '<td><img src="' . htmlspecialchars($img, ENT_QUOTES) . '" alt=""/></td>';
+															echo '<td>' . $name . '</td>';
+															echo '<td>' . number_format($price, 0, ',', '.') . '</td>';
+															echo '<td><input type="number" class="form-control qty-input" value="' . $qty . '" min="1" style="width:80px;"></td>';
+															echo '<td>' . number_format($subtotal, 0, ',', '.') . '</td>';
+															echo '<td><button class="btn btn-sm btn-danger btn-remove">X</button></td>';
+															echo '</tr>';
+														}
+													}
+													?>
 													</tbody>
 												</table>
 												<div class="d-flex justify-content-between align-items-center mt-3">
@@ -974,7 +1073,7 @@ if ($idusername) {
 													</div>
 													<div class="checkout-box text-right">
 														<div>Số mặt hàng: <strong id="cartCount">0</strong></div>
-														<div class="mt-1">Tổng tiền: <strong id="cartTotal">0₫</strong></div>
+														<div class="mt-1">Tổng tiền: <strong id="cartTotal">vn₫</strong></div>
 														<div class="mt-2">
 															<button id="btnCheckout" class="btn btn-outline-primary">Thanh toán</button>
 														</div>
@@ -1009,7 +1108,7 @@ if ($idusername) {
 												<?php foreach($data3['data'] as $new){?>
 												<li>
 													<article class="tg-post">
-														<figure style="width:112px;"><a style="width:100px;" href="newsdetail.php?id=<?php echo $new['id']?>" alt="<?php echo $new['image']?>"><img src="images/blog/<?php echo $new['image'] ?>" alt="<?php echo $new['image'] ?>"></a></figure>
+														<figure style="width:112px;"><a style="width:100px;" href="newsdetail.php?id=<?php echo $new['id']?>" alt="<?php echo htmlspecialchars($new['image']); ?>"><img src="<?php echo htmlspecialchars($siteBase . '/images/blog/' . rawurlencode($new['image'])); ?>" alt="<?php echo htmlspecialchars($new['image']); ?>"></a></figure>
 														<div class="tg-postcontent">
 															<div class="tg-posttitle">
 																<h3><a href="newsdetail.php?id=<?php echo $new['id']?>"><?php echo $new['title']?></a></h3>
@@ -1045,7 +1144,7 @@ if ($idusername) {
 						<div class="tg-threecolumns">
 							<div class="col-xs-12 col-sm-6 col-md-4 col-lg-4">
 								<div class="tg-footercol">
-									<strong class="tg-logo"><a href="javascript:void(0);"><img src="images/flogo.png" alt="image description"></a></strong>
+									<strong class="tg-logo"><a href="javascript:void(0);"><img src="<?php echo htmlspecialchars($siteBase . '/images/flogo.png'); ?>" alt="image description"></a></strong>
 									<ul class="tg-contactinfo">
 										<li>
 											<i class="icon-location"></i>
@@ -1141,6 +1240,169 @@ if ($idusername) {
 	<script src="js/appear.js"></script>
 	<script src="js/gmap3.js"></script>
 	<script src="js/main.js"></script>
+	<?php $serverToken = isset($_COOKIE['token']) ? $_COOKIE['token'] : ''; ?>
+	<script>
+	window.APP_CONFIG = window.APP_CONFIG || {};
+	window.APP_CONFIG.backendUrl = '<?php echo rtrim(BACKEND_URL, "/"); ?>';
+	window.SERVER_TOKEN = '<?php echo htmlspecialchars($serverToken, ENT_QUOTES); ?>';
+	// Inject server-side known user id (from cookie) so client can call get-saved-cart without a token
+	window.SERVER_USERID = '<?php echo isset($idusername) ? htmlspecialchars($idusername, ENT_QUOTES) : ''; ?>';
+	</script>
+	<script>
+	// Load and render saved cart items
+		async function loadSavedCart() {
+			const user = JSON.parse(localStorage.getItem('userData') || 'null');
+			// Prefer localStorage token, fall back to injected server token (from cookie) or readable cookie
+			let token = localStorage.getItem('jwtToken') || window.SERVER_TOKEN || null;
+			const serverUserId = window.SERVER_USERID || null;
+		if (!token) {
+				// try to read cookie (only works if not HttpOnly)
+				const match = document.cookie.match(new RegExp('(^| )token=([^;]+)'));
+				if (match) token = match[2];
+		}
+		
+		const cartBody = document.getElementById('cartBody');
+		const cartCountEl = document.getElementById('cartCount');
+		const cartTotalEl = document.getElementById('cartTotal');
+
+			if (!user && !token && !serverUserId) {
+					cartBody.innerHTML = '<tr><td colspan="7">Vui lòng đăng nhập để xem giỏ hàng.</td></tr>';
+				cartCountEl.textContent = '0';
+				cartTotalEl.textContent = '0₫';
+				return;
+			}
+
+			const backendBase = (window.APP_CONFIG && window.APP_CONFIG.backendUrl) ? String(window.APP_CONFIG.backendUrl).replace(/\/$/, '') : 'http://localhost:8001';
+			// Use relative frontend image path to match `index.php` (images/books/filename)
+			const frontendBase = '';
+			const url = `${backendBase}/api/get-saved-cart`;
+			try {
+				let resp;
+				let result = null;
+				let respErr = null;
+				// Try token GET first (if token supplied), otherwise POST with userId
+				if (token) {
+					try {
+						let respGet = await fetch(url, { method: 'GET', headers: { 'Authorization': 'Bearer ' + token } });
+						if (respGet.ok) {
+							result = await respGet.json();
+						}
+						// if GET returned non-ok, fallthrough to POST fallback below
+					} catch (e) { respErr = e; }
+				}
+				// If we still don't have a successful result, try POST with serverUserId
+				if (!result && serverUserId) {
+					try {
+						let respPost = await fetch(url, {
+							method: 'POST',
+							headers: { 'Content-Type': 'application/json' },
+							body: JSON.stringify({ userId: serverUserId })
+						});
+						if (respPost.ok) result = await respPost.json();
+					} catch (e) { respErr = respErr || e; }
+				}
+				if (!result) {
+					console.error('loadSavedCart: fetch failed', respErr);
+						cartBody.innerHTML = '<tr><td colspan="7">Lỗi khi tải giỏ hàng.</td></tr>';
+					cartCountEl.textContent = '0';
+					cartTotalEl.textContent = '0₫';
+					return;
+				}
+
+				if (result.errCode !== 0) {
+						cartBody.innerHTML = `<tr><td colspan="7">Lỗi khi tải giỏ: ${escapeHtml(result.errMessage || result.message || 'Không xác định')}</td></tr>`;
+					cartCountEl.textContent = '0';
+					cartTotalEl.textContent = '0₫';
+					return;
+				}
+
+				const items = Array.isArray(result.data) ? result.data : (result.data && result.data.items) ? result.data.items : [];
+				if (items.length === 0) {
+					cartBody.innerHTML = '<tr><td colspan="7">Giỏ hàng trống.</td></tr>';
+				cartCountEl.textContent = '0';
+				cartTotalEl.textContent = '0₫';
+				return;
+			}
+
+			let html = '';
+			let total = 0;
+			let totalCount = 0;
+				items.forEach((it, idx) => {
+				const img = it.image ? `images/books/${escapeHtml(it.image)}` : `images/books/no-image.png`;
+						const name = escapeHtml(it.bookname || it.bookName || it.bookname || 'Không tên');
+						const qty = Number(it.quantity || it.qty || 1);
+						const price = Number(it.price || 0);
+						const subtotal = (price * qty) || Number(it.subtotal || 0) || 0;
+				total += subtotal;
+				totalCount += qty;
+						html += `<tr data-item-id="${escapeHtml(it.id || it.bookId || '')}">` +
+							`<td>${idx + 1}</td>` +
+							`<td><img src="${img}" alt=""/></td>` +
+							`<td>${name}</td>` +
+							`<td>${formatCurrency(price)}</td>` +
+							`<td><input type="number" class="form-control qty-input" value="${qty}" min="1" style="width:80px;"></td>` +
+							`<td>${formatCurrency(subtotal)}</td>` +
+							`<td><button class="btn btn-sm btn-danger btn-remove">X</button></td>` +
+						`</tr>`;
+			});
+
+			cartBody.innerHTML = html;
+			cartCountEl.textContent = totalCount;
+			cartTotalEl.textContent = formatCurrency(total) + '₫';
+
+			// Attach simple handlers: qty change (local only) and remove (local only)
+			document.querySelectorAll('#cartBody .qty-input').forEach((input, i) => {
+				input.addEventListener('change', (e) => {
+					let v = parseInt(e.target.value) || 1;
+					if (v < 1) v = 1;
+					e.target.value = v;
+					// Recompute subtotal and total locally
+					const row = e.target.closest('tr');
+					// Price text is formatted in 'vi-VN' (e.g. "150.000"). Remove all non-digit chars
+					// and parse as integer VND to avoid interpreting thousand separators as decimals.
+					const rawPriceDigits = row.children[3].textContent.replace(/[^\d-]+/g, '') || '0';
+					const price = parseInt(rawPriceDigits, 10) || 0;
+					row.children[5].textContent = formatCurrency(price * v);
+
+					// Update cart total
+					let newTotal = 0;
+					document.querySelectorAll('#cartBody tr').forEach(r => {
+						const s = r.children[5].textContent.replace(/[^\d-]+/g, '') || '0';
+						newTotal += parseInt(s, 10) || 0;
+					});
+					cartTotalEl.textContent = formatCurrency(newTotal) + '₫';
+				});
+			});
+
+			document.querySelectorAll('#cartBody .btn-remove').forEach(btn => {
+				btn.addEventListener('click', () => {
+					alert('Xóa item hiện tại chưa được hỗ trợ trên server — sẽ thêm sau nếu bạn muốn.');
+				});
+			});
+
+		} catch (err) {
+			console.error('loadSavedCart error', err);
+				cartBody.innerHTML = '<tr><td colspan="7">Lỗi khi tải giỏ hàng.</td></tr>';
+		}
+	}
+
+	function formatCurrency(n) {
+		if (!n && n !== 0) return '';
+		return (Number(n) || 0).toLocaleString('vi-VN');
+	}
+
+	function escapeHtml(s) { if (!s) return ''; return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#39;'); }
+
+	document.addEventListener('DOMContentLoaded', function() {
+		loadSavedCart();
+		// btnCheckout behavior
+		document.getElementById('btnCheckout').addEventListener('click', function() {
+			const user = JSON.parse(localStorage.getItem('userData') || 'null');
+			if (!user) { alert('Vui lòng đăng nhập để thanh toán.'); window.location.href = 'admin-ui/page-login.html'; return; }
+			alert('Chức năng thanh toán chưa được triển khai.');
+		});
+	});
+	</script>
 	<script>
 		/* When the user clicks on the button, 
 		toggle between hiding and showing the dropdown content */
@@ -1191,6 +1453,19 @@ function setCookiesBook(category,bookId)
 	setCookie('categoryBook', category, 30);
 	setCookie('bookId', bookId, 30);
 }
+
+// Quick debug: log cookies and idusername for manual verification
+(function(){
+	function getCookie(name){
+		const m = document.cookie.match(new RegExp('(^| )' + name + '=([^;]+)'));
+		return m ? m[2] : null;
+	}
+	console.log('DEBUG document.cookie ->', document.cookie);
+	console.log('DEBUG idusername ->', getCookie('idusername'));
+	if (!getCookie('idusername')) {
+		console.warn('DEBUG: cookie "idusername" not found or is HttpOnly (not readable by JS)');
+	}
+})();
 
 </body>
 </html>
