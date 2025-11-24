@@ -290,6 +290,69 @@ if ($idusername) {
     if ($data5 === null) {
         die('Lỗi khi chuyển đổi JSON');
     }
+
+	// Normalize / deduplicate favorites results so UI can't show duplicates
+	if (isset($data5['results']) && is_array($data5['results'])) {
+		$unique = [];
+		foreach ($data5['results'] as $entry) {
+			$idKey = null;
+			if (is_array($entry)) {
+				if (isset($entry['id'])) $idKey = $entry['id'];
+				elseif (isset($entry['bookId'])) $idKey = $entry['bookId'];
+				elseif (isset($entry['idfvbook'])) $idKey = $entry['idfvbook'];
+			} elseif (is_object($entry)) {
+				if (isset($entry->id)) $idKey = $entry->id;
+				elseif (isset($entry->bookId)) $idKey = $entry->bookId;
+				elseif (isset($entry->idfvbook)) $idKey = $entry->idfvbook;
+			}
+			if ($idKey === null) {
+				// fallback: use serialized content as key
+				$key = md5(json_encode($entry));
+			} else {
+				$key = (string)$idKey;
+			}
+			if (!isset($unique[$key])) {
+				$unique[$key] = $entry;
+			}
+		}
+		$data5['results'] = array_values($unique);
+		// ensure bookCount reflects unique items
+		$data5['bookCount'] = count($data5['results']);
+	} else {
+		// ensure structure exists
+		$data5['results'] = [];
+		$data5['bookCount'] = 0;
+	}
+
+	echo '<script>console.log(' . json_encode($data5) . ');</script>';
+	
+}
+
+// === Lấy top 3 items của giỏ hàng giống phần yêu thích ===
+$url = rtrim(BACKEND_URL, '/') . '/api/get-cart3'; // URL của API backend
+
+$dataCart = null;
+$idusername = $_COOKIE['idusername'] ?? -1;
+
+if ($idusername) {
+	// Send both 'idusername' (legacy) and 'userId' so backend controllers accept either key
+	$datacart = array('idusername' => $idusername, 'userId' => intval($idusername));
+	$jsonDataCart = json_encode($datacart);
+	$ch = curl_init($url);
+	curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+	curl_setopt($ch, CURLOPT_HTTPHEADER, array(
+		'Content-Type: application/json',
+		'Authorization: ' . 'Bearer'
+	));
+	curl_setopt($ch, CURLOPT_POST, true);
+	curl_setopt($ch, CURLOPT_POSTFIELDS, $jsonDataCart);
+	$responseCart = curl_exec($ch);
+	if ($responseCart === FALSE) {
+		// ignore silently, keep $dataCart null
+	} else {
+		$dataCart = json_decode($responseCart, true);
+	}
+	curl_close($ch);
 }
 
 ini_set('display_errors', 1);
@@ -585,43 +648,49 @@ if (isset($data12['data'])) {
 								
 							</div>
 							<div class="dropdown tg-themedropdown tg-wishlistdropdown">
-										<a href="javascript:void(0);" id="tg-wishlisst" class="tg-btnthemedropdown" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-											<span class="tg-themebadge">3</span>
+										<a href="javascript:void(0);" id="tg-cartdrop" class="tg-btnthemedropdown" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+											<span class="tg-themebadge"><?php echo isset($dataCart['itemCount']) ? htmlspecialchars($dataCart['itemCount']) : '0'; ?></span>
 											<i class="icon-cart"></i>
 										</a>
 										<div class="dropdown-menu tg-themedropdownmenu" aria-labelledby="tg-minicart">
 											<div class="tg-minicartbody">
-												<div class="tg-minicarproduct">
-													<figure>
-														<img src="images/products/img-01.jpg" alt="image description">
-													</figure>
-													<div class="tg-minicarproductdata">
-														<h5><a href="javascript:void(0);">Our State Fair Is A Great Function</a></h5>
-														<h6><a href="javascript:void(0);">Tiểu thuyết</a></h6>
-													</div>
-												</div>
-												<div class="tg-minicarproduct">
-													<figure>
-														<img src="images/products/img-02.jpg" alt="image description">
-													</figure>
-													<div class="tg-minicarproductdata">
-														<h5><a href="javascript:void(0);">Bring Me To Light</a></h5>
-														<h6><a href="javascript:void(0);">Tiểu thuyết</a></h6>
-													</div>
-												</div>
-												<div class="tg-minicarproduct">
-													<figure>
-														<img src="images/products/img-03.jpg" alt="image description">
-													</figure>
-													<div class="tg-minicarproductdata">
-														<h5><a href="javascript:void(0);">Have Faith In Your Soul</a></h5>
-														<h6><a href="javascript:void(0);">Tiểu thuyết</a></h6>
-													</div>
-												</div>
+											<?php
+												if (isset($dataCart['results']) && !empty($dataCart['results'])) {
+													foreach ($dataCart['results'] as $it) {
+														// $it may be a Book object or a cartitem-like object
+														$img = 'no-image.png';
+														$title = '';
+														$category = '';
+														if (isset($it['image'])) {
+															$img = htmlspecialchars($it['image']);
+														} elseif (isset($it->image)) {
+															$img = htmlspecialchars($it->image);
+														}
+														if (isset($it['bookName'])) $title = htmlspecialchars($it['bookName']);
+														elseif (isset($it['bookname'])) $title = htmlspecialchars($it['bookname']);
+														elseif (isset($it->bookName)) $title = htmlspecialchars($it->bookName);
+														if (isset($it['category'])) $category = htmlspecialchars($it['category']);
+														elseif (isset($it->category)) $category = htmlspecialchars($it->category);
+														?>
+														<div class="tg-minicarproduct">
+															<figure>
+																<img src="images/books/<?php echo $img; ?>" alt="image description" style="width:65px">
+															</figure>
+															<div class="tg-minicarproductdata">
+																<h5><a href="cartbook.php"><?php echo $title ?: 'Sách'; ?></a></h5>
+																<h6><a href="javascript:void(0);"><?php echo $category; ?></a></h6>
+															</div>
+														</div>
+													<?php
+													}
+												} else {
+													echo '<div class="tg-description"><p>Chưa có sách đặt</p></div>';
+												}
+											?>
 											</div>
 											<div class="tg-minicartfoot">
 												<div class="tg-btns">
-													<a class="tg-btn" href="javascript:void(0);">Xem thêm</a>
+													<a class="tg-btn" href="cartbook.php">Xem thêm</a>
 													<a class="tg-btn" href="javascript:void(0);">Đóng</a>
 												</div>
 											</div>
@@ -1203,7 +1272,7 @@ let token = localStorage.getItem('jwtToken');
 				}]
 			};
 
-			console.log('addToCart API call:', { apiUrl, payload });
+            
 
 			try {
 				const response = await fetch(apiUrl, {
@@ -1216,7 +1285,6 @@ let token = localStorage.getItem('jwtToken');
 				});
 
 				const result = await response.json();
-				console.log('addToCart response:', result);
 
 				if (response.ok && result.errCode === 0) {
 					// Optionally refresh cart in background then redirect user to cart page
@@ -1281,48 +1349,6 @@ let token = localStorage.getItem('jwtToken');
 			window.location.href = target;
 		}
 
-		async function refreshCart() {
-			try {
-				const user = JSON.parse(localStorage.getItem('userData') || 'null');
-				if (!user || !user.id) return; // nothing to load
-				// determine backend base and auth header (same logic as orderBook)
-				const backendBase = (window.APP_CONFIG && window.APP_CONFIG.backendUrl) ? String(window.APP_CONFIG.backendUrl).replace(/\/$/, '') : '';
-				const token = localStorage.getItem('jwtToken');
-				const authHeader = (token) ? { 'Authorization': 'Bearer ' + token } : {};
-				const cartUrl = backendBase ? `${backendBase}/api/cart?action=get&userId=${encodeURIComponent(user.id)}` : `/QLTV/api/cart.php?action=get&userId=${encodeURIComponent(user.id)}`;
-				const resp = await fetch(cartUrl, { headers: Object.assign({'Content-Type':'application/json'}, authHeader) });
-				if (!resp.ok) return;
-				const data = await resp.json();
-				renderCartDropdown(data.items || []);
-			} catch (err) {
-				console.error('refreshCart error', err);
-			}
-		}
-
-		function renderCartDropdown(items) {
-			// update badge
-			const badgeEls = document.querySelectorAll('.tg-themebadge');
-			const count = items.reduce((s, it) => s + (it.qty || 1), 0);
-			badgeEls.forEach(el => el.textContent = count);
-
-			// update mini cart dropdown if present (first dropdown-menu with tg-minicartbody)
-			const mini = document.querySelector('.tg-minicartdropdown .tg-minicartbody');
-			if (!mini) return;
-			if (items.length === 0) {
-				mini.innerHTML = '<div class="tg-description"><p>Chưa có sách đặt</p></div>';
-				return;
-			}
-			let html = '';
-			items.forEach(it => {
-				const img = it.image ? 'images/books/' + it.image : 'images/books/no-image.png';
-				html += `<div class="tg-minicarproduct">` +
-					`<figure><img src="${img}" alt="${escapeHtml(it.bookName || '')}" style="width:65px"></figure>` +
-					`<div class="tg-minicarproductdata"><h5><a>${escapeHtml(it.bookName || '')}</a></h5><h6><a>${escapeHtml(it.category || '')}</a></h6></div>` +
-					`</div>`;
-			});
-			mini.innerHTML = html;
-		}
-
 		function escapeHtml(s) {
 			if (!s) return '';
 			return String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&#39;');
@@ -1332,6 +1358,8 @@ let token = localStorage.getItem('jwtToken');
 		document.addEventListener('DOMContentLoaded', function () {
 			refreshCart();
 		});
+
+        
 
 		// Delegated click handler for homepage 'Đặt sách' and 'Thêm vào giỏ' buttons.
 		// Uses data-attributes to avoid inline JS quoting issues and to ensure bookId is available.
@@ -1352,7 +1380,7 @@ let token = localStorage.getItem('jwtToken');
 					alert('ID sách không xác định. Vui lòng thử lại.');
 					return;
 				}
-				console.log('order click:', { bookId, category, bookName });
+                
 				// call existing order handler (will check login and redirect to detail)
 				orderBook(bookId, category, bookName);
 				return;
@@ -1384,7 +1412,7 @@ let token = localStorage.getItem('jwtToken');
 					return;
 				}
 				
-				console.log('cart click:', { bookId, bookcode, bookname, price });
+                
 				addToCart(bookId, bookcode, bookname, price, image);
 				return;
 			}

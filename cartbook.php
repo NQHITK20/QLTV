@@ -1052,7 +1052,8 @@ if ($idusername) {
 															$qty = intval($it['quantity'] ?? $it['qty'] ?? 1);
 															$price = floatval($it['price'] ?? 0);
 															$subtotal = $price * $qty;
-															echo '<tr>';
+															$rowId = htmlspecialchars($it['id'] ?? $it['cartItemId'] ?? '', ENT_QUOTES);
+															echo '<tr data-cartitemid="' . $rowId . '">';
 															echo '<td>' . $idx++ . '</td>';
 															echo '<td><img src="' . htmlspecialchars($img, ENT_QUOTES) . '" alt=""/></td>';
 															echo '<td>' . $name . '</td>';
@@ -1335,7 +1336,7 @@ if ($idusername) {
 						const subtotal = (price * qty) || Number(it.subtotal || 0) || 0;
 				total += subtotal;
 				totalCount += qty;
-						html += `<tr data-item-id="${escapeHtml(it.id || it.bookId || '')}">` +
+						html += `<tr data-cartitemid="${escapeHtml(it.id || it.bookId || '')}">` +
 							`<td>${idx + 1}</td>` +
 							`<td><img src="${img}" alt=""/></td>` +
 							`<td>${name}</td>` +
@@ -1374,11 +1375,96 @@ if ($idusername) {
 				});
 			});
 
+			// Setup remove button to call backend delete API
 			document.querySelectorAll('#cartBody .btn-remove').forEach(btn => {
-				btn.addEventListener('click', () => {
-					alert('Xóa item hiện tại chưa được hỗ trợ trên server — sẽ thêm sau nếu bạn muốn.');
+				btn.addEventListener('click', async (e) => {
+					const row = e.target.closest('tr');
+					const cartItemId = row && (row.dataset.cartitemid || row.getAttribute('data-cartitemid'));
+					if (!cartItemId) {
+						alert('Không xác định được id của mục giỏ.');
+						return;
+					}
+					if (!confirm('Bạn có chắc muốn xóa mục này không?')) return;
+					try {
+						const token = localStorage.getItem('jwtToken') || window.SERVER_TOKEN || (document.cookie.match(/(^| )token=([^;]+)/) || [])[2] || '';
+						const backendBase = (window.APP_CONFIG && window.APP_CONFIG.backendUrl) ? String(window.APP_CONFIG.backendUrl).replace(/\/$/, '') : 'http://localhost:8001';
+						// determine userId to send: prefer localStorage userData, then injected SERVER_USERID
+						const userObj = JSON.parse(localStorage.getItem('userData') || 'null');
+						const userIdToSend = (userObj && userObj.id) ? userObj.id : (window.SERVER_USERID || '');
+						const resp = await fetch(`${backendBase}/api/delete-cartitem`, {
+							method: 'POST',
+							headers: Object.assign({'Content-Type': 'application/json'}, token ? { 'Authorization': 'Bearer ' + token } : {}),
+							body: JSON.stringify({ cartItemId: cartItemId, userId: userIdToSend })
+						});
+						const result = await resp.json();
+						if (result && result.errCode === 0) {
+							// remove row and recalc totals
+							row.parentNode.removeChild(row);
+							recalcCartSummary();
+							// update header/cart badge(s)
+							const badges = document.querySelectorAll('.tg-wishlistdropdown .tg-themebadge');
+							badges.forEach(b => b.textContent = result.itemCount || 0);
+							return;
+						} else {
+							alert('Xóa thất bại: ' + (result.errMessage || result.message || 'Không xác định'));
+						}
+					} catch (err) {
+						console.error('deleteCartItem error', err);
+						alert('Lỗi khi xóa mục. Vui lòng thử lại.');
+					}
 				});
 			});
+
+			// Clear all button
+			const btnClear = document.getElementById('btnClear');
+			if (btnClear) {
+				btnClear.addEventListener('click', async function () {
+					if (!confirm('Bạn có chắc muốn xóa toàn bộ giỏ hàng không?')) return;
+					try {
+						const token = localStorage.getItem('jwtToken') || window.SERVER_TOKEN || (document.cookie.match(/(^| )token=([^;]+)/) || [])[2] || '';
+						const backendBase = (window.APP_CONFIG && window.APP_CONFIG.backendUrl) ? String(window.APP_CONFIG.backendUrl).replace(/\/$/, '') : 'http://localhost:8001';
+						const userObj = JSON.parse(localStorage.getItem('userData') || 'null');
+						const userIdToSend = (userObj && userObj.id) ? userObj.id : (window.SERVER_USERID || '');
+						const resp = await fetch(`${backendBase}/api/delete-cartitem`, {
+							method: 'POST',
+							headers: Object.assign({'Content-Type': 'application/json'}, token ? { 'Authorization': 'Bearer ' + token } : {}),
+							body: JSON.stringify({ cartItemId: 'ALL', userId: userIdToSend })
+						});
+						const result = await resp.json();
+						if (result && result.errCode === 0) {
+							// Clear table and update summary
+							document.getElementById('cartBody').innerHTML = '<tr><td colspan="7">Giỏ hàng trống.</td></tr>';
+							document.getElementById('cartCount').textContent = '0';
+							document.getElementById('cartTotal').textContent = '0₫';
+							const badges = document.querySelectorAll('.tg-wishlistdropdown .tg-themebadge');
+							badges.forEach(b => b.textContent = '0');
+							return;
+						} else {
+							alert('Xóa tất cả thất bại: ' + (result.errMessage || result.message || 'Không xác định'));
+						}
+					} catch (err) {
+						console.error('clear cart error', err);
+						alert('Lỗi khi xóa giỏ hàng. Vui lòng thử lại.');
+					}
+				});
+			}
+
+			function recalcCartSummary() {
+				const cartBody = document.getElementById('cartBody');
+				const rows = Array.from(cartBody.querySelectorAll('tr'));
+				let total = 0;
+				let count = 0;
+				rows.forEach(r => {
+					const qtyInput = r.querySelector('.qty-input');
+					const qty = qtyInput ? (parseInt(qtyInput.value, 10) || 0) : 1;
+					const subtotalText = r.children[5] ? r.children[5].textContent : '';
+					const subtotal = parseInt((subtotalText || '').replace(/[^\d-]+/g, ''), 10) || 0;
+					total += subtotal;
+					count += qty;
+				});
+				document.getElementById('cartCount').textContent = count;
+				document.getElementById('cartTotal').textContent = (total ? (total.toLocaleString('vi-VN') + '₫') : '0₫');
+			}
 
 		} catch (err) {
 			console.error('loadSavedCart error', err);
