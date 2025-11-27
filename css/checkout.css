@@ -1,0 +1,57 @@
+/* Styles for checkout page (frontend/checkout.php)
+   Inspired by PayPal checkout samples: clean, centered card, responsive.
+*/
+:root{
+  --bg: #f7f9fb;
+  --card: #ffffff;
+  --muted: #6b7280;
+  --accent: #111827;
+  --accent-2: #0d6efd;
+}
+body{
+  font-family: Inter, Roboto, Arial, Helvetica, sans-serif;
+  background: var(--bg);
+  margin: 0;
+  color: var(--accent);
+}
+.container{
+  max-width: 980px;
+  margin: 32px auto;
+  padding: 20px;
+}
+.checkout-card{
+  display: grid;
+  grid-template-columns: 1fr 360px;
+  gap: 24px;
+  align-items: start;
+}
+.card{
+  background: var(--card);
+  border-radius: 10px;
+  box-shadow: 0 6px 18px rgba(16,24,40,0.06);
+  padding: 20px;
+}
+.heading{font-size:20px;margin:0 0 12px 0}
+.notice{padding:10px;background:#fffbea;border-left:4px solid #f59e0b;color:#92400e;border-radius:6px}
+.cart-table{width:100%; border-collapse: collapse}
+.cart-table th{ text-align:left; color:var(--muted); font-weight:600; padding:12px 8px; font-size:13px}
+.cart-table td{padding:12px 8px; border-top:1px solid #eef2f7; vertical-align:middle}
+.cart-item-name{display:flex;gap:12px;align-items:center}
+.cart-item-thumb{width:56px;height:72px;background:#f3f4f6;border-radius:6px;object-fit:cover}
+.qty-badge{background:#f3f4f6;padding:6px 10px;border-radius:6px;font-weight:600}
+.summary{
+  display:flex;flex-direction:column;gap:12px
+}
+.summary .row{display:flex;justify-content:space-between;align-items:center;padding:6px 0}
+.summary .total{font-size:20px;font-weight:700}
+#paypal-button-container{margin-top:8px}
+.muted{color:var(--muted);font-size:13px}
+
+/* Responsive */
+@media(max-width:900px){
+  .checkout-card{grid-template-columns:1fr;}
+}
+
+/* small utilities */
+.text-right{text-align:right}
+.small{font-size:13px;color:var(--muted)}
