@@ -1249,6 +1249,7 @@ let token = localStorage.getItem('jwtToken');
 
 			// Get JWT token for authentication
 			const token = localStorage.getItem('jwtToken');
+			console.log('addToCart token:', token);
 			if (!token) {
 				alert('Phiên đăng nhập hết hạn. Vui lòng đăng nhập lại.');
 				window.location.href = 'admin-ui/page-login.html';

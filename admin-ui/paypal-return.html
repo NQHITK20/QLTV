@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html class="no-js" lang="en">
+
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <title>Sufee Admin - HTML5 Admin Template</title>
+    <meta name="description" content="Sufee Admin - HTML5 Admin Template" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <link rel="apple-touch-icon" href="apple-icon.png" />
+    <link rel="shortcut icon" href="favicon.ico" />
+    <link rel="stylesheet" href="vendors/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="vendors/font-awesome/css/font-awesome.min.css" />
+    <link rel="stylesheet" href="vendors/themify-icons/css/themify-icons.css" />
+    <link rel="stylesheet" href="vendors/flag-icon-css/css/flag-icon.min.css" />
+    <link rel="stylesheet" href="vendors/selectFX/css/cs-skin-elastic.css" />
+
+    <link rel="stylesheet" href="assets/css/style.css" />
+
+    <link href="https://fonts.googleapis.com/css?family=Open+Sans:400,600,700,800" rel="stylesheet" type="text/css" />
+</head>
+
+<body class="bg-dark">
+    <div class="overlay" id="loadingOverlay">
+        <div class="spinner-border text-light" role="status">
+            <span class="sr-only">Loading...</span>
+        </div>
+    </div>
+    <div class="sufee-login d-flex align-content-center flex-wrap">
+        <div class="container">
+            <div class="login-content">
+                <div class="login-logo">
+                    <a href="../index.php">
+                        <img class="align-content" src="images/logo.png" alt="" />
+                    </a>
+                </div>
+                <div class="login-form">
+
+                    <div id="resultCard" class="card text-center p-4" style="max-width:520px;margin:24px auto;">
+                        <div id="resultIcon" style="font-size:48px;margin-bottom:12px;color:#28a745">✅</div>
+                        <h3 id="resultTitle" class="mb-2">Thanh toán thành công</h3>
+                        <p id="resultMessage" class="text-muted">Cảm ơn bạn! Đơn hàng của bạn đã được thanh toán thành công.</p>
+                        <div id="resultActions" style="margin-top:12px;">
+                            <a id="backToStore" class="btn btn-primary" href="../index.php">Quay lại cửa hàng</a>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+    <style>
+        .overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 999;
+        }
+    </style>
+
+    <script src="vendors/jquery/dist/jquery.min.js"></script>
+    <script src="vendors/popper.js/dist/umd/popper.min.js"></script>
+    <script src="vendors/bootstrap/dist/js/bootstrap.min.js"></script>
+    <script src="assets/js/main.js"></script>
+    <script>
+        (function(){
+            function q(name){
+                const url = new URL(window.location.href);
+                return url.searchParams.get(name);
+            }
+
+            const token = q('token') || q('orderID') || q('orderId') || q('providerPaymentId');
+            const localOrderId = q('localOrderId') || q('localorderid') || q('orderId');
+            const card = document.getElementById('resultCard');
+            const title = document.getElementById('resultTitle');
+            const msg = document.getElementById('resultMessage');
+            const icon = document.getElementById('resultIcon');
+            const actions = document.getElementById('resultActions');
+            const overlay = document.getElementById('loadingOverlay');
+
+            function showOverlay(show){ overlay.style.display = show ? 'flex' : 'none'; }
+            function setResultSuccess(text){ icon.textContent = '✅'; icon.style.color = '#28a745'; title.textContent = 'Thanh toán thành công'; msg.textContent = text || 'Cảm ơn bạn! Đơn hàng của bạn đã được thanh toán thành công.'; actions.style.display = 'block'; }
+            function setResultError(text){ icon.textContent = '✖'; icon.style.color = '#dc3545'; title.textContent = 'Thanh toán không thành công'; msg.textContent = text || 'Có lỗi xảy ra khi xử lý thanh toán.'; actions.style.display = 'block'; }
+
+            // Prepare action buttons (retry capture and back to store)
+            actions.innerHTML = '';
+            const backBtn = document.createElement('a');
+            backBtn.className = 'btn btn-secondary';
+            backBtn.href = '../index.php';
+            backBtn.textContent = 'Quay lại cửa hàng';
+            actions.appendChild(backBtn);
+
+            const retryBtn = document.createElement('button');
+            retryBtn.className = 'btn btn-warning';
+            retryBtn.textContent = 'Thử lại hoàn tất thanh toán';
+            retryBtn.style.display = 'none';
+            actions.appendChild(retryBtn);
+
+            async function callCapture(providerPaymentId){
+                showOverlay(true);
+                try {
+                    const headers = { 'Content-Type':'application/json' };
+                    // Attach Authorization if JWT available (localStorage/sessionStorage/cookie)
+                    let jwt = null;
+                    jwt = localStorage.getItem('jwtToken') || localStorage.getItem('token') || jwt;
+                    if (!jwt) jwt = sessionStorage.getItem('jwtToken') || sessionStorage.getItem('token') || null;
+                    if (!jwt && document.cookie) {
+                        const parts = document.cookie.split(';').map(c=>c.trim());
+                        for (const p of parts) {
+                            if (p.startsWith('jwtToken=')) { jwt = p.substring('jwtToken='.length); break; }
+                            if (p.startsWith('token=')) { jwt = p.substring('token='.length); break; }
+                        }
+                    }
+                    if (jwt) headers['Authorization'] = 'Bearer ' + jwt;
+
+                    // Always send both providerPaymentId and localOrderId
+                    const payload = {};
+                    if (providerPaymentId) payload.providerPaymentId = providerPaymentId;
+                    if (localOrderId) payload.localOrderId = localOrderId;
+                    // For backend compatibility, also send orderId alias
+                    if (!payload.orderId && providerPaymentId) payload.orderId = providerPaymentId;
+
+                    // Hardcode backend base URL to port 8001
+                    const backendBase = location.protocol + '//' + location.hostname + ':8001';
+                    const captureUrl = backendBase.replace(/\/$/, '') + '/api/payments/capture';
+                    const res = await fetch(captureUrl, { method:'POST', headers, body: JSON.stringify(payload), credentials: 'include' });
+                    const data = await res.json().catch(()=>null);
+                    if (res.ok && data && data.errCode === 0) {
+                        setResultSuccess('Thanh toán đã được xác nhận. Cảm ơn bạn!');
+                        setTimeout(()=>{
+                            window.location.href = data.redirectUrl || '/QLTV-ChatboxAi/frontend/index.php';
+                        }, 1800);
+                        return { ok: true, data };
+                    } else {
+                        const em = (data && (data.errMessage || data.message)) || ('Capture thất bại (HTTP ' + (res.status || '??') + ')');
+                        setResultError(em + (data && data.raw ? ' — ' + JSON.stringify(data.raw).slice(0,200) : ''));
+                        retryBtn.style.display = 'inline-block';
+                        return { ok: false, data };
+                    }
+                } catch (err) {
+                    setResultError('Lỗi kết nối tới server khi hoàn tất thanh toán.');
+                    retryBtn.style.display = 'inline-block';
+                    return { ok: false, error: err };
+                } finally {
+                    showOverlay(false);
+                }
+            }
+
+            retryBtn.addEventListener('click', function(e){
+                e.preventDefault();
+                if (token) callCapture(token);
+            });
+
+            // Main flow: optimistic UI (show success immediately), but perform capture in background.
+            if (!token) {
+                // No token: show message and let user return to store
+                setResultError('Không tìm thấy mã thanh toán (token) trong URL trả về từ PayPal.');
+                backBtn.textContent = 'Quay lại cửa hàng';
+            } else {
+                // Show optimistic success to the user immediately
+                setResultSuccess('Thanh toán được ghi nhận. Đang hoàn tất xác nhận...');
+                // call capture in background; if it succeeds redirect, otherwise surface error and retry
+                (async ()=>{
+                    const result = await callCapture(token);
+                    if (result && result.ok) {
+                        // already set success inside callCapture; redirect to final confirmation
+                        // change target if you have a dedicated order success page
+                        window.location.href = '/QLTV-ChatboxAi/frontend/index.php';
+                    } else {
+                        // capture failed: show warning but user already saw optimistic success
+                        // Update message to warn user and keep retry button visible
+                        setResultError('Xác nhận thanh toán không thành công. Vui lòng thử lại.');
+                        retryBtn.style.display = 'inline-block';
+                    }
+                })();
+            }
+        })();
+    </script>
+</body>
+
+</html>

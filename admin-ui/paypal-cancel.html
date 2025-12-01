@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html class="no-js" lang="en">
+
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <title>Sufee Admin - HTML5 Admin Template</title>
+    <meta name="description" content="Sufee Admin - HTML5 Admin Template" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <link rel="apple-touch-icon" href="apple-icon.png" />
+    <link rel="shortcut icon" href="favicon.ico" />
+    <link rel="stylesheet" href="vendors/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="vendors/font-awesome/css/font-awesome.min.css" />
+    <link rel="stylesheet" href="vendors/themify-icons/css/themify-icons.css" />
+    <link rel="stylesheet" href="vendors/flag-icon-css/css/flag-icon.min.css" />
+    <link rel="stylesheet" href="vendors/selectFX/css/cs-skin-elastic.css" />
+
+    <link rel="stylesheet" href="assets/css/style.css" />
+
+    <link href="https://fonts.googleapis.com/css?family=Open+Sans:400,600,700,800" rel="stylesheet" type="text/css" />
+</head>
+
+<body class="bg-dark">
+    <div class="overlay" id="loadingOverlay">
+        <div class="spinner-border text-light" role="status">
+            <span class="sr-only">Loading...</span>
+        </div>
+    </div>
+    <div class="sufee-login d-flex align-content-center flex-wrap">
+        <div class="container">
+            <div class="login-content">
+                <div class="login-logo">
+                    <a href="../index.php">
+                        <img class="align-content" src="images/logo.png" alt="" />
+                    </a>
+                </div>
+                <div class="login-form">
+
+                    <div id="resultCard" class="card text-center p-4" style="max-width:520px;margin:24px auto;">
+                        <div id="resultIcon" style="font-size:48px;margin-bottom:12px;color:#dc3545">❌</div>
+                        <h3 id="resultTitle" class="mb-2">Thanh toán đã hủy</h3>
+                        <p id="resultMessage" class="text-muted">Bạn đã hủy thanh toán. Đơn hàng chưa được hoàn tất.</p>
+                        <div id="resultActions" style="margin-top:12px;">
+                            <a id="backToStore" class="btn btn-outline-primary" href="../index.php">Quay lại cửa hàng</a>
+                            <a id="retryCheckout" class="btn btn-primary" href="../checkout.html">Thử lại thanh toán</a>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+    <style>
+        .overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 999;
+        }
+    </style>
+
+    <script src="vendors/jquery/dist/jquery.min.js"></script>
+    <script src="vendors/popper.js/dist/umd/popper.min.js"></script>
+    <script src="vendors/bootstrap/dist/js/bootstrap.min.js"></script>
+    <script src="assets/js/main.js"></script>
+    <script>
+        (function () {
+            function q(name) {
+                const url = new URL(window.location.href);
+                return url.searchParams.get(name);
+            }
+
+            const token = q('token') || q('orderId') || q('providerPaymentId');
+            const payerId = q('PayerID') || q('PayerID');
+            const card = document.getElementById('resultCard');
+            const title = document.getElementById('resultTitle');
+            const msg = document.getElementById('resultMessage');
+            const icon = document.getElementById('resultIcon');
+            const actions = document.getElementById('resultActions');
+
+            // Show cancel message (no capture). Optionally display token for debugging.
+            (function showCancel(){
+                icon.textContent = '❌';
+                icon.style.color = '#dc3545';
+                title.textContent = 'Thanh toán đã hủy';
+                msg.textContent = 'Bạn đã hủy thanh toán. Đơn hàng chưa được hoàn tất.';
+                actions.style.display = 'block';
+            })();
+
+            if (token) {
+                // show token in console for debugging
+                console.info('PayPal returned token (cancel):', token);
+            }
+
+            // ensure buttons navigate to pages outside admin-ui
+            try {
+                const backBtn = document.getElementById('backToStore');
+                if (backBtn) backBtn.addEventListener('click', e => { e.preventDefault(); window.location.href = '../index.php'; });
+                const retryBtn = document.getElementById('retryCheckout');
+                if (retryBtn) retryBtn.addEventListener('click', e => { e.preventDefault(); window.location.href = '../checkout.html'; });
+            } catch (e) { console.warn(e); }
+        })();
+    </script>
+</body>
+
+</html>

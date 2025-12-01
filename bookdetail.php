@@ -1172,9 +1172,7 @@ async function addToCartDetail() {
 			window.location.href = 'admin-ui/page-login.html';
 			return;
 		}
-
-		console.log('Token:', token ? 'exists (length: ' + token.length + ')' : 'missing');
-		console.log('User:', user);
+		console.log('checking token', localStorage.getItem('jwtToken'));
 
 		const book = window.currentBook || {};
 		const urlParams = new URLSearchParams(window.location.search);
@@ -1238,7 +1236,6 @@ async function addToCartDetail() {
 			}]
 		};
 
-		console.log('addToCartDetail API call:', { apiUrl, payload, token: token.substring(0, 20) + '...' });
 
 		const resp = await fetch(apiUrl, {
 			method: 'POST',
@@ -1250,7 +1247,6 @@ async function addToCartDetail() {
 		});
 
 		const result = await resp.json();
-		console.log('addToCartDetail response:', result);
 
 		if (result.errCode === 0) {
 			// Prefer numeric server total if provided, otherwise compute locally
