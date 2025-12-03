@@ -619,7 +619,7 @@ if (!empty($idusername) && !empty($bookId)) {
 																		</div>
 																		<span class="tg-bookwriter"> <a><?php echo htmlspecialchars($book['author'] ?? '') ?></a></span>
 																		<span class="tg-bookprice">
-																			<ins><?php echo htmlspecialchars($book['price'] ?? '0'); ?> vnđ</ins>
+																			<ins><?php echo '$' . number_format($book['price'] ?? 0, 2, '.', ','); ?></ins>
 																		</span>
 																	</div>
 																</div>
@@ -924,7 +924,8 @@ document.addEventListener("DOMContentLoaded", async function() {
 			document.getElementById("imageBook").src = "images/books/" + (book.image || 'no-image.png');
 			document.getElementById("author").innerText = book.author || '';
 			document.getElementById("description").innerText = book.description || '';
-			document.getElementById("price").innerText = (book.price || 0) + ' vnđ';
+			function formatCurrency(n){ return (Number(n)||0).toLocaleString('en-US', { style: 'currency', currency: 'USD' }); }
+			document.getElementById("price").innerText = formatCurrency(book.price || 0);
 
 			console.log('fetchData: normalized book ->', book);
 			// refresh cart badge if header present

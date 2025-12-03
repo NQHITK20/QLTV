@@ -109,7 +109,7 @@
                                 </li>
                                 <li>
                                     <i class="fa fa-plus"></i
-                                    ><a href="add-user.html">Thêm sách</a>
+                                    ><a href="add-user.html">Sửa sách</a>
                                 </li>
                             </ul>
                         </li>
@@ -342,6 +342,14 @@
                                 </div>
                                 <div class="row form-group">
                                     <div class="col col-md-3">
+                                        <label for="text-input" class="form-control-label">Giá</label>
+                                    </div>
+                                    <div class="col-12 col-md-2">
+                                        <input type="number" id="price" name="price" placeholder="0" class="form-control" />
+                                    </div>
+                                </div>
+                                <div class="row form-group">
+                                    <div class="col col-md-3">
                                         <label
                                             for="text-input"
                                             class="form-control-label"
@@ -453,6 +461,8 @@
                             responseData.data.category;
                         document.getElementById("soLuong").value =
                             responseData.data.soLuong;
+                        document.getElementById("price").value =
+                            responseData.data.price;
                         document.getElementById("description").value =
                             responseData.data.description;
                         document.getElementById("displayedImage").src =
@@ -533,6 +543,7 @@
                 const author = document.getElementById("author").value;
                 const category = document.getElementById("category").value;
                 const soLuong = document.getElementById("soLuong").value;
+                const price = document.getElementById("price").value;
                 const description =
                     document.getElementById("description").value;
                 const fileInput = document.getElementById("displayedImage").src;
@@ -552,6 +563,9 @@
                 } else if (!soLuong) {
                     alert("Vui lòng nhập số lượng");
                     return;
+                } else if (!price) {
+                    alert("Vui lòng nhập giá");
+                    return;
                 }
                 //  Tách tên file từ đối tượng file
                 let fileName = extractFilename(fileInput);
@@ -564,6 +578,7 @@
                     bookCode: document.getElementById("hiddenBookcode").value,
                     category: category,
                     soLuong: soLuong,
+                    price: price,
                     description: description,
                 };
 

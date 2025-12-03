@@ -978,7 +978,7 @@ if ($data3 === null) {
 														</div>
 														<span class="tg-bookwriter"> <a><?php echo htmlspecialchars($book['author']); ?></a></span>
 														<span class="tg-bookprice">
-															<ins><?php echo htmlspecialchars($book['price']); ?> nvđ</ins>
+															<ins><?php echo htmlspecialchars($book['price']); ?> $</ins>
 														</span>
 													</div>
 												</div>

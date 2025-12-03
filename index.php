@@ -1208,7 +1208,7 @@ document.getElementById('searchForm').addEventListener('submit', function(event)
 
         let searchQuery = document.querySelector('input[name="search"]').value;
 		setCookie('tukhoa', searchQuery, 30);
-        let url = `/QLTV/findingbook.php?tukhoa=${encodeURIComponent(searchQuery)}`;
+        let url = `findingbook.php?tukhoa=${encodeURIComponent(searchQuery)}`;
         
         // Điều hướng đến URL mới với từ khóa tìm kiếm
         window.location.href = url;

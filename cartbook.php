@@ -1057,9 +1057,9 @@ if ($idusername) {
 															echo '<td>' . $idx++ . '</td>';
 															echo '<td><img src="' . htmlspecialchars($img, ENT_QUOTES) . '" alt=""/></td>';
 															echo '<td>' . $name . '</td>';
-															echo '<td>' . number_format($price, 0, ',', '.') . '</td>';
+															echo '<td>$' . number_format($price, 2, '.', ',') . '</td>';
 															echo '<td><input type="number" class="form-control qty-input" value="' . $qty . '" min="1" style="width:80px;"></td>';
-															echo '<td>' . number_format($subtotal, 0, ',', '.') . '</td>';
+															echo '<td>$' . number_format($subtotal, 2, '.', ',') . '</td>';
 															echo '<td><button class="btn btn-sm btn-danger btn-remove">X</button></td>';
 															echo '</tr>';
 														}
@@ -1074,7 +1074,7 @@ if ($idusername) {
 													</div>
 													<div class="checkout-box text-right">
 														<div>Số mặt hàng: <strong id="cartCount">0</strong></div>
-														<div class="mt-1">Tổng tiền: <strong id="cartTotal">vn₫</strong></div>
+														<div class="mt-1">Tổng tiền: <strong id="cartTotal">$0.00</strong></div>
 														<div class="mt-2">
 															<button id="btnCheckout" class="btn btn-outline-primary">Thanh toán</button>
 														</div>
@@ -1266,10 +1266,10 @@ if ($idusername) {
 		const cartCountEl = document.getElementById('cartCount');
 		const cartTotalEl = document.getElementById('cartTotal');
 
-			if (!user && !token && !serverUserId) {
+				if (!user && !token && !serverUserId) {
 					cartBody.innerHTML = '<tr><td colspan="7">Vui lòng đăng nhập để xem giỏ hàng.</td></tr>';
 				cartCountEl.textContent = '0';
-				cartTotalEl.textContent = '0₫';
+				cartTotalEl.textContent = formatCurrency(0);
 				return;
 			}
 
@@ -1306,14 +1306,14 @@ if ($idusername) {
 					console.error('loadSavedCart: fetch failed', respErr);
 						cartBody.innerHTML = '<tr><td colspan="7">Lỗi khi tải giỏ hàng.</td></tr>';
 					cartCountEl.textContent = '0';
-					cartTotalEl.textContent = '0₫';
+					cartTotalEl.textContent = '0$';
 					return;
 				}
 
 				if (result.errCode !== 0) {
 						cartBody.innerHTML = `<tr><td colspan="7">Lỗi khi tải giỏ: ${escapeHtml(result.errMessage || result.message || 'Không xác định')}</td></tr>`;
 					cartCountEl.textContent = '0';
-					cartTotalEl.textContent = '0₫';
+					cartTotalEl.textContent = '0$';
 					return;
 				}
 
@@ -1321,7 +1321,7 @@ if ($idusername) {
 				if (items.length === 0) {
 					cartBody.innerHTML = '<tr><td colspan="7">Giỏ hàng trống.</td></tr>';
 				cartCountEl.textContent = '0';
-				cartTotalEl.textContent = '0₫';
+				cartTotalEl.textContent = '0$';
 				return;
 			}
 
@@ -1349,7 +1349,7 @@ if ($idusername) {
 
 			cartBody.innerHTML = html;
 			cartCountEl.textContent = totalCount;
-			cartTotalEl.textContent = formatCurrency(total) + '₫';
+			cartTotalEl.textContent = formatCurrency(total);
 
 			// Attach simple handlers: qty change (local only) and remove (local only)
 			document.querySelectorAll('#cartBody .qty-input').forEach((input, i) => {
@@ -1359,19 +1359,15 @@ if ($idusername) {
 					e.target.value = v;
 					// Recompute subtotal and total locally
 					const row = e.target.closest('tr');
-					// Price text is formatted in 'vi-VN' (e.g. "150.000"). Remove all non-digit chars
-					// and parse as integer VND to avoid interpreting thousand separators as decimals.
-					const rawPriceDigits = row.children[3].textContent.replace(/[^\d-]+/g, '') || '0';
-					const price = parseInt(rawPriceDigits, 10) || 0;
-					row.children[5].textContent = formatCurrency(price * v);
+					// Price text is formatted like "$1,234.56". Remove currency symbol and
+					// thousands separators, then parse as float so cents are preserved.
+					const rawPrice = (row.children[3].textContent || '').replace(/[^0-9.\-]+/g, '') || '0';
+					const price = parseFloat(rawPrice) || 0;
+					const newSubtotal = price * v;
+					row.children[5].textContent = formatCurrency(newSubtotal);
 
-					// Update cart total
-					let newTotal = 0;
-					document.querySelectorAll('#cartBody tr').forEach(r => {
-						const s = r.children[5].textContent.replace(/[^\d-]+/g, '') || '0';
-						newTotal += parseInt(s, 10) || 0;
-					});
-					cartTotalEl.textContent = formatCurrency(newTotal) + '₫';
+					// Recalculate summary (total amount and total item count)
+					recalcCartSummary();
 				});
 			});
 
@@ -1435,7 +1431,7 @@ if ($idusername) {
 							// Clear table and update summary
 							document.getElementById('cartBody').innerHTML = '<tr><td colspan="7">Giỏ hàng trống.</td></tr>';
 							document.getElementById('cartCount').textContent = '0';
-							document.getElementById('cartTotal').textContent = '0₫';
+							document.getElementById('cartTotal').textContent = formatCurrency(0);
 							const badges = document.querySelectorAll('.tg-wishlistdropdown .tg-themebadge');
 							badges.forEach(b => b.textContent = '0');
 							return;
@@ -1458,12 +1454,12 @@ if ($idusername) {
 					const qtyInput = r.querySelector('.qty-input');
 					const qty = qtyInput ? (parseInt(qtyInput.value, 10) || 0) : 1;
 					const subtotalText = r.children[5] ? r.children[5].textContent : '';
-					const subtotal = parseInt((subtotalText || '').replace(/[^\d-]+/g, ''), 10) || 0;
+					const subtotal = parseFloat((subtotalText || '').replace(/[^0-9.\-]+/g, '')) || 0;
 					total += subtotal;
 					count += qty;
 				});
 				document.getElementById('cartCount').textContent = count;
-				document.getElementById('cartTotal').textContent = (total ? (total.toLocaleString('vi-VN') + '₫') : '0₫');
+				document.getElementById('cartTotal').textContent = (total ? formatCurrency(total) : formatCurrency(0));
 			}
 
 		} catch (err) {
@@ -1474,7 +1470,7 @@ if ($idusername) {
 
 	function formatCurrency(n) {
 		if (!n && n !== 0) return '';
-		return (Number(n) || 0).toLocaleString('vi-VN');
+		return (Number(n) || 0).toLocaleString('en-US', { style: 'currency', currency: 'USD' });
 	}
 
 	function escapeHtml(s) { if (!s) return ''; return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#39;'); }
@@ -1483,9 +1479,30 @@ if ($idusername) {
 		loadSavedCart();
 		// btnCheckout behavior
 		document.getElementById('btnCheckout').addEventListener('click', function() {
-			const user = JSON.parse(localStorage.getItem('userData') || 'null');
-			if (!user) { alert('Vui lòng đăng nhập để thanh toán.'); window.location.href = 'admin-ui/page-login.html'; return; }
-			alert('Chức năng thanh toán chưa được triển khai.');
+			try {
+				const rows = Array.from(document.querySelectorAll('#cartBody tr'));
+				const items = [];
+				rows.forEach(r => {
+					// skip placeholder rows
+					if (!r.querySelector('.qty-input')) return;
+					const cartItemId = r.dataset.cartitemid || r.getAttribute('data-cartitemid') || '';
+					const name = (r.children[2] && r.children[2].textContent.trim()) || '';
+					const rawPrice = (r.children[3] && r.children[3].textContent) ? r.children[3].textContent.replace(/[^0-9.\-]+/g,'') : '0';
+					const unitPrice = parseFloat(rawPrice) || 0;
+					const qtyInput = r.querySelector('.qty-input');
+					const qty = qtyInput ? (parseInt(qtyInput.value, 10) || 1) : 1;
+					const subtotal = unitPrice * qty;
+					const imgEl = r.children[1] && r.children[1].querySelector('img');
+					const image = imgEl ? imgEl.getAttribute('src') : '';
+					items.push({ id: cartItemId, name, quantity: qty, unitPrice, subtotal, image });
+				});
+				if (items.length === 0) { alert('Giỏ hàng rỗng.'); return; }
+				localStorage.setItem('checkoutCart', JSON.stringify({ items: items, savedAt: Date.now() }));
+				window.location.href = 'checkout.html';
+			} catch (err) {
+				console.error('checkout redirect error', err);
+				alert('Lỗi chuẩn bị đơn hàng. Vui lòng thử lại.');
+			}
 		});
 	});
 	</script>

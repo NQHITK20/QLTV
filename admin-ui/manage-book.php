@@ -233,7 +233,7 @@ if ($data === null) {
                         <td ><?php echo htmlspecialchars($book['bookName']); ?></td>
                         <td ><img src="../images/books/<?php echo htmlspecialchars($book['image']); ?>" alt="<?php echo htmlspecialchars($book['bookName']); ?>"></td>
                         <td><?php echo htmlspecialchars($book['author']); ?></td>
-                        <td><?php echo htmlspecialchars($book['price']); ?> vnđ</td>
+                        <td><?php echo htmlspecialchars($book['price']); ?> $</td>
                         <td><?php echo htmlspecialchars($book['category']); ?></td>
                         <td>
                         <?php
