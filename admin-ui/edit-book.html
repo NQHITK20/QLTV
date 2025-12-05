@@ -426,7 +426,7 @@
                     };
                     xhr.open(
                         "POST",
-                        "http://localhost:8001/api/get-all-book",
+                        "http://localhost:8000/api/get-all-book",
                         true
                     );
                     xhr.setRequestHeader("Content-Type", "application/json");
@@ -478,7 +478,7 @@
             document.getElementById("loadingOverlay").style.display = "flex";
 
             // Cấu hình yêu cầu fetch
-            fetch("http://localhost:8001/api/get-all-category", {
+            fetch("http://localhost:8000/api/get-all-category", {
                 method: "GET",
                 headers: {
                     "Content-Type": "application/json",
@@ -583,7 +583,7 @@
                 };
 
                 const xhr = new XMLHttpRequest(); // Tạo đối tượng XMLHttpRequest
-                xhr.open("POST", "http://localhost:8001/api/edit-book", true); // Gửi yêu cầu POST đến đường dẫn '/api/users'
+                xhr.open("POST", "http://localhost:8000/api/edit-book", true); // Gửi yêu cầu POST đến đường dẫn '/api/users'
                 xhr.setRequestHeader("Content-Type", "application/json"); // Thiết lập tiêu đề 'Content-Type'
                 const token = localStorage.getItem("jwtToken");
                 xhr.setRequestHeader("Authorization", `Bearer ${token}`);

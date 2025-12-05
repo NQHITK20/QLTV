@@ -1273,7 +1273,7 @@ if ($idusername) {
 				return;
 			}
 
-			const backendBase = (window.APP_CONFIG && window.APP_CONFIG.backendUrl) ? String(window.APP_CONFIG.backendUrl).replace(/\/$/, '') : 'http://localhost:8001';
+			const backendBase = (window.APP_CONFIG && window.APP_CONFIG.backendUrl) ? String(window.APP_CONFIG.backendUrl).replace(/\/$/, '') : 'http://localhost:8000';
 			// Use relative frontend image path to match `index.php` (images/books/filename)
 			const frontendBase = '';
 			const url = `${backendBase}/api/get-saved-cart`;
@@ -1383,7 +1383,7 @@ if ($idusername) {
 					if (!confirm('Bạn có chắc muốn xóa mục này không?')) return;
 					try {
 						const token = localStorage.getItem('jwtToken') || window.SERVER_TOKEN || (document.cookie.match(/(^| )token=([^;]+)/) || [])[2] || '';
-						const backendBase = (window.APP_CONFIG && window.APP_CONFIG.backendUrl) ? String(window.APP_CONFIG.backendUrl).replace(/\/$/, '') : 'http://localhost:8001';
+						const backendBase = (window.APP_CONFIG && window.APP_CONFIG.backendUrl) ? String(window.APP_CONFIG.backendUrl).replace(/\/$/, '') : 'http://localhost:8000';
 						// determine userId to send: prefer localStorage userData, then injected SERVER_USERID
 						const userObj = JSON.parse(localStorage.getItem('userData') || 'null');
 						const userIdToSend = (userObj && userObj.id) ? userObj.id : (window.SERVER_USERID || '');
@@ -1418,7 +1418,7 @@ if ($idusername) {
 					if (!confirm('Bạn có chắc muốn xóa toàn bộ giỏ hàng không?')) return;
 					try {
 						const token = localStorage.getItem('jwtToken') || window.SERVER_TOKEN || (document.cookie.match(/(^| )token=([^;]+)/) || [])[2] || '';
-						const backendBase = (window.APP_CONFIG && window.APP_CONFIG.backendUrl) ? String(window.APP_CONFIG.backendUrl).replace(/\/$/, '') : 'http://localhost:8001';
+						const backendBase = (window.APP_CONFIG && window.APP_CONFIG.backendUrl) ? String(window.APP_CONFIG.backendUrl).replace(/\/$/, '') : 'http://localhost:8000';
 						const userObj = JSON.parse(localStorage.getItem('userData') || 'null');
 						const userIdToSend = (userObj && userObj.id) ? userObj.id : (window.SERVER_USERID || '');
 						const resp = await fetch(`${backendBase}/api/delete-cartitem`, {

@@ -7,7 +7,7 @@ error_reporting(E_ALL);
 // Kiểm tra và lấy token từ cookie hoặc localStorage
 $token = isset($_COOKIE['jwtToken']) ? $_COOKIE['jwtToken'] : '';
 
-$url = 'http://localhost:8001/api/get-news'; // URL của API backend
+$url = 'http:///api/get-news'; // URL của API backend
 
 // Tạo body của yêu cầu với id = "ALL"
 $data = json_encode(['id' => 'ALL']);
@@ -94,7 +94,7 @@ if ($data === null) {
             min-width: 150px;
         }
     </style>
-    
+
 </head>
 
 <body>
@@ -159,7 +159,7 @@ if ($data === null) {
     <!-- Right Panel -->
 
     <div id="right-panel" class="right-panel">
-        
+
         <!-- Header-->
         <header id="header" class="header">
             <div class="header-menu">
@@ -260,7 +260,7 @@ if ($data === null) {
                 echo '<tr><td colspan="4">Không có dữ liệu</td></tr>';
             }
             ?>
-                                    </tbody>     
+                                    </tbody>
                                 </table>
                             </div>
                         </div>
@@ -310,13 +310,13 @@ try {
         return;
     }
 
-    
+
     let userId={
         id:id
     }
 
     const xhr = new XMLHttpRequest();
-    xhr.open('DELETE', `http://localhost:8001/api/delete-news`, true);
+    xhr.open('DELETE', `http:///api/delete-news`, true);
     xhr.setRequestHeader('Content-Type', 'application/json');
     const token = localStorage.getItem('jwtToken');
     xhr.setRequestHeader('Authorization', `Bearer ${token}`);
@@ -353,7 +353,7 @@ function logout()
     {
         localStorage.removeItem('userData')
         localStorage.removeItem('jwtToken')
-        
+
     }
     document.getElementById('span-avatar').innerText = 'Hi ' + JSON.parse(localStorage.getItem('userData')).lastName
     if (JSON.parse(localStorage.getItem('userData')).roleId !== "3") {
@@ -372,7 +372,7 @@ let showNew = async (id, name , buttonId) => {
         }
 
         // Gọi API để xác thực JWT
-        const response = await fetch('http://localhost:8001/api/show-hide-new', {
+        const response = await fetch('http:///api/show-hide-new', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -394,9 +394,9 @@ let showNew = async (id, name , buttonId) => {
     } catch (error) {
         console.error(`Error in showHideBook: ${error}`);
         alert('An error occurred while updating the book name.');
-    }   
+    }
   }
-}    
+}
 
 let hideNew = async (id, name , buttonId) => {
         if (buttonId === "btn-hide-fade") {
@@ -409,7 +409,7 @@ let hideNew = async (id, name , buttonId) => {
         }
 
         // Gọi API để xác thực JWT
-        const response = await fetch('http://localhost:8001/api/show-hide-new', {
+        const response = await fetch('http:///api/show-hide-new', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -431,9 +431,9 @@ let hideNew = async (id, name , buttonId) => {
     } catch (error) {
         console.error(`Error in showHideBook: ${error}`);
         alert('An error occurred while updating the book name.');
-    }   
+    }
   }
-}    
+}
 </script>
 
 </html>

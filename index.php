@@ -1259,7 +1259,7 @@ let token = localStorage.getItem('jwtToken');
 			// Prepare API request
 			const backendBase = (window.APP_CONFIG && window.APP_CONFIG.backendUrl) 
 				? String(window.APP_CONFIG.backendUrl).replace(/\/$/, '') 
-				: 'http://localhost:8001';
+				: 'http://localhost:8000';
 			
 			const apiUrl = `${backendBase}/api/save-cart`;
 			const payload = {

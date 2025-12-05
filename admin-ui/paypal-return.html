@@ -127,13 +127,22 @@
                     // For backend compatibility, also send orderId alias
                     if (!payload.orderId && providerPaymentId) payload.orderId = providerPaymentId;
 
-                    // Hardcode backend base URL to port 8001
-                    const backendBase = location.protocol + '//' + location.hostname + ':8001';
+                    // Hardcode backend base URL to port 8000
+                    const backendBase = location.protocol + '//' + location.hostname + ':8000';
                     const captureUrl = backendBase.replace(/\/$/, '') + '/api/payments/capture';
                     const res = await fetch(captureUrl, { method:'POST', headers, body: JSON.stringify(payload), credentials: 'include' });
                     const data = await res.json().catch(()=>null);
                     if (res.ok && data && data.errCode === 0) {
                         setResultSuccess('Thanh toán đã được xác nhận. Cảm ơn bạn!');
+                        // Try to clear user's temporary cart on backend. Use special flag 'ALL'.
+                        try{
+                            const deleteUrl = backendBase.replace(/\/$/, '') + '/api/delete-cartitem';
+                            // send same headers (including Authorization if present)
+                            const delRes = await fetch(deleteUrl, { method: 'POST', headers, body: JSON.stringify({ cartItemId: 'ALL' }), credentials: 'include' });
+                            // attempt to parse and log response for debugging (non-blocking)
+                            try{ const delData = await delRes.json().catch(()=>null); if (!delRes.ok || (delData && delData.errCode && delData.errCode !== 0)) console.warn('delete-cartitem failed', delRes.status, delData); }catch(e){ console.warn('delete-cartitem parse error', e); }
+                        }catch(e){ console.warn('delete-cartitem error', e); }
+
                         setTimeout(()=>{
                             window.location.href = data.redirectUrl || '/QLTV-ChatboxAi/frontend/index.php';
                         }, 1800);

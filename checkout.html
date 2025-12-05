@@ -112,8 +112,43 @@
     <script>
         // Checkout page script: reads localStorage.checkoutCart, allows edits, computes totals,
         // saves snapshot to localStorage.checkoutOrder and proceeds with payment or COD.
-        const backendBase = '/api';
-        const token = localStorage.getItem('token') || '';
+        // Default backend API base: http://<host>:8000/api — override with `window.BACKEND_BASE` if set.
+        (function(){
+            const DEFAULT_PORT = 8000;
+            const host = location.hostname || 'localhost';
+            const proto = location.protocol || 'http:';
+            const configured = (window.BACKEND_BASE && String(window.BACKEND_BASE).replace(/\/$/, '')) || null;
+            if (configured) window.__BACKEND_BASE = configured.replace(/\/$/, '');
+            else window.__BACKEND_BASE = proto + '//' + host + ':' + DEFAULT_PORT + '/api';
+        })();
+        const backendBase = window.__BACKEND_BASE || '/api';
+
+        // Robust token retrieval: check multiple keys in localStorage/sessionStorage and cookies
+        function getAuthToken(){
+            const keys = ['token','jwtToken','jwt','accessToken','authToken'];
+            try{
+                for(const k of keys){
+                    try{ const v = localStorage.getItem(k); if (v) return v; }catch(e){}
+                    try{ const v2 = sessionStorage.getItem(k); if (v2) return v2; }catch(e){}
+                }
+            }catch(e){}
+            // check cookies like token=..., jwtToken=... or Authorization=Bearer ...
+            try{
+                if (document.cookie){
+                    const parts = document.cookie.split(';').map(c=>c.trim());
+                    for(const p of parts){
+                        for(const k of keys){ if (p.startsWith(k+'=')) return decodeURIComponent(p.substring(k.length+1)); }
+                        if (p.startsWith('Authorization=')){
+                            const val = decodeURIComponent(p.substring('Authorization='.length));
+                            if (val.startsWith('Bearer ')) return val.substring(7);
+                            return val;
+                        }
+                    }
+                }
+            }catch(e){}
+            return '';
+        }
+        const token = getAuthToken();
         let cartItems = [];
 
         const moneyFmt = new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' });
@@ -126,9 +161,13 @@
             const tbody = document.getElementById('cartTableBody'); tbody.innerHTML = '';
             cartItems.forEach((it, idx)=>{
                 const tr = document.createElement('tr');
-                const name = escapeHtml(it.name || it.bookname || it.title || 'Sản phẩm');
+                const rawName = it.name || it.bookname || it.title || 'Sản phẩm';
+                const name = escapeHtml(rawName);
                 const qty = Number(it.quantity||it.qty||1);
                 const unit = Number(it.unitPrice||it.price||0);
+                // attach data attributes for consumer scripts: data-bookname and data-bookid
+                try{ tr.dataset.bookname = String(rawName); }catch(e){}
+                try{ tr.dataset.bookid = String(it.id || it.bookId || it.bookid || ''); }catch(e){}
                 tr.innerHTML = '<td>'+name+'</td>'+
                              '<td class="text-center">'+qty+'</td>'+
                              '<td class="text-right">'+formatMoney(unit)+'</td>'+
@@ -206,22 +245,85 @@
                 const pm = document.getElementById('paymentMethod').value;
                 if(pm === 'paypal'){
                     try{
+                        // disable button + show waiting cursor
+                        const btn = document.getElementById('proceedBtn'); btn.disabled = true; btn.innerText = 'Đang chuyển...';
                         document.getElementById('paymentResult').innerHTML = '';
                         document.body.style.cursor = 'wait';
-                        const res = await fetch(backendBase + '/payments/create', { method:'POST', headers: Object.assign({'Content-Type':'application/json'}, token?{'Authorization':'Bearer '+token}:{ }), body: JSON.stringify({ provider:'paypal', items: cartItems, total: totals.total, buyer }) });
+
+                        // Build headers (include Authorization if available) and Idempotency-Key
+                        const headers = { 'Content-Type': 'application/json' };
+                        if (token) headers['Authorization'] = 'Bearer ' + token;
+                        // Idempotency: reuse saved key for this cart if present
+                        function uuidv4(){ if(window.crypto && crypto.randomUUID) return crypto.randomUUID(); try{ return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g,function(c){var r=Math.random()*16|0,v=c=='x'?r:(r&0x3|0x8);return v.toString(16);}); }catch(e){return Date.now() + '-' + Math.random().toString(36).slice(2,9);} }
+                        const savedKeyKey = 'checkout_idempotency';
+                        let idempotency = localStorage.getItem(savedKeyKey) || null;
+                        if (!idempotency) { idempotency = uuidv4(); try{ localStorage.setItem(savedKeyKey, idempotency); }catch(e){} }
+                        headers['Idempotency-Key'] = idempotency;
+
+                        const res = await fetch(backendBase + '/payments/create', { method:'POST', headers, body: JSON.stringify({ provider:'paypal', items: cartItems, subtotal: totals.subtotal, shipping: totals.ship, tax: totals.tax, total: totals.total, buyer }) });
                         document.body.style.cursor = 'default';
-                        if(!res.ok){ const txt = await res.text().catch(()=>''); throw new Error('Server: '+res.status+' '+txt); }
-                        const data = await res.json();
-                        if(data && (data.paymentUrl||data.approvalUrl||data.redirectUrl)){ window.location.href = data.paymentUrl||data.approvalUrl||data.redirectUrl; }
-                        else showPaymentError('Không thể khởi tạo thanh toán. Vui lòng thử lại sau.', data);
+                        btn.disabled = false; btn.innerText = 'Tiến hành thanh toán';
+
+                        let data = null;
+                        try{ data = await res.json(); }catch(e){ /* ignore parse error */ }
+
+                        if (!res.ok) {
+                            // show server status or body error
+                            const txt = data && (data.errMessage || data.message) ? (data.errMessage || data.message) : ('HTTP ' + res.status);
+                            throw new Error('Server: ' + txt);
+                        }
+
+                        // Prefer semantic errCode check (backend often returns errCode)
+                        if (data && (data.errCode === 0) && (data.approvalUrl || data.paymentUrl || data.redirectUrl)) {
+                            // Clear idempotency key on success redirect (optional)
+                            try{ localStorage.removeItem(savedKeyKey); }catch(e){}
+                            window.location.href = data.paymentUrl || data.approvalUrl || data.redirectUrl;
+                            return;
+                        }
+
+                        // Some backends return errCode in body even with 200; handle that
+                        if (data && (data.approvalUrl || data.paymentUrl || data.redirectUrl)) {
+                            window.location.href = data.paymentUrl || data.approvalUrl || data.redirectUrl;
+                            return;
+                        }
+
+                        // fallback: show error details
+                        const em = (data && (data.errMessage || data.message)) || JSON.stringify(data) || 'Không thể khởi tạo thanh toán. Vui lòng thử lại sau.';
+                        showPaymentError(em, data);
                     }catch(err){ document.body.style.cursor = 'default'; showPaymentError('Lỗi khởi tạo thanh toán. Vui lòng thử lại.', err); }
                     return;
                 }
                 if(pm === 'cod'){
                     try{
                         const res = await fetch(backendBase + '/orders/create', { method:'POST', headers: Object.assign({'Content-Type':'application/json'}, token?{'Authorization':'Bearer '+token}:{ }), body: JSON.stringify({ paymentMethod:'cod', items: cartItems, total: totals.total, buyer }) });
-                        const data = await res.json();
-                        document.getElementById('paymentResult').innerHTML = '<div class="alert alert-success">Đơn hàng đã được tạo (COD). Mã: '+(data.id||'')+'</div>';
+                        let data = null;
+                        try{ data = await res.json(); }catch(e){ data = null; }
+
+                        if (!res.ok) {
+                            const em = (data && (data.errMessage || data.message)) || ('HTTP ' + res.status);
+                            throw new Error(em);
+                        }
+
+                        // Save server order id to localStorage (optional) and redirect to return page
+                        const serverOrderId = (data && (data.id || data.orderId || data.order_id)) ? (data.id || data.orderId || data.order_id) : '';
+                        try{ localStorage.setItem('lastOrderId', serverOrderId); }catch(e){}
+
+                        // Attempt to clear temporary cart on backend (use special flag 'ALL')
+                        try{
+                            const userObj = JSON.parse(localStorage.getItem('userData') || 'null');
+                            const userIdToSend = (userObj && userObj.id) ? userObj.id : '';
+                            const delHeaders = Object.assign({'Content-Type':'application/json'}, token ? { 'Authorization': 'Bearer ' + token } : {});
+                            const delRes = await fetch(backendBase + '/delete-cartitem', { method: 'POST', headers: delHeaders, body: JSON.stringify({ cartItemId: 'ALL', userId: userIdToSend }) });
+                            try{ const delData = await delRes.json().catch(()=>null); if (!delRes.ok || (delData && delData.errCode && delData.errCode !== 0)) console.warn('delete-cartitem failed', delRes.status, delData); }catch(e){ console.warn('delete-cartitem parse error', e); }
+                        }catch(e){ console.warn('delete-cartitem error', e); }
+
+                        // Clear local storage cart snapshots
+                        try{ localStorage.removeItem('checkoutCart'); localStorage.removeItem('checkoutOrder'); }catch(e){}
+
+                        // Redirect to return page which will show confirmation and email notice
+                        const url = 'return.php?status=success' + (serverOrderId ? '&orderId=' + encodeURIComponent(serverOrderId) : '');
+                        window.location.href = url;
+                        return;
                     }catch(err){ showPaymentError('Lỗi tạo đơn. Vui lòng thử lại.', err); }
                     return;
                 }

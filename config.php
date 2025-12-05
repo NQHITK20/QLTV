@@ -22,7 +22,7 @@ if (file_exists($envPath)) {
 }
 
 // Defaults
-define('BACKEND_URL', isset($env['BACKEND_URL']) ? $env['BACKEND_URL'] : 'http://localhost:8001');
+define('BACKEND_URL', isset($env['BACKEND_URL']) ? $env['BACKEND_URL'] : 'http://localhost:8000');
 define('APP_BASE', isset($env['APP_BASE']) ? $env['APP_BASE'] : '/QLTV');
 
 // Expose minimal config to client-side JS (in pages that include this file early)

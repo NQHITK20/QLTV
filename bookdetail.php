@@ -1198,7 +1198,7 @@ async function addToCartDetail() {
 
 		const backendBase = (window.APP_CONFIG && window.APP_CONFIG.backendUrl) 
 			? String(window.APP_CONFIG.backendUrl).replace(/\/$/, '') 
-			: 'http://localhost:8001';
+			: 'http://localhost:8000';
 		
 		const apiUrl = `${backendBase}/api/save-cart`;
 		// Build payload compatible with backend expectations.
