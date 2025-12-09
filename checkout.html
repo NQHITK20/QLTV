@@ -202,7 +202,16 @@
             try{
                 const saved = JSON.parse(localStorage.getItem('checkoutCart') || 'null');
                 if (saved && Array.isArray(saved.items) && saved.items.length>0){
-                    cartItems = saved.items.map(it => ({ id: it.id||'', name: it.name||'', quantity: Number(it.quantity||it.qty||1), unitPrice: Number(it.unitPrice||it.price||0), subtotal: Number(it.subtotal) || (Number(it.unitPrice||it.price||0) * Number(it.quantity||1)) }));
+                    cartItems = saved.items.map(it => ({
+                        bookId: it.id || null,
+                        bookname: it.bookname || it.bookName || it.name || '',
+                        name: it.name || it.bookname || it.bookName || '',
+                        quantity: Number(it.quantity||it.qty||1),
+                        unitPrice: Number(it.unitPrice||it.price||0),
+                        price: Number(it.unitPrice||it.price||0),
+                        subtotal: Number(it.subtotal) || (Number(it.unitPrice||it.price||0) * Number(it.quantity||1)),
+                        image: it.image || it.img || it.imageUrl || null
+                    }));
                 } else { cartItems = cartItems || []; }
             }catch(e){ console.warn('checkout load saved error', e); cartItems = cartItems || []; }
 
@@ -260,7 +269,23 @@
                         if (!idempotency) { idempotency = uuidv4(); try{ localStorage.setItem(savedKeyKey, idempotency); }catch(e){} }
                         headers['Idempotency-Key'] = idempotency;
 
-                        const res = await fetch(backendBase + '/payments/create', { method:'POST', headers, body: JSON.stringify({ provider:'paypal', items: cartItems, subtotal: totals.subtotal, shipping: totals.ship, tax: totals.tax, total: totals.total, buyer }) });
+                        // Include optional image field taken from localStorage key 'image'
+                        let topImage = null;
+                        try {
+                            const imgKey = localStorage.getItem('image');
+                            if (imgKey) topImage = imgKey;
+                            else {
+                                const saved = JSON.parse(localStorage.getItem('checkoutCart') || 'null');
+                                if (saved && Array.isArray(saved.items) && saved.items.length) {
+                                    topImage = saved.items[0].image || null;
+                                }
+                            }
+                        } catch (e) { topImage = null; }
+
+                        const payload = { provider: 'paypal', items: cartItems, subtotal: totals.subtotal, shipping: totals.ship, tax: totals.tax, total: totals.total, buyer };
+                        if (topImage) payload.image = topImage;
+
+                        const res = await fetch(backendBase + '/payments/create', { method:'POST', headers, body: JSON.stringify(payload) });
                         document.body.style.cursor = 'default';
                         btn.disabled = false; btn.innerText = 'Tiến hành thanh toán';
 

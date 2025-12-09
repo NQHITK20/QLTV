@@ -926,8 +926,6 @@ document.addEventListener("DOMContentLoaded", async function() {
 			document.getElementById("description").innerText = book.description || '';
 			function formatCurrency(n){ return (Number(n)||0).toLocaleString('en-US', { style: 'currency', currency: 'USD' }); }
 			document.getElementById("price").innerText = formatCurrency(book.price || 0);
-
-			console.log('fetchData: normalized book ->', book);
 			// refresh cart badge if header present
 			if (typeof refreshCart === 'function') refreshCart();
 			// check wishlist status

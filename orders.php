@@ -952,134 +952,98 @@ if ($idusername) {
 							<div class="col-xs-12 col-sm-8 col-md-8 col-lg-9 pull-right">
 								<div id="tg-content" class="tg-content">
 									<div class="tg-products">
-                                            <div class="tg-sectionhead">
-                                            	<h2>Giỏ Hàng</h2>
-                                        	</div>
+											<div class="tg-sectionhead">
+												<h2>Sách Đã Đặt</h2>
+											</div>
 										<div class="tg-productgrid">
-											<div id="cartRoot" class="container-fluid px-0">
-												<table class="table table-striped cart-table">
-													<thead>
-														<tr>
-															<th>STT</th>
-															<th>Ảnh</th>
-															<th>Tên sách</th>
-															<th>Giá</th>
-															<th style="width:120px">Số lượng</th>
-															<th>Thành tiền</th>
-															<th>Hành động</th>
-														</tr>
-													</thead>
-													<tbody id="cartBody">
-													<?php
-													// Server-side fetch of saved cart so page shows items even if JS token isn't available
-													$serverToken = isset($_COOKIE['token']) ? $_COOKIE['token'] : '';
-													$items = [];
-													$cartUrl = rtrim(BACKEND_URL, '/') . '/api/get-saved-cart';
+											<div id="ordersRoot" class="container-fluid px-0">
+												<?php if (empty($idusername)) { ?>
+													<p class="empty-note">Vui lòng đăng nhập để xem đơn hàng của bạn.</p>
+												<?php } else { ?>
+													<div id="ordersMessage">Đang tải đơn hàng...</div>
+													<table class="table table-striped orders-table" id="ordersTable" style="display:none;">
+														<thead>
+															<tr>
+																<th>STT</th>
+																<th>Ảnh</th>
+																<th>Tên sách</th>
+																<th>Giá</th>
+																<th style="width:120px">Số lượng</th>
+																<th>Tổng</th>
+																<th>Trạng thái</th>
+																<th>Hành động</th>
+															</tr>
+														</thead>
+														<tbody id="ordersBody"></tbody>
+													</table>
+													<script>
+													(function(){
+														var getToken = function() {
+															var match = document.cookie.match(new RegExp('(^| )' + 'token' + '=([^;]+)'));
+															return match ? match[2] : null;
+														};
 
-													// Helper to normalize cart response into $items array
-													$normalizeCart = function($cartData) {
-														$it = [];
-														if (!is_array($cartData)) return $it;
-														if (isset($cartData['errCode']) && $cartData['errCode'] === 0) {
-															if (isset($cartData['data']) && is_array($cartData['data'])) return $cartData['data'];
-															if (isset($cartData['data']['items']) && is_array($cartData['data']['items'])) return $cartData['data']['items'];
-															// some backends return direct items under data->items or data
-														}
-														return $it;
-													};
+														var token = getToken();
+														var api = (function(){
+															try { return window.BACKEND_URL || '<?php echo rtrim(BACKEND_URL, "/"); ?>'; } catch(e) { return '<?php echo rtrim(BACKEND_URL, "/"); ?>'; }
+														})();
 
-													// Try GET with server token if available
-													if (!empty($serverToken)) {
-														$chCart = curl_init($cartUrl);
-														curl_setopt($chCart, CURLOPT_RETURNTRANSFER, true);
-														curl_setopt($chCart, CURLOPT_HTTPHEADER, array(
-															'Content-Type: application/json',
-															'Authorization: Bearer ' . $serverToken
-														));
-														curl_setopt($chCart, CURLOPT_HTTPGET, true);
-														$respCart = curl_exec($chCart);
-														if ($respCart !== FALSE) {
-															$cartData = json_decode($respCart, true);
-															$items = $normalizeCart($cartData);
-														}
-														curl_close($chCart);
-														// If GET didn't yield items and we have idusername, try POST fallback
-														if (empty($items) && !empty($idusername)) {
-															$chCart = curl_init($cartUrl);
-															$payload = json_encode(['userId' => $idusername]);
-															curl_setopt($chCart, CURLOPT_RETURNTRANSFER, true);
-															curl_setopt($chCart, CURLOPT_HTTPHEADER, array('Content-Type: application/json'));
-															curl_setopt($chCart, CURLOPT_POST, true);
-															curl_setopt($chCart, CURLOPT_POSTFIELDS, $payload);
-															$respCart = curl_exec($chCart);
-															if ($respCart !== FALSE) {
-																$cartData = json_decode($respCart, true);
-																$items = $normalizeCart($cartData);
+														function renderOrders(data) {
+															var tbody = document.getElementById('ordersBody');
+															var table = document.getElementById('ordersTable');
+															var msg = document.getElementById('ordersMessage');
+															if (!data || !data.length) {
+																msg.textContent = 'Bạn chưa có đơn hàng.';
+																table.style.display = 'none';
+																return;
 															}
-															curl_close($chCart);
+															msg.style.display = 'none';
+															table.style.display = '';
+															tbody.innerHTML = '';
+															data.forEach(function(order, idx){
+																(order.items||[]).forEach(function(it, j){
+																	var tr = document.createElement('tr');
+																	var img = document.createElement('td');
+																	var imgEl = document.createElement('img');
+																	imgEl.src = it.image ? ('images/books/' + encodeURIComponent(it.image)) : 'images/books/no-image.png';
+																	imgEl.style.maxWidth = '80px';
+																	img.appendChild(imgEl);
+																	tr.innerHTML = '<td>' + (idx+1) + '</td>';
+																	tr.appendChild(img);
+																	tr.innerHTML += '<td>' + (it.bookname || it.bookName || '') + '</td>';
+																	tr.innerHTML += '<td>$' + (Number(it.price||0).toFixed(2)) + '</td>';
+																	tr.innerHTML += '<td>' + (it.quantity || it.qty || 1) + '</td>';
+																	tr.innerHTML += '<td>$' + (Number((it.price||0) * (it.quantity||it.qty||1)).toFixed(2)) + '</td>';
+																	tr.innerHTML += '<td>' + (order.status || '') + '</td>';
+																	tr.innerHTML += '<td><a class="btn btn-sm btn-primary" href="orderdetail.php?id=' + encodeURIComponent(order.id||order.orderId||'') + '">Xem</a></td>';
+																	tbody.appendChild(tr);
+																});
+															});
 														}
-													} elseif (!empty($idusername)) {
-														// No server token, use POST with userId
-														$chCart = curl_init($cartUrl);
-														$payload = json_encode(['userId' => $idusername]);
-														curl_setopt($chCart, CURLOPT_RETURNTRANSFER, true);
-														curl_setopt($chCart, CURLOPT_HTTPHEADER, array('Content-Type: application/json'));
-														curl_setopt($chCart, CURLOPT_POST, true);
-														curl_setopt($chCart, CURLOPT_POSTFIELDS, $payload);
-														$respCart = curl_exec($chCart);
-														if ($respCart !== FALSE) {
-															$cartData = json_decode($respCart, true);
-															$items = $normalizeCart($cartData);
-														}
-														curl_close($chCart);
-													}
 
-													// Render rows
-														if (empty($items)) {
-														if (empty($serverToken) && empty($idusername)) {
-															echo '<tr><td colspan="7" class="empty-note">Vui lòng đăng nhập để xem giỏ.</td></tr>';
-														} else {
-															echo '<tr><td colspan="7">Giỏ hàng trống hoặc không thể tải giỏ.</td></tr>';
+														function fetchOrders() {
+															var url = api + '/api/orders/mine';
+															fetch(url, {
+																headers: token ? { 'Authorization': 'Bearer ' + token } : { 'Content-Type': 'application/json' }
+															}).then(function(r){ return r.json(); }).then(function(json){
+																// Expecting an array or { errCode:0, data: [...] }
+																var arr = [];
+																if (!json) { arr = []; }
+																else if (Array.isArray(json)) { arr = json; }
+																else if (json.errCode === 0 && Array.isArray(json.data)) { arr = json.data; }
+																else if (Array.isArray(json.data)) { arr = json.data; }
+																renderOrders(arr);
+															}).catch(function(err){
+																var msg = document.getElementById('ordersMessage');
+																if (msg) msg.textContent = 'Không thể tải đơn hàng.';
+																console.error('fetch orders error', err);
+															});
 														}
-													} else {
-														$idx = 1;
-														foreach ($items as $it) {
-																// Use relative path so files load the same as `index.php`
-																$imgBase = 'images/books/';
-															$img = !empty($it['image']) ? $imgBase . rawurlencode($it['image']) : $imgBase . 'no-image.png';
-															$name = htmlspecialchars($it['bookname'] ?? $it['bookName'] ?? 'Không tên');
-															$category = htmlspecialchars($it['category'] ?? '');
-															$qty = intval($it['quantity'] ?? $it['qty'] ?? 1);
-															$price = floatval($it['price'] ?? 0);
-															$subtotal = $price * $qty;
-															$rowId = htmlspecialchars($it['id'] ?? $it['cartItemId'] ?? '', ENT_QUOTES);
-															echo '<tr data-cartitemid="' . $rowId . '">';
-															echo '<td>' . $idx++ . '</td>';
-															echo '<td><img src="' . htmlspecialchars($img, ENT_QUOTES) . '" alt=""/></td>';
-															echo '<td>' . $name . '</td>';
-															echo '<td>$' . number_format($price, 2, '.', ',') . '</td>';
-															echo '<td><input type="number" class="form-control qty-input" value="' . $qty . '" min="1" style="width:80px;"></td>';
-															echo '<td>$' . number_format($subtotal, 2, '.', ',') . '</td>';
-															echo '<td><button class="btn btn-sm btn-danger btn-remove">X</button></td>';
-															echo '</tr>';
-														}
-													}
-													?>
-													</tbody>
-												</table>
-												<div class="d-flex justify-content-between align-items-center mt-3">
-													<div>
-														<button id="btnClear" class="btn btn-outline-danger">Xóa hết</button>
-														<a href="products.php" class="btn btn-secondary">Tiếp tục mua sắm</a>
-													</div>
-													<div class="checkout-box text-right">
-														<div>Số mặt hàng: <strong id="cartCount">0</strong></div>
-														<div class="mt-1">Tổng tiền: <strong id="cartTotal">$0.00</strong></div>
-														<div class="mt-2">
-															<button id="btnCheckout" class="btn btn-outline-primary">Thanh toán</button>
-														</div>
-													</div>
-												</div>
+
+														fetchOrders();
+													})();
+													</script>
+												<?php } ?>
 											</div>
 										</div>
 									</div>
@@ -1249,8 +1213,8 @@ if ($idusername) {
 	// Inject server-side known user id (from cookie) so client can call get-saved-cart without a token
 	window.SERVER_USERID = '<?php echo isset($idusername) ? htmlspecialchars($idusername, ENT_QUOTES) : ''; ?>';
 	</script>
+
 	<script>
-	// Load and render saved cart items
 		async function loadSavedCart() {
 			const user = JSON.parse(localStorage.getItem('userData') || 'null');
 			// Prefer localStorage token, fall back to injected server token (from cookie) or readable cookie
@@ -1493,15 +1457,7 @@ if ($idusername) {
 					const qty = qtyInput ? (parseInt(qtyInput.value, 10) || 1) : 1;
 					const subtotal = unitPrice * qty;
 					const imgEl = r.children[1] && r.children[1].querySelector('img');
-					// store only the filename (no path or querystring)
-					let image = '';
-					if (imgEl) {
-						try {
-							const src = imgEl.getAttribute('src') || '';
-							const parts = src.split('/');
-							image = parts.length ? parts[parts.length - 1].split('?')[0] : src;
-						} catch (e) { image = imgEl.getAttribute('src') || ''; }
-					}
+					const image = imgEl ? imgEl.getAttribute('src') : '';
 					items.push({ id: cartItemId, name, quantity: qty, unitPrice, subtotal, image });
 				});
 				if (items.length === 0) { alert('Giỏ hàng rỗng.'); return; }
