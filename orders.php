@@ -960,89 +960,76 @@ if ($idusername) {
 												<?php if (empty($idusername)) { ?>
 													<p class="empty-note">Vui lòng đăng nhập để xem đơn hàng của bạn.</p>
 												<?php } else { ?>
-													<div id="ordersMessage">Đang tải đơn hàng...</div>
-													<table class="table table-striped orders-table" id="ordersTable" style="display:none;">
-														<thead>
-															<tr>
-																<th>STT</th>
-																<th>Ảnh</th>
-																<th>Tên sách</th>
-																<th>Giá</th>
-																<th style="width:120px">Số lượng</th>
-																<th>Tổng</th>
-																<th>Trạng thái</th>
-																<th>Hành động</th>
-															</tr>
-														</thead>
-														<tbody id="ordersBody"></tbody>
-													</table>
-													<script>
-													(function(){
-														var getToken = function() {
-															var match = document.cookie.match(new RegExp('(^| )' + 'token' + '=([^;]+)'));
-															return match ? match[2] : null;
-														};
-
-														var token = getToken();
-														var api = (function(){
-															try { return window.BACKEND_URL || '<?php echo rtrim(BACKEND_URL, "/"); ?>'; } catch(e) { return '<?php echo rtrim(BACKEND_URL, "/"); ?>'; }
-														})();
-
-														function renderOrders(data) {
-															var tbody = document.getElementById('ordersBody');
-															var table = document.getElementById('ordersTable');
-															var msg = document.getElementById('ordersMessage');
-															if (!data || !data.length) {
-																msg.textContent = 'Bạn chưa có đơn hàng.';
-																table.style.display = 'none';
-																return;
+													<div class="table-responsive" style="margin-top:12px;">
+														<table class="table table-striped" id="ordersTableStatic">
+															<thead>
+																<tr>
+																	<th>STT</th>
+																	<th>Ảnh</th>
+																	<th>Tên sách</th>
+																	<th>Giá</th>
+																	<th style="width:120px">Số lượng</th>
+																	<th>Tổng</th>
+																	<th>Trạng thái</th>
+																</tr>
+															</thead>
+															<tbody id="ordersStaticBody">
+																<tr>
+																	<td colspan="7" style="text-align:center;color:#666;padding:28px 0;">Đang kiểm tra đơn hàng...</td>
+																</tr>
+															</tbody>
+														</table>
+														<script>
+														(function(){
+															function getCookie(name){
+																const match = document.cookie.match(new RegExp('(^| )' + name + '=([^;]+)'));
+																return match ? decodeURIComponent(match[2]) : null;
 															}
-															msg.style.display = 'none';
-															table.style.display = '';
-															tbody.innerHTML = '';
-															data.forEach(function(order, idx){
-																(order.items||[]).forEach(function(it, j){
-																	var tr = document.createElement('tr');
-																	var img = document.createElement('td');
-																	var imgEl = document.createElement('img');
-																	imgEl.src = it.image ? ('images/books/' + encodeURIComponent(it.image)) : 'images/books/no-image.png';
-																	imgEl.style.maxWidth = '80px';
-																	img.appendChild(imgEl);
-																	tr.innerHTML = '<td>' + (idx+1) + '</td>';
-																	tr.appendChild(img);
-																	tr.innerHTML += '<td>' + (it.bookname || it.bookName || '') + '</td>';
-																	tr.innerHTML += '<td>$' + (Number(it.price||0).toFixed(2)) + '</td>';
-																	tr.innerHTML += '<td>' + (it.quantity || it.qty || 1) + '</td>';
-																	tr.innerHTML += '<td>$' + (Number((it.price||0) * (it.quantity||it.qty||1)).toFixed(2)) + '</td>';
-																	tr.innerHTML += '<td>' + (order.status || '') + '</td>';
-																	tr.innerHTML += '<td><a class="btn btn-sm btn-primary" href="orderdetail.php?id=' + encodeURIComponent(order.id||order.orderId||'') + '">Xem</a></td>';
-																	tbody.appendChild(tr);
-																});
-															});
-														}
-
-														function fetchOrders() {
-															var url = api + '/api/orders/mine';
-															fetch(url, {
-																headers: token ? { 'Authorization': 'Bearer ' + token } : { 'Content-Type': 'application/json' }
+															function fmtMoney(n){ try { return (Number(n)||0).toLocaleString('en-US',{style:'currency',currency:'USD'}); } catch(e) { return String(n); } }
+															const token = getCookie('token');
+															const api = (function(){ try{ return window.BACKEND_URL || '<?php echo rtrim(BACKEND_URL, "/"); ?>'; }catch(e){ return '<?php echo rtrim(BACKEND_URL, "/"); ?>'; } })();
+															const tbody = document.getElementById('ordersStaticBody');
+															const table = document.getElementById('ordersTableStatic');
+								
+															fetch(api + '/api/orders/get-order', {
+																method: 'POST',
+																headers: Object.assign({ 'Content-Type': 'application/json' }, token ? { 'Authorization': 'Bearer ' + token } : {}),
+																credentials: 'include',
+																body: JSON.stringify({})
 															}).then(function(r){ return r.json(); }).then(function(json){
-																// Expecting an array or { errCode:0, data: [...] }
-																var arr = [];
-																if (!json) { arr = []; }
-																else if (Array.isArray(json)) { arr = json; }
-																else if (json.errCode === 0 && Array.isArray(json.data)) { arr = json.data; }
-																else if (Array.isArray(json.data)) { arr = json.data; }
-																renderOrders(arr);
+																if (!json || json.errCode !== 0 || !Array.isArray(json.data) || json.data.length === 0){
+																	tbody.innerHTML = '<tr><td colspan="7" style="text-align:center;color:#666;padding:28px 0;">Bạn chưa có đơn hàng.</td></tr>';
+																	table.style.display = '';
+																	return;
+																}
+																// render rows (per-item). Use statusText (VN) when available
+																let rows = '';
+																let counter = 1;
+																json.data.forEach(function(order){
+																	const status = order.statusText || order.status || 'Chưa rõ';
+																	(order.items||[]).forEach(function(it){
+																		const img = it.image ? ('images/books/' + encodeURIComponent(it.image)) : 'images/books/no-image.png';
+																		rows += '<tr>' +
+																			'<td>' + (counter++) + '</td>' +
+																			'<td><img src="' + img + '" style="max-width:80px;"/></td>' +
+																			'<td>' + (it.bookname || '-') + '</td>' +
+																			'<td>' + fmtMoney(it.unitPrice || it.price || 0) + '</td>' +
+																			'<td>' + (it.quantity || 0) + '</td>' +
+																			'<td>' + fmtMoney(it.subtotal || ((it.unitPrice||0)*(it.quantity||0))) + '</td>' +
+																			'<td>' + status + '</td>' +
+																		'</tr>';
+																	});
+																});
+																tbody.innerHTML = rows || '<tr><td colspan="7" style="text-align:center;color:#666;padding:28px 0;">Bạn chưa có đơn hàng.</td></tr>';
+																table.style.display = '';
 															}).catch(function(err){
-																var msg = document.getElementById('ordersMessage');
-																if (msg) msg.textContent = 'Không thể tải đơn hàng.';
-																console.error('fetch orders error', err);
+																console.error('orders fetch error', err);
+																tbody.innerHTML = '<tr><td colspan="7" style="text-align:center;color:#666;padding:28px 0;">Không thể tải đơn hàng.</td></tr>';
+																table.style.display = '';
 															});
-														}
-
-														fetchOrders();
-													})();
-													</script>
+														})();
+														</script>
+														</div>
 												<?php } ?>
 											</div>
 										</div>

@@ -143,6 +143,16 @@
                             try{ const delData = await delRes.json().catch(()=>null); if (!delRes.ok || (delData && delData.errCode && delData.errCode !== 0)) console.warn('delete-cartitem failed', delRes.status, delData); }catch(e){ console.warn('delete-cartitem parse error', e); }
                         }catch(e){ console.warn('delete-cartitem error', e); }
 
+                        // Try to notify user by email via backend API
+                        (async function(){
+                            try {
+                                const notifyUrl = backendBase.replace(/\/$/, '') + '/api/notify/order';
+                                const notifyPayload = { orderId: data.orderId, type: 'paypal' };
+                                const notifyRes = await fetch(notifyUrl, { method: 'POST', headers, body: JSON.stringify(notifyPayload), credentials: 'include' });
+                                try { const notifyJson = await notifyRes.json().catch(()=>null); if (!notifyRes.ok) console.warn('notify/order failed', notifyRes.status, notifyJson); } catch(e){ console.warn('notify/order response parse', e); }
+                            } catch (e) { console.warn('notify/order error', e); }
+                        })();
+
                         setTimeout(()=>{
                             window.location.href = data.redirectUrl || '/QLTV-ChatboxAi/frontend/index.php';
                         }, 1800);

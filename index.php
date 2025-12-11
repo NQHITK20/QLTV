@@ -449,7 +449,8 @@ if (isset($data12['data'])) {
 								<figure><a><img src="images/blank-avatar.jpg" alt="image description"></a></figure>
 								<span onclick="profileBar()" class="dropbtn"></span>
 								<div id="myDropdown" class="dropdown-content">
-									<a class="dropdown-1" href="admin-ui/page-login.html" onclick="logout()"></i></a>
+									<a class="dropdown-1" href="admin-ui/page-login.html" onclick="logout()"></i> Đăng xuất</a>
+									<a class="dropdown-3" href="orders.php">Đơn sách</a>
 									<a class="dropdown-2" href="admin-ui/page-register.html"></i> Đăng ký</a>
 								</div>
 							</div>
