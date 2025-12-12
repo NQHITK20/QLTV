@@ -27,7 +27,7 @@
                 }
             ?>
             <?php if($orderId): ?>
-                <div class="alert alert-info">Mã đơn hàng: <strong><?php echo $orderId; ?></strong></div>
+                <div class="alert alert-info">Mã đơn hàng: <strong><?php echo "COD - " . $orderId; ?></strong></div>
             <?php endif; ?>
 
             <div class="mt-3">

@@ -99,7 +99,8 @@
                     <li class="menu-item-has-children dropdown hide-with-admin">
                         <a href="#" class="dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"> <i class="menu-icon fa fa-bookmark"></i>Đơn sách</a>
                         <ul class="sub-menu children dropdown-menu">
-                           <li><i class="fa fa-bookmark"></i><a href="manage-book-borow.php">Quản lý đơn sách</a></li>
+                           <li><i class="fa fa-bookmark"></i><a href="manage-order.php">Quản lý đơn sách</a></li>
+                           <li><i class="fa fa-bookmark"></i><a href="revenue-statistics.php">Thống kê doanh thu</a></li>
                         </ul>
                     </li
                 </ul>
@@ -286,13 +287,13 @@
                             <div class="dropdown-menu" aria-labelledby="dropdownMenuButton3">
                                 <div class="dropdown-menu-content">
                                     <a class="dropdown-item" href="manage-category.php">Xem thêm</a>
-                                    <a class="dropdown-item" href="add-category.html">Thêm danh mục</a>
+                                    <a class="dropdown-item" href="add-category.html">Thống kê doanh thu</a>
                                 </div>
                             </div>
                         </div>
-                        <h4 class="mb-0" id="count-category">
+                        <h4 class="mb-0" id="count-order">
                         </h4>
-                        <p class="text-light">Danh mục</p>
+                        <p class="text-light">Đơn hàng</p>
                     </div>
 
                     <div class="chart-wrapper px-0" style="height:70px;" height="70">
@@ -498,10 +499,12 @@ document.getElementById('loadingOverlay').style.display = 'none';
                         if (xhr.status === 200) {
                             let data = JSON.parse(xhr.responseText);
 
-                            document.getElementById('count-user').innerText = data.countUser
-                            document.getElementById('count-news').innerText = data.countNews
-                            document.getElementById('count-book').innerText = data.countBook
-                            document.getElementById('count-category').innerText = data.countCategory
+                            document.getElementById('count-user').innerText = data.countUser || 0
+                            document.getElementById('count-news').innerText = data.countNews || 0
+                            document.getElementById('count-book').innerText = data.countBook || 0
+                            document.getElementById('count-category').innerText = data.countCategory || 0
+                            const orderEl = document.getElementById('count-order');
+                            if (orderEl) orderEl.innerText = (data.countOrder !== undefined) ? data.countOrder : 0
 
                         } else {
                             console.error('Lỗi lấy data từ server:', xhr.statusText);

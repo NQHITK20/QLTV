@@ -320,7 +320,8 @@
                 }
                 if(pm === 'cod'){
                     try{
-                        const res = await fetch(backendBase + '/orders/create', { method:'POST', headers: Object.assign({'Content-Type':'application/json'}, token?{'Authorization':'Bearer '+token}:{ }), body: JSON.stringify({ paymentMethod:'cod', items: cartItems, total: totals.total, buyer }) });
+                        // include subtotal/shipping/tax so backend can store full breakdown
+                        const res = await fetch(backendBase + '/orders/create', { method:'POST', headers: Object.assign({'Content-Type':'application/json'}, token?{'Authorization':'Bearer '+token}:{ }), body: JSON.stringify({ paymentMethod:'cod', items: cartItems, subtotal: totals.subtotal, shipping: totals.ship, tax: totals.tax, total: totals.total, buyer }) });
                         let data = null;
                         try{ data = await res.json(); }catch(e){ data = null; }
 

@@ -1,48 +1,36 @@
 
 <?php
+require_once __DIR__ . '/../config.php';
 ini_set('display_errors', 1);
 ini_set('display_startup_errors', 1);
 error_reporting(E_ALL);
 
-// Kiểm tra và lấy token từ cookie hoặc localStorage
+// Lấy token từ cookie (đồng bộ với các trang manage khác)
 $token = isset($_COOKIE['jwtToken']) ? $_COOKIE['jwtToken'] : '';
 
-$url = 'http://localhost:8000/api/get-news'; // URL của API backend
+$url = rtrim(BACKEND_URL, '/') . '/api/orders/admin-list';
 
-// Tạo body của yêu cầu với id = "ALL"
-$data = json_encode(['id' => 'ALL']);
-
-// Khởi tạo context để gửi yêu cầu HTTP
 $context = stream_context_create([
     'http' => [
         'method' => 'POST',
-        'header' => "Authorization: Bearer $token\r\n" . // Thêm token vào header Authorization
-                    "Content-Type: application/json\r\n", // Đặt kiểu nội dung là JSON
-        'content' => $data, // Thêm dữ liệu vào body của yêu cầu
-        'ignore_errors' => true, // Bắt mọi lỗi, không chỉ lỗi không thể kết nối
+        'header' => "Authorization: Bearer $token\r\n" .
+                    "Content-Type: application/json\r\n",
+        'content' => json_encode(new stdClass()),
+        'ignore_errors' => true,
     ]
 ]);
 
-// Gửi yêu cầu POST đến backend và nhận nội dung phản hồi
 $response = @file_get_contents($url, false, $context);
-
-// Kiểm tra nếu có lỗi khi lấy dữ liệu từ backend
 if ($response === FALSE) {
-    // Lấy thông tin chi tiết về lỗi
     $error = error_get_last();
-    die('Lỗi khi lấy dữ liệu từ backend: ' . $error['message']);
+    die('Lỗi khi lấy dữ liệu từ backend: ' . ($error['message'] ?? 'unknown'));
 }
 
-// Chuyển đổi JSON thành mảng dữ liệu trong PHP
 $data = json_decode($response, true);
-
-// Kiểm tra nếu có lỗi khi chuyển đổi JSON
-
 if ($data === null) {
     die('Lỗi khi chuyển đổi JSON: ' . json_last_error_msg());
 }
 
-// In ra dữ liệu để kiểm tra (debugging)
 ?>
 
 
@@ -195,8 +183,8 @@ if ($data === null) {
                 <div class="page-header float-right">
                     <div class="page-title">
                         <ol class="breadcrumb text-right">
-                            <li><a href="manage-content.php">Bài viết</a></li>
-                            <li class="active">Quản lý bài viết</li>
+                            <li>Đơn hàng</li>
+                            <li class="active">Quản lý đơn hàng</li>
                         </ol>
                     </div>
                 </div>
@@ -215,51 +203,43 @@ if ($data === null) {
                                 <table id="bootstrap-data-table-export" class="table table-striped table-bordered">
                                     <thead>
                                         <tr>
-                                            <th>Tiêu đề bài viết</th>
-                                            <th>Tác giả</th>
-                                            <th>Ảnh chính</th>
+                                            <th>Khách hàng</th>
+                                            <th>mã đơn</th>
+                                            <th>Ngày tạo đơn</th>
+                                            <th>Tổng tiền</th>
                                             <th>Tình trạng</th>
                                             <th>Hành động</th>
                                         </tr>
                                     </thead>
                                     <tbody>
                                     <?php
-            // Kiểm tra nếu dữ liệu có chứa key 'data'
-            if (isset($data['data'])) {
-                // Lặp qua dữ liệu và hiển thị trong bảng
-                foreach ($data['data'] as $new) {
-                    ?>
-                    <tr>
-                        <td><?php echo htmlspecialchars($new['title']); ?></td>
-                        <td><?php echo htmlspecialchars($new['author']); ?></td>
-                        <td style="max-width: 151px !important;"><img src="../images/blog/<?php echo htmlspecialchars($new['image']); ?>" alt="<?php echo htmlspecialchars($new['title']); ?>" style="width"></td>
-                        <td>
-                        <?php
-                          $button_id = ($new['publicAt'] !== $new['createdAt'] ) ? 'btn-show' : 'btn-show-fade';
-                          $button_2 = ($new['publicAt'] === $new['createdAt'] ) ? 'btn-hide' : 'btn-hide-fade';
-                        ?>
-                            <button id="<?php echo $button_id ?>" type="button" class="btn btn-info btn-sm" onclick="showNew('<?php echo htmlspecialchars($new['id']); ?>', '<?php echo htmlspecialchars($new['title']); ?>', '<?php echo $button_id; ?>')">
-                                <i class="fa fa-eye"></i> Hiện
-                            </button>
-                            <button id="<?php echo $button_2 ?>" type="button" class="btn btn-danger btn-sm" onclick="hideNew('<?php echo htmlspecialchars($new['id']); ?>', '<?php echo htmlspecialchars($new['title']); ?>', '<?php echo $button_2; ?>')">
-                                <i class="fa fa-eye-slash"></i> Ẩn
-                            </button>
-                        </td>
-                        <td>
-                            <button type="submit" class="btn btn-primary btn-sm" onclick="editNew('<?php echo htmlspecialchars($new['id']); ?>')">
-                                <i class="fa fa-eraser"></i> Sửa
-                            </button>
-                            <button type="button" class="btn btn-danger btn-sm"  onclick="deleteNew('<?php echo htmlspecialchars($new['id']); ?>', '<?php echo htmlspecialchars($new['title']); ?>')">
-                                <i class="fa fa-ban"></i> Xoá
-                            </button>
-                        </td>
-                    </tr>
-                    <?php
-                }
-            } else {
-                echo '<tr><td colspan="4">Không có dữ liệu</td></tr>';
-            }
-            ?>
+                                    if (isset($data['data']) && is_array($data['data']) && count($data['data'])>0) {
+                                        foreach ($data['data'] as $order) {
+                                            $customer = htmlspecialchars($order['customer'] ?? '-');
+                                            $orderCode = htmlspecialchars($order['orderCode'] ?? ('ORD-'.($order['id']??'')));
+                                            $createdAt = htmlspecialchars($order['createdAt'] ?? '');
+                                            $total = isset($order['total']) ? number_format((float)$order['total'],2) : '0.00';
+                                            $status = htmlspecialchars($order['status'] ?? '-');
+                                            $id = htmlspecialchars($order['id'] ?? '');
+                                            ?>
+                                            <tr>
+                                                <td><?php echo $customer; ?></td>
+                                                <td><?php echo $orderCode; ?></td>
+                                                <td><?php echo $createdAt; ?></td>
+                                                <td><?php echo $total; ?></td>
+                                                <td><?php echo $status; ?></td>
+                                                <td>
+                                                    <a class="btn btn-info btn-sm" href="order-detail.php?id=<?php echo $id; ?>">
+                                                        Xem thêm
+                                                    </a>
+                                                </td>
+                                            </tr>
+                                            <?php
+                                        }
+                                    } else {
+                                        echo '<tr><td colspan="6">Bảng chưa có Data</td></tr>';
+                                    }
+                                    ?>
                                     </tbody>
                                 </table>
                             </div>
@@ -289,66 +269,9 @@ if ($data === null) {
     <script src="vendors/datatables.net-buttons/js/buttons.colVis.min.js"></script>
     <script src="assets/js/init-scripts/data-table/datatables-init.js"></script>
 </body>
+
 <script>
-    const editNew = async (id) => {
-try {
-    // Chuyển đến trang HTML khác với query parameter id
-    window.location.href = `edit-content.html?id=${id}`;
-} catch (error) {
-    console.error('Error occurred:', error);
-}
-    }
-</script>
-<script>
-    const deleteNew = async (id,name) => {
-try {
-    // Lấy giá trị ID từ thuộc tính data-id của phần tử
-    // Hiển thị hộp thoại xác nhận
-    const userConfirmed = confirm(`Bạn có chắc là muốn xoá bài viết ${name} ?`);
-    if (!userConfirmed) {
-        // Người dùng chọn không xóa
-        return;
-    }
 
-
-    let userId={
-        id:id
-    }
-
-    const xhr = new XMLHttpRequest();
-    xhr.open('DELETE', `http:///api/delete-news`, true);
-    xhr.setRequestHeader('Content-Type', 'application/json');
-    const token = localStorage.getItem('jwtToken');
-    xhr.setRequestHeader('Authorization', `Bearer ${token}`);
-
-    // Định nghĩa hàm callback khi yêu cầu thay đổi trạng thái
-    xhr.onload = function() {
-        document.getElementById('loadingOverlay').style.display = 'none';
-            try {
-                var responseData = JSON.parse(xhr.responseText);
-                if (xhr.status === 200 && responseData.errCode === 0) { // Kiểm tra nếu mã trạng thái là 201 (Created)
-                    alert('Xoá thành công')
-                    window.location.href = "manage-content.php";
-            } else {
-                alert(responseData.errMessage)
-            }
-            } catch (error) {
-                console.log(error)
-                alert('Lỗi sever');
-            }
-        };
-        xhr.onerror = function () {
-            console.error('Request failed');
-            alert('Có lỗi xảy ra khi gửi yêu cầu. Vui lòng thử lại sau.');
-            document.getElementById('loadingOverlay').style.display = 'none';
-               };
-        document.getElementById('loadingOverlay').style.display = 'flex';
-    // Gửi yêu cầu
-    xhr.send(JSON.stringify(userId));
-} catch (error) {
-    console.error('An error occurred while trying to delete the user:', error);
-}
-};
 function logout()
     {
         localStorage.removeItem('userData')
@@ -361,79 +284,7 @@ function logout()
         element.style.display = "none";
     });
 }
-let showNew = async (id, name , buttonId) => {
-        if (buttonId === "btn-show-fade") {
-        try {
-        // Lấy JWT từ localStorage
-        const token = localStorage.getItem('jwtToken');
-        if (!token) {
-            alert('JWT token not found!');
-            return;
-        }
 
-        // Gọi API để xác thực JWT
-        const response = await fetch('http:///api/show-hide-new', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'Authorization': `Bearer ${token}`
-            },
-            body: JSON.stringify({ id })
-        });
-
-        const result = await response.json();
-
-        // Kiểm tra mã lỗi từ phản hồi API
-        if (result.errCode === 0) {
-            // Tìm phần tử sách bằng ID và đổi tên
-            alert(`Đã hiện tin tức ' ${name} 'Thành công `);
-            window.location.reload();
-        } else {
-            alert(`Error: ${result.errMessage}`);
-        }
-    } catch (error) {
-        console.error(`Error in showHideBook: ${error}`);
-        alert('An error occurred while updating the book name.');
-    }
-  }
-}
-
-let hideNew = async (id, name , buttonId) => {
-        if (buttonId === "btn-hide-fade") {
-        try {
-        // Lấy JWT từ localStorage
-        const token = localStorage.getItem('jwtToken');
-        if (!token) {
-            alert('JWT token not found!');
-            return;
-        }
-
-        // Gọi API để xác thực JWT
-        const response = await fetch('http:///api/show-hide-new', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'Authorization': `Bearer ${token}`
-            },
-            body: JSON.stringify({ id })
-        });
-
-        const result = await response.json();
-
-        // Kiểm tra mã lỗi từ phản hồi API
-        if (result.errCode === 0) {
-            // Tìm phần tử sách bằng ID và đổi tên
-            alert(`Đã ẩn tin tức ' ${name} 'Thành công `);
-            window.location.reload();
-        } else {
-            alert(`Error: ${result.errMessage}`);
-        }
-    } catch (error) {
-        console.error(`Error in showHideBook: ${error}`);
-        alert('An error occurred while updating the book name.');
-    }
-  }
-}
 </script>
 
 </html>
