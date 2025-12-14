@@ -6,7 +6,7 @@ ini_set('display_startup_errors', 1);
 error_reporting(E_ALL);
 
 // Lấy token từ cookie (đồng bộ với các trang manage khác)
-$token = isset($_COOKIE['jwtToken']) ? $_COOKIE['jwtToken'] : '';
+$token = isset($_COOKIE['token']) ? $_COOKIE['token'] : '';
 
 $url = rtrim(BACKEND_URL, '/') . '/api/orders/admin-list';
 
@@ -21,14 +21,20 @@ $context = stream_context_create([
 ]);
 
 $response = @file_get_contents($url, false, $context);
+$debug = [];
 if ($response === FALSE) {
     $error = error_get_last();
-    die('Lỗi khi lấy dữ liệu từ backend: ' . ($error['message'] ?? 'unknown'));
-}
-
-$data = json_decode($response, true);
-if ($data === null) {
-    die('Lỗi khi chuyển đổi JSON: ' . json_last_error_msg());
+    $debug['error'] = $error['message'] ?? 'unknown';
+    $data = null;
+} else {
+    $debug['raw_response'] = $response;
+    // capture HTTP response headers if available
+    if (isset($http_response_header) && is_array($http_response_header)) $debug['http_headers'] = $http_response_header;
+    $data = json_decode($response, true);
+    if ($data === null) {
+        $debug['json_error'] = json_last_error_msg();
+        // still keep raw response for inspection
+    }
 }
 
 ?>
@@ -229,7 +235,7 @@ if ($data === null) {
                                                 <td><?php echo $total; ?></td>
                                                 <td><?php echo $status; ?></td>
                                                 <td>
-                                                    <a class="btn btn-info btn-sm" href="order-detail.php?id=<?php echo $id; ?>">
+                                                    <a class="btn btn-info btn-sm" href="order-detail.html?id=<?php echo $id; ?>">
                                                         Xem thêm
                                                     </a>
                                                 </td>

@@ -1,0 +1,505 @@
+<!DOCTYPE html>
+<!--[if lt IE 7]>      <html class="no-js lt-ie9 lt-ie8 lt-ie7" lang=""> <![endif]-->
+<!--[if IE 7]>         <html class="no-js lt-ie9 lt-ie8" lang=""> <![endif]-->
+<!--[if IE 8]>         <html class="no-js lt-ie9" lang=""> <![endif]-->
+<!--[if gt IE 8]><!-->
+<html class="no-js" lang="en">
+<!--<![endif]-->
+
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <title>Quản lý thư viện</title>
+    <meta name="description" content="Quản lý thư viện - HTML5 Admin Template" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <link rel="apple-touch-icon" href="apple-icon.png" />
+    <link rel="shortcut icon" href="favicon.ico" />
+
+    <link rel="stylesheet" href="vendors/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="vendors/font-awesome/css/font-awesome.min.css" />
+    <link rel="stylesheet" href="vendors/themify-icons/css/themify-icons.css" />
+    <link rel="stylesheet" href="vendors/flag-icon-css/css/flag-icon.min.css" />
+    <link rel="stylesheet" href="vendors/selectFX/css/cs-skin-elastic.css" />
+    <link rel="stylesheet" href="vendors/jqvmap/dist/jqvmap.min.css" />
+
+    <link rel="stylesheet" href="assets/css/style.css" />
+
+    <link href="https://fonts.googleapis.com/css?family=Open+Sans:400,600,700,800" rel="stylesheet" type="text/css" />
+</head>
+
+<body>
+    <div class="overlay" id="loadingOverlay">
+        <div class="spinner-border text-light" role="status">
+            <span class="sr-only">Loading...</span>
+        </div>
+    </div>
+    <!-- Left Panel -->
+
+    <aside id="left-panel" class="left-panel">
+        <nav class="navbar navbar-expand-sm navbar-default">
+            <div class="navbar-header">
+                <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#main-menu"
+                    aria-controls="main-menu" aria-expanded="false" aria-label="Toggle navigation">
+                    <i class="fa fa-bars"></i>
+                </button>
+                <a class="navbar-brand" href="../index.php"><img src="images/logo.png" alt="Logo" /></a>
+                <a class="navbar-brand hidden" href="./"><img src="images/logo2.png" alt="Logo" /></a>
+            </div>
+
+            <div id="main-menu" class="main-menu collapse navbar-collapse">
+                <ul class="nav navbar-nav">
+                    <li class="active">
+                        <a href="index.html">
+                            <i class="menu-icon fa fa-dashboard"></i>Dashboard
+                        </a>
+                    </li>
+                    <h3 class="menu-title">Các mục chính</h3>
+                    <!-- /.menu-title -->
+                    <li class="menu-item-has-children dropdown hidden-user">
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown" aria-haspopup="true"
+                            aria-expanded="false">
+                            <i class="menu-icon fa fa-user"></i>Tài khoản</a>
+                        <ul class="sub-menu children dropdown-menu">
+                            <li>
+                                <i class="fa fa-user"></i><a href="manage-user.php">Quản lý tài khoản</a>
+                            </li>
+                            <li>
+                                <i class="fa fa-plus"></i><a href="add-user.html">Thêm tài khoản</a>
+                            </li>
+                        </ul>
+                    </li>
+                    <li class="menu-item-has-children dropdown hidden-user">
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown" aria-haspopup="true"
+                            aria-expanded="false">
+                            <i class="menu-icon fa fa fa-file-text-o"></i>Bài viết</a>
+                        <ul class="sub-menu children dropdown-menu">
+                            <li>
+                                <i class="fa fa-file-text-o"></i><a href="manage-content.php">Quản lý bài viết</a>
+                            </li>
+                            <li>
+                                <i class="fa fa-plus"></i><a href="add-content.html">Thêm bài viết</a>
+                            </li>
+                        </ul>
+                    </li>
+                    <li class="menu-item-has-children dropdown">
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown" aria-haspopup="true"
+                            aria-expanded="false">
+                            <i class="menu-icon fa fa-book"></i>Sách</a>
+                        <ul class="sub-menu children dropdown-menu">
+                            <li>
+                                <i class="fa fa-book"></i><a href="manage-book.php">Quản lý sách</a>
+                            </li>
+                            <li>
+                                <i class="fa fa-plus"></i><a href="add-book.html">Thêm sách</a>
+                            </li>
+                        </ul>
+                    </li>
+                    <li class="menu-item-has-children dropdown">
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown" aria-haspopup="true"
+                            aria-expanded="false">
+                            <i class="menu-icon fa fa-tags"></i>Danh mục
+                            sách</a>
+                        <ul class="sub-menu children dropdown-menu">
+                            <li>
+                                <i class="fa fa-tags"></i><a href="manage-category.php">Quản lý danh mục</a>
+                            </li>
+                            <li>
+                                <i class="fa fa-plus"></i><a href="add-category.html">Thêm danh mục</a>
+                            </li>
+                        </ul>
+                    </li>
+                </ul>
+            </div>
+            <!-- /.navbar-collapse -->
+        </nav>
+    </aside>
+    <!-- /#left-panel -->
+
+    <!-- Left Panel -->
+
+    <!-- Right Panel -->
+
+    <div id="right-panel" class="right-panel">
+        <!-- Header-->
+        <header id="header" class="header">
+            <div class="header-menu">
+                <div class="col-sm-7">
+                    <a id="menuToggle" class="menutoggle pull-left"><i class="fa fa fa-tasks"></i></a>
+                </div>
+
+                <div class="col-sm-5">
+                    <div class="user-area dropdown float-right">
+                        <span id="span-avatar"></span>
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown" aria-haspopup="true"
+                            aria-expanded="false">
+                            <img class="user-avatar rounded-circle" src="images/admin.jpg" alt="User Avatar" />
+                        </a>
+                        <div class="user-menu dropdown-menu">
+                            <a class="nav-link" href="page-login.html" onclick="logout()"><i class="fa fa-sign-out"></i>
+                                Đăng xuất
+                            </a>
+                            <a class="nav-link" href="../index.php"><i class="fa fa-newspaper-o"></i> Về trang
+                                chủ
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </header>
+        <!-- /header -->
+        <!-- Header-->
+
+        <div class="breadcrumbs">
+            <div class="col-sm-4">
+                <div class="page-header float-left">
+                    <div class="page-title">
+                        <h1>Sách</h1>
+                    </div>
+                </div>
+            </div>
+            <div class="col-sm-8">
+                <div class="page-header float-right">
+                    <div class="page-title">
+                        <ol class="breadcrumb text-right">
+                            <li><a href="manage-book.php">Sách</a></li>
+                            <li class="active">Thêm sách</li>
+                        </ol>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="content mt-3">
+            <div class="col-lg-12">
+                <div class="card">
+                    <div class="card-header">
+                        <strong>Chi tiết đơn hàng</strong>
+                    </div>
+
+                    <div class="card-body card-block py-4">
+                        <div class="row mb-4 order-meta">
+                            <div class="col-md-6 mb-3">
+                                <h6 class="mb-3">Thông tin khách hàng</h6>
+                                <p class="mb-1"><strong>Khách hàng:</strong> <span id="od_customer">-</span></p>
+                                <p class="mb-1"><strong>Email:</strong> <span id="od_email">-</span></p>
+                                <p class="mb-0 text-muted"><strong>Địa chỉ:</strong> <span id="od_address">-</span></p>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <h6 class="mb-3">Thông tin đơn</h6>
+                                <p class="mb-1"><strong>Mã đơn:</strong> <span id="od_code">-</span></p>
+                                <p class="mb-1"><strong>Ngày tạo:</strong> <span id="od_created">-</span></p>
+                                <p class="mb-1"><strong>Tổng tiền:</strong> <span id="od_total">-</span></p>
+                                <p class="mb-0"><strong>Trạng thái:</strong> <span id="od_status">-</span></p>
+                            </div>
+                        </div>
+
+                        <h6 class="mb-3">Chi tiết sản phẩm</h6>
+                        <div class="table-responsive mb-3">
+                            <table class="table table-striped table-sm" id="orderItemsTable">
+                                <thead class="thead-light">
+                                        <tr>
+                                            <th style="width:120px">Sản phẩm</th>
+                                            <th class="text-right" style="width:140px">Đơn giá</th>
+                                            <th class="text-center" style="width:100px">Số lượng</th>
+                                            <th class="text-right" style="width:140px">Thành tiền</th>
+                                        </tr>
+                                </thead>
+                                <tbody id="orderItemsBody">
+                                    <tr><td colspan="5" class="text-center py-4">Đang tải...</td></tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        <div class="d-flex justify-content-end">
+                            <a href="manage-order.php" class="btn btn-secondary btn-sm mr-2">Quay lại</a>
+                            <a id="printBtn" class="btn btn-primary btn-sm">Duyệt</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- .content -->
+    </div>
+    <!-- /#right-panel -->
+
+    <!-- Right Panel -->
+     <script>
+        document.addEventListener('DOMContentLoaded', function () {
+                console.log('[order-detail] JS started');
+
+                const tbody = document.getElementById('orderItemsBody');
+                console.log('tbody =', tbody);
+
+                (function ($) {
+                // vector map init (same as before)
+                try {
+                    if (typeof jQuery !== 'undefined' && jQuery && jQuery.fn && jQuery.fn.vectorMap) {
+                        jQuery('#vmap').vectorMap({
+                            map: 'world_en',
+                            backgroundColor: null,
+                            color: '#ffffff',
+                            hoverOpacity: 0.7,
+                            selectedColor: '#1de9b6',
+                            enableZoom: true,
+                            showTooltip: true,
+                            values: window.sample_data || {},
+                            scaleColors: ['#1de9b6', '#03a9f5'],
+                            normalizeFunction: 'polynomial'
+                        });
+                    }
+                } catch (e) { console.warn('vmap init failed', e); }
+
+                // logout helper
+                window.logout = function () {
+                    try { localStorage.removeItem('userData'); } catch (e) { }
+                    try { localStorage.removeItem('jwtToken'); } catch (e) { }
+                };
+
+                // Safe init for user avatar / role
+                (function initUser() {
+                    var user = null;
+                    try { user = JSON.parse(localStorage.getItem('userData')); } catch (e) { user = null; }
+                    var span = document.getElementById('span-avatar');
+                    if (span) span.innerText = user && user.lastName ? ('Hi ' + user.lastName) : 'Hi';
+                    try {
+                        if (!user || String(user.roleId) !== '3') {
+                            var els = document.querySelectorAll('.hidden-user');
+                            for (var i = 0; i < els.length; i++) { els[i].style.display = 'none'; }
+                        }
+                    } catch (e) { }
+                })();
+
+                // Client-side XHR to fetch order by id
+                (function () {
+                    var currentOrder = null; // will hold the fetched order for approve action
+
+                    function approveOrderHandler(ev) {
+                        ev && ev.preventDefault();
+                        try {
+                            var btn = document.getElementById('printBtn');
+                            // guard: don't call API if button already disabled or order marked paid
+                            if (btn && btn.disabled) return;
+                            if (!currentOrder || !currentOrder.id) return; // nothing to do
+                            var status = currentOrder.status ? String(currentOrder.status).toLowerCase() : '';
+                            if (['paid', 'completed', 'approved', 'done'].indexOf(status) !== -1) {
+                                // ensure button disabled and labelled
+                                try { if (btn) { btn.disabled = true; btn.innerText = 'Đã duyệt'; } } catch(e){}
+                                return;
+                            }
+
+                            var backend = (window.APP_CONFIG && window.APP_CONFIG.backendUrl) ? window.APP_CONFIG.backendUrl : 'http://localhost:8000';
+                            var token = (function(){ try { return localStorage.getItem('jwtToken') || localStorage.getItem('token') || (document.cookie.match(/(^|;)\s*token=([^;]+)/) || [])[2] || null; } catch(e){ return null } })();
+                            btn.disabled = true;
+                            var oldText = btn.innerText;
+                            btn.innerText = 'Đang duyệt...';
+                            var xhr2 = new XMLHttpRequest();
+                            xhr2.open('POST', backend + '/api/orders/approve', true);
+                            xhr2.setRequestHeader('Content-Type', 'application/json');
+                            if (token) xhr2.setRequestHeader('Authorization', 'Bearer ' + token);
+                            xhr2.onload = function() {
+                                try {
+                                    var resp = {};
+                                    try { resp = JSON.parse(xhr2.responseText || '{}'); } catch(e){ resp = { message: 'Invalid JSON' }; }
+                                    if (xhr2.status === 200 && resp.errCode === 0) {
+                                        // update UI
+                                        currentOrder.status = 'paid';
+                                        currentOrder.statusText = 'Đã thanh toán';
+                                        try { document.getElementById('od_status').innerText = currentOrder.statusText; } catch(e){}
+                                        btn.innerText = 'Đã duyệt';
+                                        btn.disabled = true;
+                                        return alert('Duyệt đơn thành công');
+                                    }
+                                    var msg = (resp && resp.errMessage) ? resp.errMessage : ('Lỗi khi duyệt (status ' + xhr2.status + ')');
+                                    alert(msg);
+                                } catch (e) { console.error('approve onload error', e); alert('Lỗi khi duyệt'); }
+                                btn.disabled = false;
+                                btn.innerText = oldText;
+                            };
+                            xhr2.onerror = function(){ alert('Lỗi kết nối khi duyệt đơn'); btn.disabled = false; btn.innerText = oldText; };
+                            xhr2.send(JSON.stringify({ id: Number(currentOrder.id), providerPaymentId: currentOrder.providerPaymentId || null }));
+                        } catch (e) { console.error('approveOrderHandler error', e); }
+                    }
+
+                    // attach handler to button
+                    document.addEventListener('click', function attachApproveOnce(e){
+                        var btn = document.getElementById('printBtn');
+                        if (btn) {
+                            btn.addEventListener('click', approveOrderHandler);
+                            document.removeEventListener('click', attachApproveOnce);
+                        }
+                    });
+
+                    function getQueryParam(name) {
+                        try { var urlParams = new URLSearchParams(window.location.search); return urlParams.get(name); } catch (e) { return null }
+                    }
+                    function getToken() {
+                        try {
+                            return localStorage.getItem('jwtToken') || localStorage.getItem('token') || (document.cookie.match(/(^|;)\s*token=([^;]+)/) || [])[2] || null;
+                        } catch (e) { return null }
+                    }
+                    function fmtMoney(n) { try { return Number(n).toLocaleString('en-US', { style: 'currency', currency: 'USD' }); } catch (e) { return String(n); } }
+
+                    var tbody = document.getElementById('orderItemsBody');
+                    var id = getQueryParam('id');
+                    if (!id) { if (tbody) tbody.innerHTML = '<tr><td colspan="4" class="text-center">Không có id đơn hàng</td></tr>'; return; }
+
+                    var backend = (window.APP_CONFIG && window.APP_CONFIG.backendUrl) ? window.APP_CONFIG.backendUrl : 'http://localhost:8000';
+                    var token = getToken();
+
+                    var xhr = new XMLHttpRequest();
+                    xhr.open('POST', backend + '/api/orders/get-by-id', true);
+                    xhr.setRequestHeader('Content-Type', 'application/json');
+                    if (token) xhr.setRequestHeader('Authorization', 'Bearer ' + token);
+
+                    xhr.onload = function () {
+                        if (!tbody) return;
+                        try {
+                            var resp = {};
+                            try { resp = JSON.parse(xhr.responseText || '{}'); } catch (e) { resp = { message: 'Invalid JSON response' }; }
+
+                            // debug logs
+                            console.log('[order-detail] xhr.status', xhr.status);
+                            console.log('[order-detail] resp', resp);
+
+                            if (xhr.status === 200 && resp.errCode === 0 && resp.data) {
+                                var order = resp.data;
+                                var buyer = order.buyer || {};
+                                if (typeof buyer === 'string') { try { buyer = JSON.parse(buyer); } catch (e) { buyer = {}; } }
+
+                                console.log('[order-detail] order.id ->', order.id);
+                                console.log('[order-detail] order.orderCode ->', order.orderCode);
+                                console.log('[order-detail] order.providerPaymentId ->', order.providerPaymentId);
+                                console.log('[order-detail] order.createdAt ->', order.createdAt);
+                                console.log('[order-detail] order.total ->', order.total);
+                                console.log('[order-detail] order.status ->', order.status, 'statusText ->', order.statusText);
+                                console.log('[order-detail] order.customer ->', order.customer);
+                                console.log('[order-detail] parsed buyer ->', buyer);
+
+                                // populate fields
+                                try { document.getElementById('od_customer').innerText = order.customer || ((buyer.firstName || '') + ' ' + (buyer.lastName || '')).trim() || '-'; } catch (e) { }
+                                try { document.getElementById('od_email').innerText = buyer.email || '-'; } catch (e) { }
+                                try { document.getElementById('od_address').innerText = (buyer.address ? buyer.address + (buyer.addressNote ? ' - ' + buyer.addressNote : '') : (buyer.addressNote || '-')); } catch (e) { }
+                                try { document.getElementById('od_code').innerText = order.orderCode || order.providerPaymentId || ('ORD-' + order.id); } catch (e) { }
+                                try { document.getElementById('od_created').innerText = order.createdAt ? (new Date(order.createdAt)).toLocaleString() : '-'; } catch (e) { }
+                                try { document.getElementById('od_total').innerText = fmtMoney(order.total || 0); } catch (e) { }
+                                try { document.getElementById('od_status').innerText = order.statusText || order.status || '-'; } catch (e) { }
+
+                                var items = Array.isArray(order.items) ? order.items : [];
+                                console.log('[order-detail] items.length', items.length);
+                                if (!items.length) { tbody.innerHTML = '<tr><td colspan="4" class="text-center">Không có sản phẩm</td></tr>'; return; }
+                                var html = '';
+                                for (var i = 0; i < items.length; i++) {
+                                    var it = items[i];
+                                    console.log('[order-detail] item#' + i, it);
+                                    var img = it.image ? ('../images/books/' + encodeURIComponent(it.image)) : '../images/books/no-image.png';
+                                    var title = it.bookname || it.name || '-';
+                                    var unit = it.unitPrice || it.price || 0;
+                                    var qty = it.quantity || it.qty || 1;
+                                    var subtotal = (typeof it.subtotal !== 'undefined') ? it.subtotal : (unit * qty);
+                                    html += '<tr>' +
+                                        '<td style="min-width:220px"><div style="display:flex;gap:12px;align-items:center"><img src="' + img + '" style="width:60px;height:auto" alt=""/><div>' + title + '</div></div></td>' +
+                                        '<td class="text-right">' + fmtMoney(unit) + '</td>' +
+                                        '<td class="text-center">' + qty + '</td>' +
+                                        '<td class="text-right">' + fmtMoney(subtotal) + '</td>' +
+                                        '</tr>';
+                                }
+                                // store current order for approve action and update approve button state
+                                try { currentOrder = order; } catch (e) { currentOrder = null; }
+                                try {
+                                    var approveBtn = document.getElementById('printBtn');
+                                    if (approveBtn) {
+                                        if (String(order.status).toLowerCase() === 'paid' || String(order.status).toLowerCase() === 'completed') {
+                                            approveBtn.innerText = 'Đã duyệt';
+                                            approveBtn.disabled = true;
+                                        } else {
+                                            approveBtn.innerText = 'Duyệt';
+                                            approveBtn.disabled = false;
+                                        }
+                                    }
+                                } catch (e) { console.warn('approve button update failed', e); }
+                                tbody.innerHTML = html;
+                                return;
+                            }
+
+                            var errMsg = (resp && resp.message) ? resp.message : ('Lỗi server (status ' + xhr.status + ')');
+                            tbody.innerHTML = '<tr><td colspan="4" class="text-center">' + errMsg + '</td></tr>';
+
+                        } catch (e) {
+                            console.error('order-detail onload error', e);
+                            tbody.innerHTML = '<tr><td colspan="4" class="text-center">Lỗi xử lý dữ liệu</td></tr>';
+                        }
+                    };
+
+                    xhr.onerror = function () { if (tbody) tbody.innerHTML = '<tr><td colspan="4" class="text-center">Lỗi kết nối tới server</td></tr>'; };
+
+                    xhr.send(JSON.stringify({ id: Number(id) }));
+
+                })();
+
+            })(window.jQuery);
+
+            });
+
+     </script>
+    <script src="vendors/jquery/dist/jquery.min.js"></script>
+    <script src="vendors/popper.js/dist/umd/popper.min.js"></script>
+    <script src="vendors/bootstrap/dist/js/bootstrap.min.js"></script>
+    <script src="assets/js/main.js"></script>
+    <script src="vendors/chart.js/dist/Chart.bundle.min.js"></script>
+    <!-- Removed page-specific dashboard/widgets scripts to avoid runtime errors on non-dashboard pages -->
+    <!-- <script src="assets/js/dashboard.js"></script> -->
+    <!-- <script src="assets/js/widgets.js"></script> -->
+    <script src="vendors/jqvmap/dist/jquery.vmap.min.js"></script>
+    <script src="vendors/jqvmap/examples/js/jquery.vmap.sampledata.js"></script>
+    <script src="vendors/jqvmap/dist/maps/jquery.vmap.world.js"></script>
+    <script>
+        (function ($) {
+            "use strict";
+            jQuery("#vmap").vectorMap({
+                map: "world_en",
+                backgroundColor: null,
+                color: "#ffffff",
+                hoverOpacity: 0.7,
+                selectedColor: "#1de9b6",
+                enableZoom: true,
+                showTooltip: true,
+                values: sample_data,
+                scaleColors: ["#1de9b6", "#03a9f5"],
+                normalizeFunction: "polynomial",
+            });
+        })(jQuery);
+        function logout() {
+            localStorage.removeItem("userData");
+            localStorage.removeItem("jwtToken");
+        }
+
+        // Safe init for user avatar / role usage to avoid runtime errors
+        (function initUser(){
+            let user = null;
+            try { user = JSON.parse(localStorage.getItem('userData')); } catch(e){ user = null; }
+            const span = document.getElementById('span-avatar');
+            if (span) span.innerText = user && user.lastName ? ('Hi ' + user.lastName) : 'Hi';
+            try {
+                if (!user || String(user.roleId) !== '3') {
+                    document.querySelectorAll('.hidden-user').forEach(el => el.style.display = 'none');
+                }
+            } catch(e){}
+        })();
+    </script>
+</body>
+<style>
+    .overlay {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(0, 0, 0, 0.5);
+        display: none;
+        justify-content: center;
+        align-items: center;
+        z-index: 999;
+    }
+</style>
+
+</html>
