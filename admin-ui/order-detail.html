@@ -225,222 +225,210 @@
     <!-- Right Panel -->
      <script>
         document.addEventListener('DOMContentLoaded', function () {
-                console.log('[order-detail] JS started');
+            console.log('[order-detail] init');
 
-                const tbody = document.getElementById('orderItemsBody');
-                console.log('tbody =', tbody);
+            var currentOrder = null;
+            var backend = (window.APP_CONFIG && window.APP_CONFIG.backendUrl) || 'http://localhost:8000';
+            var token = getToken();
+            var tbody = document.getElementById('orderItemsBody');
+            var approveBtn = document.getElementById('printBtn');
 
-                (function ($) {
-                // vector map init (same as before)
+            // ================== HELPERS ==================
+            function getToken() {
                 try {
-                    if (typeof jQuery !== 'undefined' && jQuery && jQuery.fn && jQuery.fn.vectorMap) {
-                        jQuery('#vmap').vectorMap({
-                            map: 'world_en',
-                            backgroundColor: null,
-                            color: '#ffffff',
-                            hoverOpacity: 0.7,
-                            selectedColor: '#1de9b6',
-                            enableZoom: true,
-                            showTooltip: true,
-                            values: window.sample_data || {},
-                            scaleColors: ['#1de9b6', '#03a9f5'],
-                            normalizeFunction: 'polynomial'
-                        });
-                    }
-                } catch (e) { console.warn('vmap init failed', e); }
+                    return localStorage.getItem('jwtToken')
+                        || localStorage.getItem('token')
+                        || (document.cookie.match(/(^|;)\s*token=([^;]+)/) || [])[2]
+                        || null;
+                } catch {
+                    return null;
+                }
+            }
 
-                // logout helper
-                window.logout = function () {
-                    try { localStorage.removeItem('userData'); } catch (e) { }
-                    try { localStorage.removeItem('jwtToken'); } catch (e) { }
-                };
+            function getQueryParam(name) {
+                try {
+                    return new URLSearchParams(window.location.search).get(name);
+                } catch {
+                    return null;
+                }
+            }
 
-                // Safe init for user avatar / role
-                (function initUser() {
-                    var user = null;
-                    try { user = JSON.parse(localStorage.getItem('userData')); } catch (e) { user = null; }
-                    var span = document.getElementById('span-avatar');
-                    if (span) span.innerText = user && user.lastName ? ('Hi ' + user.lastName) : 'Hi';
-                    try {
-                        if (!user || String(user.roleId) !== '3') {
-                            var els = document.querySelectorAll('.hidden-user');
-                            for (var i = 0; i < els.length; i++) { els[i].style.display = 'none'; }
-                        }
-                    } catch (e) { }
-                })();
+            function fmtMoney(n) {
+                try {
+                    return Number(n).toLocaleString('en-US', { style: 'currency', currency: 'USD' });
+                } catch {
+                    return n;
+                }
+            }
 
-                // Client-side XHR to fetch order by id
-                (function () {
-                    var currentOrder = null; // will hold the fetched order for approve action
+            function setApproveButtonByStatus(status) {
+                if (!approveBtn) return;
+                var st = String(status || '').toLowerCase();
+                if (['paid', 'completed', 'approved', 'done'].includes(st)) {
+                    approveBtn.innerText = 'Đã duyệt';
+                    approveBtn.disabled = true;
+                } else {
+                    approveBtn.innerText = 'Duyệt';
+                    approveBtn.disabled = false;
+                }
+            }
 
-                    function approveOrderHandler(ev) {
-                        ev && ev.preventDefault();
-                        try {
-                            var btn = document.getElementById('printBtn');
-                            // guard: don't call API if button already disabled or order marked paid
-                            if (btn && btn.disabled) return;
-                            if (!currentOrder || !currentOrder.id) return; // nothing to do
-                            var status = currentOrder.status ? String(currentOrder.status).toLowerCase() : '';
-                            if (['paid', 'completed', 'approved', 'done'].indexOf(status) !== -1) {
-                                // ensure button disabled and labelled
-                                try { if (btn) { btn.disabled = true; btn.innerText = 'Đã duyệt'; } } catch(e){}
-                                return;
-                            }
+            // ================== LOAD ORDER ==================
+            var orderId = getQueryParam('id');
+            if (!orderId) {
+                tbody.innerHTML = '<tr><td colspan="4" class="text-center">Không có id đơn hàng</td></tr>';
+                return;
+            }
 
-                            var backend = (window.APP_CONFIG && window.APP_CONFIG.backendUrl) ? window.APP_CONFIG.backendUrl : 'http://localhost:8000';
-                            var token = (function(){ try { return localStorage.getItem('jwtToken') || localStorage.getItem('token') || (document.cookie.match(/(^|;)\s*token=([^;]+)/) || [])[2] || null; } catch(e){ return null } })();
-                            btn.disabled = true;
-                            var oldText = btn.innerText;
-                            btn.innerText = 'Đang duyệt...';
-                            var xhr2 = new XMLHttpRequest();
-                            xhr2.open('POST', backend + '/api/orders/approve', true);
-                            xhr2.setRequestHeader('Content-Type', 'application/json');
-                            if (token) xhr2.setRequestHeader('Authorization', 'Bearer ' + token);
-                            xhr2.onload = function() {
-                                try {
-                                    var resp = {};
-                                    try { resp = JSON.parse(xhr2.responseText || '{}'); } catch(e){ resp = { message: 'Invalid JSON' }; }
-                                    if (xhr2.status === 200 && resp.errCode === 0) {
-                                        // update UI
-                                        currentOrder.status = 'paid';
-                                        currentOrder.statusText = 'Đã thanh toán';
-                                        try { document.getElementById('od_status').innerText = currentOrder.statusText; } catch(e){}
-                                        btn.innerText = 'Đã duyệt';
-                                        btn.disabled = true;
-                                        return alert('Duyệt đơn thành công');
-                                    }
-                                    var msg = (resp && resp.errMessage) ? resp.errMessage : ('Lỗi khi duyệt (status ' + xhr2.status + ')');
-                                    alert(msg);
-                                } catch (e) { console.error('approve onload error', e); alert('Lỗi khi duyệt'); }
-                                btn.disabled = false;
-                                btn.innerText = oldText;
-                            };
-                            xhr2.onerror = function(){ alert('Lỗi kết nối khi duyệt đơn'); btn.disabled = false; btn.innerText = oldText; };
-                            xhr2.send(JSON.stringify({ id: Number(currentOrder.id), providerPaymentId: currentOrder.providerPaymentId || null }));
-                        } catch (e) { console.error('approveOrderHandler error', e); }
+            var xhr = new XMLHttpRequest();
+            xhr.open('POST', backend + '/api/orders/get-by-id', true);
+            xhr.setRequestHeader('Content-Type', 'application/json');
+            if (token) xhr.setRequestHeader('Authorization', 'Bearer ' + token);
+
+            xhr.onload = function () {
+                try {
+                    var resp = JSON.parse(xhr.responseText || '{}');
+                    if (xhr.status !== 200 || resp.errCode !== 0) {
+                        tbody.innerHTML = '<tr><td colspan="4" class="text-center">Không tải được đơn hàng</td></tr>';
+                        return;
                     }
 
-                    // attach handler to button
-                    document.addEventListener('click', function attachApproveOnce(e){
-                        var btn = document.getElementById('printBtn');
-                        if (btn) {
-                            btn.addEventListener('click', approveOrderHandler);
-                            document.removeEventListener('click', attachApproveOnce);
-                        }
+                    var order = resp.data;
+                    currentOrder = order;
+
+                    var buyer = order.buyer || {};
+                    if (typeof buyer === 'string') {
+                        try { buyer = JSON.parse(buyer); } catch { }
+                    }
+
+                    // info
+                    document.getElementById('od_customer').innerText =
+                        order.customer || ((buyer.firstName || '') + ' ' + (buyer.lastName || '')).trim() || '-';
+                    document.getElementById('od_email').innerText = buyer.email || '-';
+                    document.getElementById('od_address').innerText =
+                        buyer.address ? buyer.address + (buyer.addressNote ? ' - ' + buyer.addressNote : '') : '-';
+                    document.getElementById('od_code').innerText =
+                        order.orderCode || order.providerPaymentId || ('ORD-' + order.id);
+                    document.getElementById('od_created').innerText =
+                        order.createdAt ? new Date(order.createdAt).toLocaleString() : '-';
+                    document.getElementById('od_total').innerText = fmtMoney(order.total || 0);
+                    document.getElementById('od_status').innerText =
+                        order.statusText || order.status || '-';
+
+                    // items
+                    var items = Array.isArray(order.items) ? order.items : [];
+                    if (!items.length) {
+                        tbody.innerHTML = '<tr><td colspan="4" class="text-center">Không có sản phẩm</td></tr>';
+                        return;
+                    }
+
+                    var html = '';
+                    items.forEach(function (it) {
+                        var img = it.image ? ('../images/books/' + encodeURIComponent(it.image)) : '../images/books/no-image.png';
+                        var title = it.bookname || it.name || '-';
+                        var unit = it.unitPrice || it.price || 0;
+                        var qty = it.quantity || it.qty || 1;
+                        var subtotal = it.subtotal ?? (unit * qty);
+
+                        html += `
+                    <tr>
+                        <td>
+                            <div style="display:flex;gap:12px;align-items:center">
+                                <img src="${img}" style="width:60px"/>
+                                <div>${title}</div>
+                            </div>
+                        </td>
+                        <td class="text-right">${fmtMoney(unit)}</td>
+                        <td class="text-center">${qty}</td>
+                        <td class="text-right">${fmtMoney(subtotal)}</td>
+                    </tr>`;
                     });
 
-                    function getQueryParam(name) {
-                        try { var urlParams = new URLSearchParams(window.location.search); return urlParams.get(name); } catch (e) { return null }
-                    }
-                    function getToken() {
-                        try {
-                            return localStorage.getItem('jwtToken') || localStorage.getItem('token') || (document.cookie.match(/(^|;)\s*token=([^;]+)/) || [])[2] || null;
-                        } catch (e) { return null }
-                    }
-                    function fmtMoney(n) { try { return Number(n).toLocaleString('en-US', { style: 'currency', currency: 'USD' }); } catch (e) { return String(n); } }
+                    tbody.innerHTML = html;
+                    setApproveButtonByStatus(order.status);
 
-                    var tbody = document.getElementById('orderItemsBody');
-                    var id = getQueryParam('id');
-                    if (!id) { if (tbody) tbody.innerHTML = '<tr><td colspan="4" class="text-center">Không có id đơn hàng</td></tr>'; return; }
+                } catch (e) {
+                    console.error(e);
+                    tbody.innerHTML = '<tr><td colspan="4" class="text-center">Lỗi xử lý</td></tr>';
+                }
+            };
 
-                    var backend = (window.APP_CONFIG && window.APP_CONFIG.backendUrl) ? window.APP_CONFIG.backendUrl : 'http://localhost:8000';
-                    var token = getToken();
+            xhr.onerror = function () {
+                tbody.innerHTML = '<tr><td colspan="4" class="text-center">Lỗi kết nối server</td></tr>';
+            };
 
-                    var xhr = new XMLHttpRequest();
-                    xhr.open('POST', backend + '/api/orders/get-by-id', true);
-                    xhr.setRequestHeader('Content-Type', 'application/json');
-                    if (token) xhr.setRequestHeader('Authorization', 'Bearer ' + token);
+            xhr.send(JSON.stringify({ id: Number(orderId) }));
 
-                    xhr.onload = function () {
-                        if (!tbody) return;
-                        try {
-                            var resp = {};
-                            try { resp = JSON.parse(xhr.responseText || '{}'); } catch (e) { resp = { message: 'Invalid JSON response' }; }
+            // ================== APPROVE ==================
+            approveBtn.addEventListener('click', function () {
+                if (!currentOrder || !currentOrder.id) return;
 
-                            // debug logs
-                            console.log('[order-detail] xhr.status', xhr.status);
-                            console.log('[order-detail] resp', resp);
+                var status = String(currentOrder.status || '').toLowerCase();
+                if (['paid', 'completed', 'approved', 'done'].includes(status)) {
+                    setApproveButtonByStatus(status);
+                    return;
+                }
 
-                            if (xhr.status === 200 && resp.errCode === 0 && resp.data) {
-                                var order = resp.data;
-                                var buyer = order.buyer || {};
-                                if (typeof buyer === 'string') { try { buyer = JSON.parse(buyer); } catch (e) { buyer = {}; } }
+                approveBtn.disabled = true;
+                approveBtn.innerText = 'Đang duyệt...';
 
-                                console.log('[order-detail] order.id ->', order.id);
-                                console.log('[order-detail] order.orderCode ->', order.orderCode);
-                                console.log('[order-detail] order.providerPaymentId ->', order.providerPaymentId);
-                                console.log('[order-detail] order.createdAt ->', order.createdAt);
-                                console.log('[order-detail] order.total ->', order.total);
-                                console.log('[order-detail] order.status ->', order.status, 'statusText ->', order.statusText);
-                                console.log('[order-detail] order.customer ->', order.customer);
-                                console.log('[order-detail] parsed buyer ->', buyer);
+                var xhr2 = new XMLHttpRequest();
+                xhr2.open('POST', backend + '/api/orders/approve', true);
+                xhr2.setRequestHeader('Content-Type', 'application/json');
+                if (token) xhr2.setRequestHeader('Authorization', 'Bearer ' + token);
 
-                                // populate fields
-                                try { document.getElementById('od_customer').innerText = order.customer || ((buyer.firstName || '') + ' ' + (buyer.lastName || '')).trim() || '-'; } catch (e) { }
-                                try { document.getElementById('od_email').innerText = buyer.email || '-'; } catch (e) { }
-                                try { document.getElementById('od_address').innerText = (buyer.address ? buyer.address + (buyer.addressNote ? ' - ' + buyer.addressNote : '') : (buyer.addressNote || '-')); } catch (e) { }
-                                try { document.getElementById('od_code').innerText = order.orderCode || order.providerPaymentId || ('ORD-' + order.id); } catch (e) { }
-                                try { document.getElementById('od_created').innerText = order.createdAt ? (new Date(order.createdAt)).toLocaleString() : '-'; } catch (e) { }
-                                try { document.getElementById('od_total').innerText = fmtMoney(order.total || 0); } catch (e) { }
-                                try { document.getElementById('od_status').innerText = order.statusText || order.status || '-'; } catch (e) { }
-
-                                var items = Array.isArray(order.items) ? order.items : [];
-                                console.log('[order-detail] items.length', items.length);
-                                if (!items.length) { tbody.innerHTML = '<tr><td colspan="4" class="text-center">Không có sản phẩm</td></tr>'; return; }
-                                var html = '';
-                                for (var i = 0; i < items.length; i++) {
-                                    var it = items[i];
-                                    console.log('[order-detail] item#' + i, it);
-                                    var img = it.image ? ('../images/books/' + encodeURIComponent(it.image)) : '../images/books/no-image.png';
-                                    var title = it.bookname || it.name || '-';
-                                    var unit = it.unitPrice || it.price || 0;
-                                    var qty = it.quantity || it.qty || 1;
-                                    var subtotal = (typeof it.subtotal !== 'undefined') ? it.subtotal : (unit * qty);
-                                    html += '<tr>' +
-                                        '<td style="min-width:220px"><div style="display:flex;gap:12px;align-items:center"><img src="' + img + '" style="width:60px;height:auto" alt=""/><div>' + title + '</div></div></td>' +
-                                        '<td class="text-right">' + fmtMoney(unit) + '</td>' +
-                                        '<td class="text-center">' + qty + '</td>' +
-                                        '<td class="text-right">' + fmtMoney(subtotal) + '</td>' +
-                                        '</tr>';
-                                }
-                                // store current order for approve action and update approve button state
-                                try { currentOrder = order; } catch (e) { currentOrder = null; }
-                                try {
-                                    var approveBtn = document.getElementById('printBtn');
-                                    if (approveBtn) {
-                                        if (String(order.status).toLowerCase() === 'paid' || String(order.status).toLowerCase() === 'completed') {
-                                            approveBtn.innerText = 'Đã duyệt';
-                                            approveBtn.disabled = true;
-                                        } else {
-                                            approveBtn.innerText = 'Duyệt';
-                                            approveBtn.disabled = false;
-                                        }
-                                    }
-                                } catch (e) { console.warn('approve button update failed', e); }
-                                tbody.innerHTML = html;
-                                return;
-                            }
-
-                            var errMsg = (resp && resp.message) ? resp.message : ('Lỗi server (status ' + xhr.status + ')');
-                            tbody.innerHTML = '<tr><td colspan="4" class="text-center">' + errMsg + '</td></tr>';
-
-                        } catch (e) {
-                            console.error('order-detail onload error', e);
-                            tbody.innerHTML = '<tr><td colspan="4" class="text-center">Lỗi xử lý dữ liệu</td></tr>';
+                xhr2.onload = function () {
+                    try {
+                        var resp = JSON.parse(xhr2.responseText || '{}');
+                        if (xhr2.status === 200 && resp.errCode === 0) {
+                            currentOrder.status = 'paid';
+                            document.getElementById('od_status').innerText = 'Đã thanh toán';
+                            setApproveButtonByStatus('paid');
+                            sendNotify(currentOrder);
+                            return;
                         }
-                    };
+                        alert(resp.errMessage || 'Duyệt thất bại');
+                        setApproveButtonByStatus(currentOrder.status);
+                    } catch {
+                        alert('Lỗi duyệt đơn');
+                        setApproveButtonByStatus(currentOrder.status);
+                    }
+                };
 
-                    xhr.onerror = function () { if (tbody) tbody.innerHTML = '<tr><td colspan="4" class="text-center">Lỗi kết nối tới server</td></tr>'; };
+                xhr2.onerror = function () {
+                    alert('Lỗi kết nối khi duyệt');
+                    setApproveButtonByStatus(currentOrder.status);
+                };
 
-                    xhr.send(JSON.stringify({ id: Number(id) }));
-
-                })();
-
-            })(window.jQuery);
-
+                xhr2.send(JSON.stringify({ id: Number(currentOrder.id) }));
             });
 
-     </script>
+            // ================== NOTIFY ==================
+            function sendNotify(order) {
+                var buyer = order.buyer || {};
+                var xhr = new XMLHttpRequest();
+                xhr.open('POST', backend + '/api/notify/order', true);
+                xhr.setRequestHeader('Content-Type', 'application/json');
+                if (token) xhr.setRequestHeader('Authorization', 'Bearer ' + token);
+
+                xhr.onload = function () {
+                    alert('Duyệt đơn thành công');
+                };
+                xhr.onerror = function () {
+                    alert('Duyệt đơn thành công (email lỗi)');
+                };
+
+                xhr.send(JSON.stringify({
+                    orderId: Number(order.id),
+                    type: 'approved',
+                    toEmail: buyer.email || null,
+                    firstName: buyer.firstName || '',
+                    lastName: buyer.lastName || ''
+                }));
+            }
+        });
+    </script>
+
     <script src="vendors/jquery/dist/jquery.min.js"></script>
     <script src="vendors/popper.js/dist/umd/popper.min.js"></script>
     <script src="vendors/bootstrap/dist/js/bootstrap.min.js"></script>

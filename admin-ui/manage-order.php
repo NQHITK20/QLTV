@@ -181,7 +181,7 @@ if ($response === FALSE) {
             <div class="col-sm-4">
                 <div class="page-header float-left">
                     <div class="page-title">
-                        <h1>Bài viết</h1>
+                        <h1>Đơn hàng</h1>
                     </div>
                 </div>
             </div>
@@ -203,7 +203,7 @@ if ($response === FALSE) {
                     <div class="col-md-12">
                         <div class="card">
                             <div class="card-header">
-                                <strong class="card-title">Bảng bài viết <strong>
+                                <strong class="card-title">Bảng đơn hàng</strong>
                             </div>
                             <div class="card-body">
                                 <table id="bootstrap-data-table-export" class="table table-striped table-bordered">
@@ -225,7 +225,8 @@ if ($response === FALSE) {
                                             $orderCode = htmlspecialchars($order['orderCode'] ?? ('ORD-'.($order['id']??'')));
                                             $createdAt = htmlspecialchars($order['createdAt'] ?? '');
                                             $total = isset($order['total']) ? number_format((float)$order['total'],2) : '0.00';
-                                            $status = htmlspecialchars($order['status'] ?? '-');
+                                            // Prefer translated status text from backend if available
+                                            $statusText = htmlspecialchars($order['statusText'] ?? ($order['status'] ?? '-'));
                                             $id = htmlspecialchars($order['id'] ?? '');
                                             ?>
                                             <tr>
@@ -233,7 +234,7 @@ if ($response === FALSE) {
                                                 <td><?php echo $orderCode; ?></td>
                                                 <td><?php echo $createdAt; ?></td>
                                                 <td><?php echo $total; ?></td>
-                                                <td><?php echo $status; ?></td>
+                                                <td><?php echo $statusText; ?></td>
                                                 <td>
                                                     <a class="btn btn-info btn-sm" href="order-detail.html?id=<?php echo $id; ?>">
                                                         Xem thêm
