@@ -26,6 +26,41 @@
     <link rel="stylesheet" href="assets/css/style.css" />
 
     <link href="https://fonts.googleapis.com/css?family=Open+Sans:400,600,700,800" rel="stylesheet" type="text/css" />
+    <style>
+        /* Revenue card: vertical layout, left aligned, no responsiveness needed */
+        .revenue-card-body {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+            gap: 12px;
+            padding: 16px;
+            box-sizing: border-box;
+            width: 640px; /* fixed width, not responsive */
+        }
+        .revenue-card-body .controls {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+            gap: 6px;
+        }
+        .revenue-card-body .controls label {
+            font-size: 13px;
+            margin: 0 0 2px 0;
+        }
+        .revenue-card-body .controls select {
+            min-width: 160px;
+            padding: 6px 8px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            background: #fff;
+        }
+        .revenue-card-body .chart-wrapper {
+            width: 600px; /* fixed */
+            height: 320px; /* fixed */
+            border: 0;
+        }
+        .revenue-card-body canvas { display:block; }
+    </style>
 </head>
 
 <body>
@@ -177,12 +212,44 @@
                         <strong>Thống kê doanh thu</strong>
                     </div>
 
-                    <div class="card-body card-block py-4">
-                        <div class="card">
-                            <div class="card-body">
-                                <h4 class="mb-3">Line Chart </h4>
-                                <canvas id="lineChart"></canvas>
+                    <div class="card-body card-block py-4 revenue-card-body">
+                        <div class="controls">
+                            <div>
+                                <label for="selView">Xem theo</label><br>
+                                <select id="selView">
+                                    <option value="year">Năm</option>
+                                    <option value="month">Tháng</option>
+                                </select>
                             </div>
+                            <div>
+                                <label for="selYear">Năm</label><br>
+                                <select id="selYear">
+                                    <!-- years: current and previous 4 -->
+                                </select>
+                            </div>
+                            <div id="monthWrapper">
+                                <label for="selMonth">Tháng</label><br>
+                                <select id="selMonth">
+                                    <option value="0">Tất cả</option>
+                                    <option value="1">1</option>
+                                    <option value="2">2</option>
+                                    <option value="3">3</option>
+                                    <option value="4">4</option>
+                                    <option value="5">5</option>
+                                    <option value="6">6</option>
+                                    <option value="7">7</option>
+                                    <option value="8">8</option>
+                                    <option value="9">9</option>
+                                    <option value="10">10</option>
+                                    <option value="11">11</option>
+                                    <option value="12">12</option>
+                                </select>
+                            </div>
+                            <!-- week selector removed -->
+                        </div>
+
+                        <div class="chart-wrapper">
+                            <canvas id="revenueChart" width="995" height="320"></canvas>
                         </div>
                     </div>
                 </div>
@@ -198,12 +265,148 @@
     <script src="vendors/bootstrap/dist/js/bootstrap.min.js"></script>
     <script src="assets/js/main.js"></script>
     <script src="vendors/chart.js/dist/Chart.bundle.min.js"></script>
-    <!-- Removed page-specific dashboard/widgets scripts to avoid runtime errors on non-dashboard pages -->
+    <!-- Page-specific chart init for revenue (no animation, not responsive) -->
+    <script>
+        (function(){
+            try {
+                // populate year select (current year and previous 4)
+                var selYear = document.getElementById('selYear');
+                var now = new Date();
+                var cy = now.getFullYear();
+                // include 2026 explicitly
+                try {
+                    var opt2026 = document.createElement('option'); opt2026.value = 2026; opt2026.text = 2026; selYear.appendChild(opt2026);
+                } catch (e) { /* ignore */ }
+                // only show current year and the previous 2 years (3 years total)
+                for (var y = cy; y >= cy-2; y--) {
+                    var opt = document.createElement('option'); opt.value = y; opt.text = y; selYear.appendChild(opt);
+                }
+                // default values
+                selYear.value = cy;
+                document.getElementById('selMonth').value = 0;
+                // view select and week wrapper handling
+                var selView = document.getElementById('selView');
+                var monthWrapper = document.getElementById('monthWrapper');
+                function updateViewUI() {
+                    if (selView.value === 'month') {
+                        // Monthly view: show month selector
+                        monthWrapper.style.display = 'block';
+                    } else {
+                        // Yearly view: hide month selector
+                        monthWrapper.style.display = 'none';
+                    }
+                }
+                updateViewUI();
+                updateViewUI();
+
+                if (typeof Chart === 'undefined') { console.error('Chart.js not loaded'); return; }
+                var canvas = document.getElementById('revenueChart');
+                if (!canvas) { console.warn('Canvas #revenueChart not found'); return; }
+
+                // Always show 12 months
+                var labels = ['Tháng 1','Tháng 2','Tháng 3','Tháng 4','Tháng 5','Tháng 6','Tháng 7','Tháng 8','Tháng 9','Tháng 10','Tháng 11','Tháng 12'];
+                // helper: generate n random positive numbers scaled to approx target total
+                function generateScaled(n, target) {
+                    var arr = [];
+                    var total = 0;
+                    for (var i=0;i<n;i++) { var v = Math.random(); arr.push(v); total += v; }
+                    // avoid division by zero
+                    if (total <= 0) total = 1;
+                    var scaled = arr.map(function(v){ return Math.round((v/total) * target); });
+                    // adjust rounding diff by adding/subtracting to first element
+                    var sumScaled = scaled.reduce(function(s,x){ return s + x; }, 0);
+                    var diff = target - sumScaled;
+                    if (diff !== 0) scaled[0] = Math.max(0, scaled[0] + diff);
+                    return scaled;
+                }
+
+                // sample data used as fallback while network fails
+                var sampleData = generateScaled(12, 10000);
+
+                // Chart.js 2.x style options to be compatible with bundled Chart
+                var ctx = canvas.getContext('2d');
+                window.revenueChart = new Chart(ctx, {
+                    type: 'line',
+                    data: { labels: labels, datasets: [{ label: 'Doanh thu (lũy kế)', data: sampleData, backgroundColor: 'rgba(54,162,235,0.2)', borderColor: 'rgba(54,162,235,1)', borderWidth: 2, fill: true }]},
+                    options: { responsive: false, animation: false, scales: { yAxes: [{ ticks: { beginAtZero: true } }] }, legend: { display: true } }
+                });
+
+                // Fetch real data from backend and update chart. The backend endpoint is protected by
+                // checkAuth; we use POST (current server route) and include credentials (cookies).
+                async function fetchAndUpdate() {
+                    var view = selView.value;
+                    var year = selYear.value;
+                    var month = document.getElementById('selMonth').value || 0;
+                    var url = 'http://localhost:8000/api/statistics/revenue?view=' + encodeURIComponent(view) + '&year=' + encodeURIComponent(year) + '&month=' + encodeURIComponent(month);
+                    try {
+                        var resp = await fetch(url, { method: 'POST', credentials: 'include', headers: { 'Accept': 'application/json' } });
+                        if (!resp.ok) {
+                            alert('Xin lỗi, không thể lấy dữ liệu thống kê. (HTTP ' + resp.status + ')');
+                            return;
+                        }
+                        var json = await resp.json();
+                        // prefer cumulative (lũy kế) field, fallback to period totals
+                        var totals = json.cumulative || json.totals || json.dataCumulative || json.dataStatistic || (json.datasets && (json.datasets.cumulative || json.datasets.total)) || json.datasttic || [];
+                        // if month view the API returns 4 values (weeks); ensure labels accordingly
+                        if (view === 'month') {
+                            window.revenueChart.data.labels = ['Tuần 1','Tuần 2','Tuần 3','Tuần 4'];
+                        } else {
+                            window.revenueChart.data.labels = labels;
+                        }
+
+                        // If totals length mismatches chart labels, try to adapt (pad with zeros)
+                        var targetLen = window.revenueChart.data.labels.length;
+                        if (!Array.isArray(totals)) totals = [];
+                        if (totals.length < targetLen) {
+                            while (totals.length < targetLen) totals.push(0);
+                        } else if (totals.length > targetLen) {
+                            totals = totals.slice(0, targetLen);
+                        }
+
+                        var pointBackgrounds = totals.map(function(){ return 'rgba(54,162,235,0.9)'; });
+                        if (view === 'month') {
+                            // no per-week highlight after removing week selector
+                        } else {
+                            var selM = parseInt(document.getElementById('selMonth').value, 10) || 0;
+                            if (selM >= 1 && selM <= 12) pointBackgrounds[selM-1] = 'rgba(255,99,132,0.9)';
+                        }
+
+                        var ds = window.revenueChart.data.datasets[0];
+                        ds.data = totals;
+                        ds.pointBackgroundColor = pointBackgrounds;
+                        ds.pointBorderColor = ds.pointBackgroundColor;
+                        window.revenueChart.update();
+
+                        // show informational message when backend responds with a message
+                        if (json.message) {
+                            if (json.message.indexOf('Không có dữ liệu') !== -1) {
+                                // show non-blocking info
+                                console.info(json.message);
+                            }
+                        }
+                    } catch (err) {
+                        console.error('Fetch revenue error', err);
+                        alert('Xin lỗi, đã xảy ra lỗi khi tải dữ liệu thống kê.');
+                    }
+                }
+
+                // wire up controls to call API
+                document.getElementById('selYear').addEventListener('change', fetchAndUpdate);
+                document.getElementById('selMonth').addEventListener('change', fetchAndUpdate);
+                selView.addEventListener('change', function(){ updateViewUI(); fetchAndUpdate(); });
+
+                // initial load
+                fetchAndUpdate();
+            } catch (e) { console.error('revenue chart init error', e); }
+        })();
+    </script>
+    <!-- Keep dashboard/widgets scripts if you want full admin dashboard elsewhere -->
     <script src="assets/js/dashboard.js"></script>
     <script src="assets/js/widgets.js"></script>
     <script src="vendors/jqvmap/dist/jquery.vmap.min.js"></script>
     <script src="vendors/jqvmap/examples/js/jquery.vmap.sampledata.js"></script>
     <script src="vendors/jqvmap/dist/maps/jquery.vmap.world.js"></script>
+    <script src="assets/js/init-scripts/chart-js/chartjs-init.js"></script>
     <script>
         (function ($) {
             "use strict";
