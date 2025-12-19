@@ -60,6 +60,19 @@
             border: 0;
         }
         .revenue-card-body canvas { display:block; }
+        /* Center the small stat widget and improve appearance */
+        .revenue-card-body .stat-widget-one {
+            margin: 8px auto; /* center horizontally inside the controls column */
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            background: #ffffff;
+            padding: 8px 12px;
+            border-radius: 6px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.06);
+        }
+        .revenue-card-body .stat-widget-one .stat-text { font-size: 13px; color: #666; }
+        .revenue-card-body .stat-widget-one .stat-digit { font-size: 18px; font-weight: 600; color: #2d8cf0; }
     </style>
 </head>
 
@@ -189,7 +202,7 @@
             <div class="col-sm-4">
                 <div class="page-header float-left">
                     <div class="page-title">
-                        <h1>Sách</h1>
+                        <h1>Doanh thu</h1>
                     </div>
                 </div>
             </div>
@@ -246,6 +259,13 @@
                                 </select>
                             </div>
                             <!-- week selector removed -->
+                            <div class="stat-widget-one">
+                                <div class="stat-icon dib"><i class="ti-money text-success border-success"></i></div>
+                                <div class="stat-content dib">
+                                    <div class="stat-text">Tổng doanh thu</div>
+                                    <div class="stat-digit">1,012</div>
+                                </div>
+                            </div>
                         </div>
 
                         <div class="chart-wrapper">
@@ -327,7 +347,7 @@
                 var ctx = canvas.getContext('2d');
                 window.revenueChart = new Chart(ctx, {
                     type: 'line',
-                    data: { labels: labels, datasets: [{ label: 'Doanh thu (lũy kế)', data: sampleData, backgroundColor: 'rgba(54,162,235,0.2)', borderColor: 'rgba(54,162,235,1)', borderWidth: 2, fill: true }]},
+                    data: { labels: labels, datasets: [{ label: 'Doanh thu', data: sampleData, backgroundColor: 'rgba(54,162,235,0.2)', borderColor: 'rgba(54,162,235,1)', borderWidth: 2, fill: true }]},
                     options: { responsive: false, animation: false, scales: { yAxes: [{ ticks: { beginAtZero: true } }] }, legend: { display: true } }
                 });
 
@@ -345,8 +365,20 @@
                             return;
                         }
                         var json = await resp.json();
-                        // prefer cumulative (lũy kế) field, fallback to period totals
-                        var totals = json.cumulative || json.totals || json.dataCumulative || json.dataStatistic || (json.datasets && (json.datasets.cumulative || json.datasets.total)) || json.datasttic || [];
+                        // prefer period totals (mốc nào ra mốc đấy), fallback to other keys
+                        var totals = json.totals || json.dataStatistic || (json.datasets && json.datasets.total) || json.datasttic || [];
+                        // set stat widget: show monthlyTotal when viewing month, else yearlyTotal
+                        try {
+                            var monthlyTotal = Number(json.monthlyTotal || 0) || 0;
+                            var yearlyTotal = Number(json.yearlyTotal || 0) || 0;
+                            var showVal = (view === 'month' && month && Number(month) >= 1) ? monthlyTotal : yearlyTotal;
+                            // fallback: if showVal is zero but totals has values, use sum of totals
+                            if ((!showVal || showVal === 0) && Array.isArray(totals) && totals.length) {
+                                showVal = totals.reduce(function(s,x){ return s + (Number(x)||0); }, 0);
+                            }
+                            var el = document.querySelector('.stat-widget-one .stat-digit');
+                            if (el) el.innerText = (Number(showVal) || 0).toLocaleString('en-US');
+                        } catch (e) { /* ignore stat update errors */ }
                         // if month view the API returns 4 values (weeks); ensure labels accordingly
                         if (view === 'month') {
                             window.revenueChart.data.labels = ['Tuần 1','Tuần 2','Tuần 3','Tuần 4'];
