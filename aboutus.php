@@ -244,7 +244,7 @@ curl_close($ch);
 									</a>
 								</li>
 								<li>
-									<a href="contactus.html">
+									<a href="contactus.php">
 										<i class="icon-envelope"></i>
 										<em>Liên hệ</em>
 									</a>
@@ -872,7 +872,7 @@ curl_close($ch);
 									</div>
 									<div class="tg-widgetcontent">
 										<ul>
-											<li><a href="contactus.html">Liên hệ</a></li>
+											<li><a href="contactus.php">Liên hệ</a></li>
 											<li><a href="aboutus.html">Về chúng tôi</a></li>
 										</ul>
 										<ul>
@@ -1075,13 +1075,11 @@ curl_close($ch);
 			// Validate required data
 			if (!bookId || !bookcode || !bookname) {
 				alert('Thiếu thông tin sách. Vui lòng thử lại.');
-				console.error('addToCart: missing data', { bookId, bookcode, bookname });
 				return;
 			}
 
 			// Get JWT token for authentication
 			const token = localStorage.getItem('jwtToken');
-			console.log('addToCart token:', token);
 			if (!token) {
 				alert('Phiên đăng nhập hết hạn. Vui lòng đăng nhập lại.');
 				window.location.href = 'admin-ui/page-login.html';
@@ -1129,10 +1127,8 @@ curl_close($ch);
 				} else {
 					const errorMsg = result.message || result.errors || 'Không thể thêm vào giỏ hàng';
 					alert('Lỗi: ' + errorMsg);
-					console.error('addToCart failed:', result);
 				}
 			} catch (error) {
-				console.error('addToCart error:', error);
 				alert('Lỗi kết nối. Vui lòng thử lại.');
 			}
 		}
@@ -1163,7 +1159,6 @@ curl_close($ch);
 			}
 
 			if (!targetId || String(targetId).trim() === '') {
-				console.error('orderBook: missing bookId, cannot redirect to detail.');
 				alert('Không xác định được mã sách. Vui lòng thử lại.');
 				return;
 			}

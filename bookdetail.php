@@ -19,27 +19,112 @@
 	<link rel="stylesheet" href="css/responsive.css">
 	<script src="js/vendor/modernizr-2.8.3-respond-1.4.2.min.js"></script>
 </head>
-<?php 
+<?php
 require_once __DIR__ . '/config.php';
 
 ini_set('display_errors', 1);
 ini_set('display_startup_errors', 1);
 error_reporting(E_ALL);
 
-$url = rtrim(BACKEND_URL, '/') . '/api/get-category-by-id'; // URL của API backend
+// Compute site frontend base (used for image URLs) to avoid relative-path 404s
+$scheme = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off') ? 'https://' : 'http://';
+$host = isset($_SERVER['HTTP_HOST']) ? $_SERVER['HTTP_HOST'] : 'localhost';
+$siteBase = rtrim($scheme . $host, '/') . '/QLTV-ChatboxAi/frontend';
+
+$url = rtrim(BACKEND_URL, '/') . '/api/get-all-book'; // URL của API backend
 
 // Dữ liệu gửi đi
-$datacat = array('id' => 'CatAndCount');
+$databook = array('id' => 'ALLSHOW');
 
 // Chuyển đổi mảng dữ liệu thành JSON
-$jsonData = json_encode($datacat);
+$jsonData10 = json_encode($databook);
 
 // Cấu hình cURL
 $ch = curl_init($url);
 curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
 curl_setopt($ch, CURLOPT_HTTPHEADER, array(
-    'Content-Type: application/json',
-    'Authorization: Bearer' // Thêm token vào header Authorization
+	'Content-Type: application/json',
+	'Authorization: Bearer' // Thêm token vào header Authorization
+));
+curl_setopt($ch, CURLOPT_POST, true);
+curl_setopt($ch, CURLOPT_POSTFIELDS, $jsonData10);
+
+// Thực hiện yêu cầu POST và nhận phản hồi
+$response = curl_exec($ch);
+
+// Kiểm tra nếu có lỗi khi gửi yêu cầu
+if ($response === FALSE) {
+	die('Lỗi khi gửi yêu cầu: ' . curl_error($ch));
+}
+
+// Đóng cURL
+curl_close($ch);
+
+// Chuyển đổi JSON thành mảng dữ liệu trong PHP
+$data = json_decode($response, true);
+
+// Kiểm tra nếu có lỗi khi chuyển đổi JSON
+if ($data === null) {
+	die('Lỗi khi chuyển đổi JSON');
+}
+
+ini_set('display_errors', 1);
+ini_set('display_startup_errors', 1);
+error_reporting(E_ALL);
+
+$url = rtrim(BACKEND_URL, '/') . '/api/get-all-book'; // URL của API backend
+
+// Dữ liệu gửi đi
+$databook = array('id' => 'F10');
+
+// Chuyển đổi mảng dữ liệu thành JSON
+$jsonData = json_encode($databook);
+
+
+// Cấu hình cURL
+$ch = curl_init($url);
+curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+curl_setopt($ch, CURLOPT_HTTPHEADER, array(
+	'Content-Type: application/json',
+	'Authorization: Bearer' // Thêm token vào header Authorization
+));
+curl_setopt($ch, CURLOPT_POST, true);
+curl_setopt($ch, CURLOPT_POSTFIELDS, $jsonData);
+
+// Thực hiện yêu cầu POST và nhận phản hồi
+$response9 = curl_exec($ch);
+
+// Kiểm tra nếu có lỗi khi gửi yêu cầu
+if ($response9 === FALSE) {
+	die('Lỗi khi gửi yêu cầu: ' . curl_error($ch));
+}
+
+// Đóng cURL
+curl_close($ch);
+
+// Chuyển đổi JSON thành mảng dữ liệu trong PHP
+$data9 = json_decode($response9, true);
+
+// Kiểm tra nếu có lỗi khi chuyển đổi JSON
+if ($data9 === null) {
+	die('Lỗi khi chuyển đổi JSON');
+}
+
+$url = rtrim(BACKEND_URL, '/') . '/api/get-category-by-id'; // URL của API backend
+
+// Dữ liệu gửi đi
+$datacat = array('id' => 'F10');
+
+// Chuyển đổi mảng dữ liệu thành JSON
+$jsonData = json_encode($datacat);
+
+
+// Cấu hình cURL
+$ch = curl_init($url);
+curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+curl_setopt($ch, CURLOPT_HTTPHEADER, array(
+	'Content-Type: application/json',
+	'Authorization: Bearer'
 ));
 curl_setopt($ch, CURLOPT_POST, true);
 curl_setopt($ch, CURLOPT_POSTFIELDS, $jsonData);
@@ -49,7 +134,7 @@ $response2 = curl_exec($ch);
 
 // Kiểm tra nếu có lỗi khi gửi yêu cầu
 if ($response2 === FALSE) {
-    die('Lỗi khi gửi yêu cầu: ' . curl_error($ch));
+	die('Lỗi khi gửi yêu cầu: ' . curl_error($ch));
 }
 
 // Đóng cURL
@@ -57,17 +142,86 @@ curl_close($ch);
 
 // Chuyển đổi JSON thành mảng dữ liệu trong PHP
 $data2 = json_decode($response2, true);
-echo '<script>console.log('.json_encode($data2).')</script>';	
 
 // Kiểm tra nếu có lỗi khi chuyển đổi JSON
 if ($data2 === null) {
-    die('Lỗi khi chuyển đổi JSON');
+	die('Lỗi khi chuyển đổi JSON');
+}
+
+// Normalize category response shapes to expected keys: 'categories', 'data', 'result'
+if (!is_array($data2)) {
+	$data2 = ['categories' => [], 'data' => [], 'result' => []];
+} else {
+	if (isset($data2['categories']) && is_array($data2['categories'])) {
+		// ok
+	} elseif (isset($data2['data']) && is_array($data2['data'])) {
+		$data2['categories'] = $data2['data'];
+	} elseif (isset($data2['results']) && is_array($data2['results'])) {
+		$data2['categories'] = $data2['results'];
+	} else {
+		$data2['categories'] = [];
+	}
+
+	if (isset($data2['data']) && is_array($data2['data'])) {
+		// ok
+	} else {
+		$data2['data'] = $data2['categories'];
+	}
+
+	if (isset($data2['result']) && is_array($data2['result'])) {
+		// ok
+	} elseif (isset($data2['results']) && is_array($data2['results'])) {
+		$data2['result'] = $data2['results'];
+	} else {
+		$data2['result'] = [];
+	}
 }
 
 
-ini_set('display_errors', 1);
-ini_set('display_startup_errors', 1);
-error_reporting(E_ALL);
+
+// Populate booksCount for sidebar: derive counts from grouped `result` if backend didn't provide counts
+$countsById = [];
+$countsByName = [];
+if (isset($data2['result']) && is_array($data2['result'])) {
+	foreach ($data2['result'] as $catdata) {
+		$cid = isset($catdata['catId']) ? (string)$catdata['catId'] : (isset($catdata['id']) ? (string)$catdata['id'] : '');
+		$cname = isset($catdata['category']) ? (string)$catdata['category'] : (isset($catdata['name']) ? (string)$catdata['name'] : '');
+		$count = 0;
+		if (isset($catdata['books']) && is_array($catdata['books'])) {
+			$count = count($catdata['books']);
+		} elseif (isset($catdata['newbooks']) && is_array($catdata['newbooks'])) {
+			$count = count($catdata['newbooks']);
+		}
+		if ($cid !== '') $countsById[$cid] = $count;
+		if ($cname !== '') $countsByName[$cname] = $count;
+	}
+}
+
+// Apply counts to categories/data arrays so sidebar shows numbers
+if (isset($data2['data']) && is_array($data2['data'])) {
+	foreach ($data2['data'] as &$cat) {
+		$catId = isset($cat['id']) ? (string)$cat['id'] : '';
+		$catName = isset($cat['category']) ? (string)$cat['category'] : (isset($cat['name']) ? (string)$cat['name'] : '');
+		$booksCount = 0;
+		if ($catId !== '' && isset($countsById[$catId])) $booksCount = $countsById[$catId];
+		elseif ($catName !== '' && isset($countsByName[$catName])) $booksCount = $countsByName[$catName];
+		$cat['booksCount'] = $booksCount;
+	}
+	unset($cat);
+}
+
+// Mirror into categories for templates that iterate categories
+if (isset($data2['categories']) && is_array($data2['categories'])) {
+	foreach ($data2['categories'] as &$cat) {
+		$catId = isset($cat['id']) ? (string)$cat['id'] : '';
+		$catName = isset($cat['category']) ? (string)$cat['category'] : (isset($cat['name']) ? (string)$cat['name'] : '');
+		$booksCount = 0;
+		if ($catId !== '' && isset($countsById[$catId])) $booksCount = $countsById[$catId];
+		elseif ($catName !== '' && isset($countsByName[$catName])) $booksCount = $countsByName[$catName];
+		$cat['booksCount'] = $booksCount;
+	}
+	unset($cat);
+}
 
 $url = rtrim(BACKEND_URL, '/') . '/api/get-news'; // URL của API backend
 
@@ -81,8 +235,8 @@ $jsonData = json_encode($datanew);
 $ch = curl_init($url);
 curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
 curl_setopt($ch, CURLOPT_HTTPHEADER, array(
-    'Content-Type: application/json',
-    'Authorization: Bearer' // Thêm token vào header Authorization
+	'Content-Type: application/json',
+	'Authorization: Bearer YOUR_TOKEN_HERE' // Thay YOUR_TOKEN_HERE bằng token thực tế của bạn
 ));
 curl_setopt($ch, CURLOPT_POST, true);
 curl_setopt($ch, CURLOPT_POSTFIELDS, $jsonData);
@@ -90,9 +244,15 @@ curl_setopt($ch, CURLOPT_POSTFIELDS, $jsonData);
 // Thực hiện yêu cầu POST và nhận phản hồi
 $response3 = curl_exec($ch);
 
-// Kiểm tra nếu có lỗi khi gửi yêu cầu
-if ($response3 === FALSE) {
-    die('Lỗi khi gửi yêu cầu: ' . curl_error($ch));
+// Kiểm tra và xử lý lỗi khi gửi yêu cầu
+if ($response3 === false) {
+	die('Lỗi khi gửi yêu cầu: ' . curl_error($ch));
+}
+
+// Kiểm tra mã HTTP response
+$http_status = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+if ($http_status !== 200) {
+	die('Lỗi HTTP: ' . $http_status);
 }
 
 // Đóng cURL
@@ -101,108 +261,217 @@ curl_close($ch);
 // Chuyển đổi JSON thành mảng dữ liệu trong PHP
 $data3 = json_decode($response3, true);
 
-// Kiểm tra nếu có lỗi khi chuyển đổi JSON
+// Kiểm tra và xử lý lỗi khi chuyển đổi JSON
 if ($data3 === null) {
-    die('Lỗi khi chuyển đổi JSON');
+	die('Lỗi khi chuyển đổi JSON');
 }
 
-ini_set('display_errors', 1);
-ini_set('display_startup_errors', 1);
-error_reporting(E_ALL);
 
-$url = rtrim(BACKEND_URL, '/') . '/api/get-related-book'; // URL của API backend
-
-// Read cookies safely as plain strings (they are not JSON encoded)
-$categoryBook = isset($_COOKIE['categoryBook']) ? trim($_COOKIE['categoryBook']) : '';
-$bookId = isset($_COOKIE['bookId']) ? trim($_COOKIE['bookId']) : '';
-
-// Always set $datanew4 (may contain empty strings if cookies are not present)
-$datanew4 = array('categoryBook' => $categoryBook, 'bookId' => $bookId);
+$url = rtrim(BACKEND_URL, '/') . '/api/get-news'; // URL của API backend
 
 // Dữ liệu gửi đi
+$datanew2 = array('id' => 'ALLSHOW');
 
 // Chuyển đổi mảng dữ liệu thành JSON
-$jsonData4 = json_encode($datanew4);
+$jsonData11 = json_encode($datanew2);
 
 // Cấu hình cURL
 $ch = curl_init($url);
 curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
 curl_setopt($ch, CURLOPT_HTTPHEADER, array(
-    'Content-Type: application/json',
-    'Authorization: Bearer' // Thêm token vào header Authorization
+	'Content-Type: application/json',
+	'Authorization: Bearer YOUR_TOKEN_HERE' // Thay YOUR_TOKEN_HERE bằng token thực tế của bạn
 ));
 curl_setopt($ch, CURLOPT_POST, true);
-curl_setopt($ch, CURLOPT_POSTFIELDS, $jsonData4);
+curl_setopt($ch, CURLOPT_POSTFIELDS, $jsonData11);
 
 // Thực hiện yêu cầu POST và nhận phản hồi
-$response4 = curl_exec($ch);
+$response33 = curl_exec($ch);
 
-// Kiểm tra nếu có lỗi khi gửi yêu cầu
-if ($response4 === FALSE) {
-    die('Lỗi khi gửi yêu cầu: ' . curl_error($ch));
+// Kiểm tra và xử lý lỗi khi gửi yêu cầu
+if ($response33 === false) {
+	die('Lỗi khi gửi yêu cầu: ' . curl_error($ch));
+}
+
+// Kiểm tra mã HTTP response
+$http_status = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+if ($http_status !== 200) {
+	die('Lỗi HTTP: ' . $http_status);
 }
 
 // Đóng cURL
 curl_close($ch);
 
 // Chuyển đổi JSON thành mảng dữ liệu trong PHP
-$data4 = json_decode($response4, true);
+$data33 = json_decode($response33, true);
 
-// Kiểm tra nếu có lỗi khi chuyển đổi JSON
-if ($data4 === null) {
-    die('Lỗi khi chuyển đổi JSON');
+// Kiểm tra và xử lý lỗi khi chuyển đổi JSON
+if ($data33 === null) {
+	die('Lỗi khi chuyển đổi JSON');
 }
 
 ini_set('display_errors', 1);
 ini_set('display_startup_errors', 1);
 error_reporting(E_ALL);
 
-$url = rtrim(BACKEND_URL, '/') . '/api/check-fvbook'; // URL của API backend
+$url = rtrim(BACKEND_URL, '/') . '/api/get-fv3'; // URL của API backend
 
-// Read cookies safely (cookies here store plain values, not JSON)
-$idusername = isset($_COOKIE['idusername']) ? trim($_COOKIE['idusername']) : null;
-$bookId = isset($_COOKIE['bookId']) ? trim($_COOKIE['bookId']) : null;
+// Lấy dữ liệu từ cookies
+$idusername = $_COOKIE['idusername'] ?? -1;
 
-if (!empty($idusername) && !empty($bookId)) {
-		// Sử dụng biến $idusername và $bookId
-		$datanew4 = array('idusername' => $idusername, 'bookId' => $bookId);
+if ($idusername) {
+	// Dữ liệu để gửi
+	$datanew5 = array('idusername' => $idusername);
 
-        // Chuyển đổi mảng dữ liệu thành JSON
-        $jsonData5 = json_encode($datanew4);
-        
-        if ($jsonData5 === false) {
-            die('Lỗi khi chuyển đổi dữ liệu sang JSON: ' . json_last_error_msg());
-        }
+	// Chuyển đổi mảng dữ liệu thành JSON
+	$jsonData5 = json_encode($datanew5);
 
-        // Cấu hình cURL
-        $ch = curl_init($url);
-        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-        curl_setopt($ch, CURLOPT_HTTPHEADER, array(
-            'Content-Type: application/json',
-            'Authorization: Bearer YOUR_ACCESS_TOKEN_HERE' // Thêm token vào header Authorization
-        ));
-        curl_setopt($ch, CURLOPT_POST, true);
-        curl_setopt($ch, CURLOPT_POSTFIELDS, $jsonData5);
+	// Cấu hình cURL
+	$ch = curl_init($url);
+	curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+	curl_setopt($ch, CURLOPT_HTTPHEADER, array(
+		'Content-Type: application/json',
+		'Authorization: ' . 'Bearer' // Thêm token vào header Authorization
+	));
+	curl_setopt($ch, CURLOPT_POST, true);
+	curl_setopt($ch, CURLOPT_POSTFIELDS, $jsonData5);
 
-        // Thực hiện yêu cầu POST và nhận phản hồi
-        $response5 = curl_exec($ch);
+	// Thực hiện yêu cầu POST và nhận phản hồi
+	$response5 = curl_exec($ch);
 
-        // Kiểm tra nếu có lỗi khi gửi yêu cầu
-        if ($response5 === FALSE) {
-            die('Lỗi khi gửi yêu cầu: ' . curl_error($ch));
-        }
-
-        // Đóng cURL
-        curl_close($ch);
-
-        // Chuyển đổi JSON thành mảng dữ liệu trong PHP
-        $data5 = json_decode($response5, true);
-
-        // Kiểm tra nếu có lỗi khi chuyển đổi JSON
-		if ($data5 === null && json_last_error() !== JSON_ERROR_NONE) {
-			die('Lỗi khi chuyển đổi JSON: ' . json_last_error_msg());
-		}
+	// Kiểm tra nếu có lỗi khi gửi yêu cầu
+	if ($response5 === FALSE) {
+		die('Lỗi khi gửi yêu cầu: ' . curl_error($ch));
 	}
+
+	// Đóng cURL
+	curl_close($ch);
+
+	// Chuyển đổi JSON thành mảng dữ liệu trong PHP
+	$data5 = json_decode($response5, true);
+
+	// Kiểm tra nếu có lỗi khi chuyển đổi JSON
+	if ($data5 === null) {
+		die('Lỗi khi chuyển đổi JSON');
+	}
+
+	// Normalize / deduplicate favorites results so UI can't show duplicates
+	if (isset($data5['results']) && is_array($data5['results'])) {
+		$unique = [];
+		foreach ($data5['results'] as $entry) {
+			$idKey = null;
+			if (is_array($entry)) {
+				if (isset($entry['id'])) $idKey = $entry['id'];
+				elseif (isset($entry['bookId'])) $idKey = $entry['bookId'];
+				elseif (isset($entry['idfvbook'])) $idKey = $entry['idfvbook'];
+			} elseif (is_object($entry)) {
+				if (isset($entry->id)) $idKey = $entry->id;
+				elseif (isset($entry->bookId)) $idKey = $entry->bookId;
+				elseif (isset($entry->idfvbook)) $idKey = $entry->idfvbook;
+			}
+			if ($idKey === null) {
+				// fallback: use serialized content as key
+				$key = md5(json_encode($entry));
+			} else {
+				$key = (string)$idKey;
+			}
+			if (!isset($unique[$key])) {
+				$unique[$key] = $entry;
+			}
+		}
+		$data5['results'] = array_values($unique);
+		// ensure bookCount reflects unique items
+		$data5['bookCount'] = count($data5['results']);
+	} else {
+		// ensure structure exists
+		$data5['results'] = [];
+		$data5['bookCount'] = 0;
+	}
+
+	echo '<script>console.log(' . json_encode($data5) . ');</script>';
+}
+
+// === Lấy top 3 items của giỏ hàng giống phần yêu thích ===
+$url = rtrim(BACKEND_URL, '/') . '/api/get-cart3'; // URL của API backend
+
+$dataCart = null;
+$idusername = $_COOKIE['idusername'] ?? -1;
+
+if ($idusername) {
+	// Send both 'idusername' (legacy) and 'userId' so backend controllers accept either key
+	$datacart = array('idusername' => $idusername, 'userId' => intval($idusername));
+	$jsonDataCart = json_encode($datacart);
+	$ch = curl_init($url);
+	curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+	curl_setopt($ch, CURLOPT_HTTPHEADER, array(
+		'Content-Type: application/json',
+		'Authorization: ' . 'Bearer'
+	));
+	curl_setopt($ch, CURLOPT_POST, true);
+	curl_setopt($ch, CURLOPT_POSTFIELDS, $jsonDataCart);
+	$responseCart = curl_exec($ch);
+	if ($responseCart === FALSE) {
+		// ignore silently, keep $dataCart null
+	} else {
+		$dataCart = json_decode($responseCart, true);
+	}
+	curl_close($ch);
+}
+
+ini_set('display_errors', 1);
+ini_set('display_startup_errors', 1);
+error_reporting(E_ALL);
+
+$url = rtrim(BACKEND_URL, '/') . '/api/get-all-book'; // URL của API backend
+
+// Dữ liệu gửi đi
+$databook12 = array('id' => 'L12');
+
+// Chuyển đổi mảng dữ liệu thành JSON
+$jsonData12 = json_encode($databook12);
+
+
+// Cấu hình cURL
+$ch = curl_init($url);
+curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+curl_setopt($ch, CURLOPT_HTTPHEADER, array(
+	'Content-Type: application/json',
+	'Authorization: Bearer' // Thêm token vào header Authorization
+));
+curl_setopt($ch, CURLOPT_POST, true);
+curl_setopt($ch, CURLOPT_POSTFIELDS, $jsonData12);
+
+// Thực hiện yêu cầu POST và nhận phản hồi
+$response12 = curl_exec($ch);
+
+// Kiểm tra nếu có lỗi khi gửi yêu cầu
+if ($response12 === FALSE) {
+	die('Lỗi khi gửi yêu cầu: ' . curl_error($ch));
+}
+
+// Đóng cURL
+curl_close($ch);
+
+// Chuyển đổi JSON thành mảng dữ liệu trong PHP
+$data12 = json_decode($response12, true);
+
+// Kiểm tra nếu có lỗi khi chuyển đổi JSON
+if ($data12 === null) {
+	die('Lỗi khi chuyển đổi JSON');
+}
+
+// Debug: Kiểm tra cấu trúc dữ liệu
+if (!is_array($data12)) {
+	die('Dữ liệu không phải là mảng');
+}
+
+// Đảm bảo $data12 có cấu trúc đúng
+if (isset($data12['data'])) {
+	$data12 = $data12['data'];
+} elseif (isset($data12['results'])) {
+	$data12 = $data12['results'];
+}
+
 
 ?>
 
@@ -229,7 +498,7 @@ if (!empty($idusername) && !empty($bookId)) {
 									</a>
 								</li>
 								<li>
-									<a href="contactus.html">
+									<a href="contactus.php">
 										<i class="icon-envelope"></i>
 										<em>Liên hệ</em>
 									</a>
@@ -245,7 +514,8 @@ if (!empty($idusername) && !empty($bookId)) {
 								<figure><a><img src="images/blank-avatar.jpg" alt="image description"></a></figure>
 								<span onclick="profileBar()" class="dropbtn"></span>
 								<div id="myDropdown" class="dropdown-content">
-									<a class="dropdown-1" href="admin-ui/page-login.html" onclick="logout()"></i></a>
+									<a class="dropdown-1" href="admin-ui/page-login.html" onclick="logout()"></i> Đăng xuất</a>
+									<a class="dropdown-3" href="orders.php">Đơn sách</a>
 									<a class="dropdown-2" href="admin-ui/page-register.html"></i> Đăng ký</a>
 								</div>
 							</div>
@@ -292,19 +562,19 @@ if (!empty($idusername) && !empty($bookId)) {
 													<ul class="tg-themetabnav" role="tablist">
 													<?php
 													// Kiểm tra nếu $data2 chứa các danh mục
-                                                    if (isset($data2['categories']) && is_array($data2['categories'])) {
-                                                     foreach ($data2['categories'] as $category) {
-                                                    // Giả sử mỗi mục danh mục có thuộc tính 'category'
-                                                    if (isset($category['category'])) {
-                                                    echo '<li role="presentation">';
-                                                    echo '<a href="#' . htmlspecialchars($category['id']) . '" aria-controls="' . htmlspecialchars($category['id']) . '" role="tab" data-toggle="tab">' . htmlspecialchars($category['category']) . '</a>';
-                                                    echo '</li>';
-                                                                      }
-                                                             }
-                                                    } else {
-                                                        echo 'Không có danh mục nào để hiển thị.';
-                                                        }
-                                                    ?>
+													if (isset($data2['categories']) && is_array($data2['categories'])) {
+													 foreach ($data2['categories'] as $category) {
+													// Giả sử mỗi mục danh mục có thuộc tính 'category'
+													if (isset($category['category'])) {
+													echo '<li role="presentation">';
+													echo '<a href="#' . htmlspecialchars($category['id']) . '" aria-controls="' . htmlspecialchars($category['id']) . '" role="tab" data-toggle="tab">' . htmlspecialchars($category['category']) . '</a>';
+													echo '</li>';
+																	  }
+															 }
+													} else {
+														echo 'Không có danh mục nào để hiển thị.';
+														}
+													?>
 													</ul>
 													<div class="tab-content tg-themetabcontent">
 													<?php foreach ($data2['result'] as $catdata): ?>
@@ -316,18 +586,18 @@ if (!empty($idusername) && !empty($bookId)) {
 																	</div>
 																	<ul>
 																	<?php 
-                                                                    $count = 0;
-                                                                    $displayed_authors = [];
-                                                                    foreach ($catdata['books'] as $author): 
-                                                                    if ($count >= 5) break;
-                                                                    if (in_array($author['author'], $displayed_authors)) continue;
-                                                                    $displayed_authors[] = $author['author'];
-                                                                    ?>
-                                                                    <li><a><?= htmlspecialchars($author['author']) ?></a></li>
-                                                                    <?php 
-                                                                    $count++;
-                                                                    endforeach; 
-                                                                    ?>
+																	$count = 0;
+																	$displayed_authors = [];
+																	foreach ($catdata['books'] as $author): 
+																	if ($count >= 5) break;
+																	if (in_array($author['author'], $displayed_authors)) continue;
+																	$displayed_authors[] = $author['author'];
+																	?>
+																	<li><a><?= htmlspecialchars($author['author']) ?></a></li>
+																	<?php 
+																	$count++;
+																	endforeach; 
+																	?>
 																	</ul>
 																</li>
 																<li>
@@ -336,18 +606,18 @@ if (!empty($idusername) && !empty($bookId)) {
 																	</div>
 																	<ul>
 																	<?php 
-                                                                       $count = 0;
-                                                                       $displayed_books = [];
-                                                                       foreach ($catdata['newbooks'] as $newbook): 
-                                                                       if ($count >= 5) break;
-                                                                       if (in_array($newbook['bookName'], $displayed_books)) continue;
-                                                                       $displayed_books[] = $newbook['bookName'];
-                                                                       ?>
-                                                                      <li><a><?= htmlspecialchars($newbook['bookName']) ?></a></li>
-                                                                      <?php 
-                                                                      $count++;
-                                                                      endforeach; 
-                                                                      ?>
+																	   $count = 0;
+																	   $displayed_books = [];
+																	   foreach ($catdata['newbooks'] as $newbook): 
+																	   if ($count >= 5) break;
+																	   if (in_array($newbook['bookName'], $displayed_books)) continue;
+																	   $displayed_books[] = $newbook['bookName'];
+																	   ?>
+																	  <li><a><?= htmlspecialchars($newbook['bookName']) ?></a></li>
+																	  <?php 
+																	  $count++;
+																	  endforeach; 
+																	  ?>
 																	</ul>
 																</li>
 																<li>
@@ -356,18 +626,18 @@ if (!empty($idusername) && !empty($bookId)) {
 																	</div>
 																	<ul>
 																	<?php 
-                                                                      $count = 0;
-                                                                      $displayed_books = [];
-                                                                      foreach ($catdata['books'] as $book): 
-                                                                      if ($count >= 5) break;
-                                                                      if (in_array($book['bookName'], $displayed_books)) continue;
-                                                                      $displayed_books[] = $book['bookName'];
-                                                                      ?>
-                                                                      <li><a><?= htmlspecialchars($book['bookName']) ?></a></li>
-                                                                      <?php 
-                                                                      $count++;
-                                                                      endforeach; 
-                                                                      ?>
+																	  $count = 0;
+																	  $displayed_books = [];
+																	  foreach ($catdata['books'] as $book): 
+																	  if ($count >= 5) break;
+																	  if (in_array($book['bookName'], $displayed_books)) continue;
+																	  $displayed_books[] = $book['bookName'];
+																	  ?>
+																	  <li><a><?= htmlspecialchars($book['bookName']) ?></a></li>
+																	  <?php 
+																	  $count++;
+																	  endforeach; 
+																	  ?>
 																	</ul>
 																</li>
 															</ul>
@@ -392,108 +662,106 @@ if (!empty($idusername) && !empty($bookId)) {
 													<li><a href="">Sách hay</a></li>
 												</ul>
 											</li>
-										    <li class="menu-item-has-children">
+											<li class="menu-item-has-children">
 											<a>Tin tức</a>
 											<ul class="sub-menu" id="menu-tin-tuc">
 												<li><a href="">Tin tức mới nhất</a></li>
 												<li><a href="">tin tức nổi bật</a></li>
 											</ul>
-										    </li>	
+											</li>    
 									</div>
 								</nav>
 								<div class="tg-wishlistandcart">
-									<div class="dropdown tg-themedropdown tg-wishlistdropdown">
+								<div class="dropdown tg-themedropdown tg-minicartdropdown">
 										<a href="javascript:void(0);" id="tg-wishlisst" class="tg-btnthemedropdown" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-											<span class="tg-themebadge">3</span>
+											<span class="tg-themebadge"><?php echo $data5['bookCount'] ?></span>
 											<i class="icon-heart"></i>
 										</a>
 										<div class="dropdown-menu tg-themedropdownmenu" aria-labelledby="tg-minicart">
 											<div class="tg-minicartbody">
+												<?php
+												if (isset($data5['results']) && !empty($data5['results'])) {
+												// Lặp qua dữ liệu và hiển thị trong các div item
+												foreach ($data5['results'] as $book) {
+													// Chỉ hiển thị sách nếu showing = 1
+													if ($book['showing'] == 1) {
+														?>
 												<div class="tg-minicarproduct">
 													<figure>
-														<img src="images/products/img-01.jpg" alt="image description">
-														
+														<img src="images/books/<?php echo $book['image']; ?>" alt="image bug" style="width:65px">
+                                                        
 													</figure>
 													<div class="tg-minicarproductdata">
-														<h5><a href="javascript:void(0);">Our State Fair Is A Great Function</a></h5>
-														<h6><a href="javascript:void(0);">Tiểu thuyết</a></h6>
+														<h5><a><?php echo $book['bookName']; ?></a></h5>
+														<h6><a><?php echo $book['category']; ?></a></h6>
 													</div>
 												</div>
-												<div class="tg-minicarproduct">
-													<figure>
-														<img src="images/products/img-02.jpg" alt="image description">
-													</figure>
-													<div class="tg-minicarproductdata">
-														<h5><a href="javascript:void(0);">Bring Me To Light</a></h5>
-														<h6><a href="javascript:void(0);">Tiểu thuyết</a></h6>
-													</div>
-												</div>
-												<div class="tg-minicarproduct">
-													<figure>
-														<img src="images/products/img-03.jpg" alt="image description">
-													</figure>
-													<div class="tg-minicarproductdata">
-														<h5><a href="javascript:void(0);">Have Faith In Your Soul</a></h5>
-														<h6><a href="javascript:void(0);">Tiểu thuyết</a></h6>
-													</div>
-												</div>
-											</div>
+												<?php
+													}
+												}
+											} else {
+												echo '<div class="tg-description"><p>Chưa có sách yêu thích nào</p></div>';
+											}
+											?>
 											<div class="tg-minicartfoot">
 												<div class="tg-btns">
 													<a class="tg-btn" href="favoritebook.php">Xem thêm</a>
 													<a class="tg-btn" href="javascript:void(0);">Đóng</a>
 												</div>
-											</div>
-										</div>
-									</div>
-									<div class="dropdown tg-themedropdown tg-wishlistdropdown">
-										<a href="javascript:void(0);" id="tg-minicart" class="tg-btnthemedropdown" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" aria-controls="minicartMenu" aria-label="Giỏ hàng">
-											<span class="tg-themebadge" aria-hidden="true">0</span>
-											<i class="icon-books"></i>
+												</div>
+									   </div>
+								</div>
+                                
+							</div>
+							<div class="dropdown tg-themedropdown tg-wishlistdropdown">
+										<a href="javascript:void(0);" id="tg-cartdrop" class="tg-btnthemedropdown" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+											<span class="tg-themebadge"><?php echo isset($dataCart['itemCount']) ? htmlspecialchars($dataCart['itemCount']) : '0'; ?></span>
+											<i class="icon-cart"></i>
 										</a>
-										<!-- Live region for screen readers -->
-										<span id="cartLive" class="sr-only" aria-live="polite" aria-atomic="true"></span>
 										<div class="dropdown-menu tg-themedropdownmenu" aria-labelledby="tg-minicart">
 											<div class="tg-minicartbody">
-												<div class="tg-minicarproduct">
-													<figure>
-														<img src="images/products/img-01.jpg" alt="image description">
-													</figure>
-													<div class="tg-minicarproductdata">
-														<h5><a href="javascript:void(0);">Our State Fair Is A Great Function</a></h5>
-														<h6><a href="javascript:void(0);">Tiểu thuyết</a></h6>
-													</div>
-												</div>
-												<div class="tg-minicarproduct">
-													<figure>
-														<img src="images/products/img-02.jpg" alt="image description">
-													</figure>
-													<div class="tg-minicarproductdata">
-														<h5><a href="javascript:void(0);">Bring Me To Light</a></h5>
-														<h6><a href="javascript:void(0);">Tiểu thuyết</a></h6>
-													</div>
-												</div>
-												<div class="tg-minicarproduct">
-													<figure>
-														<img src="images/products/img-03.jpg" alt="image description">
-													</figure>
-													<div class="tg-minicarproductdata">
-														<h5><a href="javascript:void(0);">Have Faith In Your Soul</a></h5>
-														<h6><a href="javascript:void(0);">Tiểu thuyết</a></h6>
-													</div>
-												</div>
+											<?php
+												if (isset($dataCart['results']) && !empty($dataCart['results'])) {
+													foreach ($dataCart['results'] as $it) {
+														// $it may be a Book object or a cartitem-like object
+														$img = 'no-image.png';
+														$title = '';
+														$category = '';
+														if (isset($it['image'])) {
+															$img = htmlspecialchars($it['image']);
+														} elseif (isset($it->image)) {
+															$img = htmlspecialchars($it->image);
+														}
+														if (isset($it['bookName'])) $title = htmlspecialchars($it['bookName']);
+														elseif (isset($it['bookname'])) $title = htmlspecialchars($it['bookname']);
+														elseif (isset($it->bookName)) $title = htmlspecialchars($it->bookName);
+														if (isset($it['category'])) $category = htmlspecialchars($it['category']);
+														elseif (isset($it->category)) $category = htmlspecialchars($it->category);
+														?>
+														<div class="tg-minicarproduct">
+															<figure>
+																<img src="images/books/<?php echo $img; ?>" alt="image description" style="width:65px">
+															</figure>
+															<div class="tg-minicarproductdata">
+																<h5><a href="cartbook.php"><?php echo $title ?: 'Sách'; ?></a></h5>
+																<h6><a href="javascript:void(0);"><?php echo $category; ?></a></h6>
+															</div>
+														</div>
+													<?php
+													}
+												} else {
+													echo '<div class="tg-description"><p>Chưa có sách đặt</p></div>';
+												}
+											?>
 											</div>
 											<div class="tg-minicartfoot">
-												<span class="tg-subtotal">Trong giỏ: <strong> 3</strong></span>
 												<div class="tg-btns">
-													<a class="tg-btn" href="javascript:void(0);">Xem thêm</a>
+													<a class="tg-btn" href="cartbook.php">Xem thêm</a>
 													<a class="tg-btn" href="javascript:void(0);">Đóng</a>
 												</div>
 											</div>
 										</div>
 									</div>
-								</div>
-							</div>
 						</div>
 					</div>
 				</div>

@@ -19,6 +19,137 @@
 	<link rel="stylesheet" href="css/responsive.css">
 	<script src="js/vendor/modernizr-2.8.3-respond-1.4.2.min.js"></script>
 </head>
+<?php
+require_once __DIR__ . '/config.php';
+
+ini_set('display_errors', 1);
+ini_set('display_startup_errors', 1);
+error_reporting(E_ALL);
+
+// get-all-book ALLSHOW -> $data
+$url = rtrim(BACKEND_URL, '/') . '/api/get-all-book';
+$databook = array('id' => 'ALLSHOW');
+$jsonData10 = json_encode($databook);
+$ch = curl_init($url);
+curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+curl_setopt($ch, CURLOPT_HTTPHEADER, array(
+	'Content-Type: application/json',
+	'Authorization: Bearer'
+));
+curl_setopt($ch, CURLOPT_POST, true);
+curl_setopt($ch, CURLOPT_POSTFIELDS, $jsonData10);
+$response = curl_exec($ch);
+if ($response === FALSE) {
+	$data = ['data' => []];
+} else {
+	$data = json_decode($response, true) ?: ['data' => []];
+}
+curl_close($ch);
+
+// get-category-by-id -> $data2
+$url = rtrim(BACKEND_URL, '/') . '/api/get-category-by-id';
+$datacat = array('id' => 'CatAndCount');
+$jsonData = json_encode($datacat);
+$ch = curl_init($url);
+curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+curl_setopt($ch, CURLOPT_HTTPHEADER, array(
+	'Content-Type: application/json',
+	'Authorization: Bearer'
+));
+curl_setopt($ch, CURLOPT_POST, true);
+curl_setopt($ch, CURLOPT_POSTFIELDS, $jsonData);
+$response2 = curl_exec($ch);
+if ($response2 === FALSE) {
+	$data2 = ['data' => []];
+} else {
+	$data2 = json_decode($response2, true) ?: ['data' => []];
+}
+curl_close($ch);
+
+// get-news -> $data3
+$url = rtrim(BACKEND_URL, '/') . '/api/get-news';
+$datanew = array('id' => 'F7');
+$jsonData = json_encode($datanew);
+$ch = curl_init($url);
+curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+curl_setopt($ch, CURLOPT_HTTPHEADER, array(
+	'Content-Type: application/json',
+	'Authorization: Bearer'
+));
+curl_setopt($ch, CURLOPT_POST, true);
+curl_setopt($ch, CURLOPT_POSTFIELDS, $jsonData);
+$response3 = curl_exec($ch);
+if ($response3 === FALSE) {
+	$data3 = ['data' => []];
+} else {
+	$data3 = json_decode($response3, true) ?: ['data' => []];
+}
+curl_close($ch);
+
+// get-fv3 -> $data5
+$url = rtrim(BACKEND_URL, '/') . '/api/get-fv3';
+$idusername = $_COOKIE['idusername'] ?? -1;
+$data5 = ['results'=>[], 'bookCount'=>0];
+if ($idusername) {
+	$datanew5 = array('idusername' => $idusername);
+	$jsonData5 = json_encode($datanew5);
+	$ch = curl_init($url);
+	curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+	curl_setopt($ch, CURLOPT_HTTPHEADER, array(
+		'Content-Type: application/json',
+		'Authorization: ' . 'Bearer'
+	));
+	curl_setopt($ch, CURLOPT_POST, true);
+	curl_setopt($ch, CURLOPT_POSTFIELDS, $jsonData5);
+	$response5 = curl_exec($ch);
+	if ($response5 !== FALSE) {
+		$data5 = json_decode($response5, true) ?: ['results'=>[], 'bookCount'=>0];
+		if (isset($data5['results']) && is_array($data5['results'])) {
+			$unique = [];
+			foreach ($data5['results'] as $entry) {
+				$idKey = null;
+				if (is_array($entry)) {
+					if (isset($entry['id'])) $idKey = $entry['id'];
+					elseif (isset($entry['bookId'])) $idKey = $entry['bookId'];
+					elseif (isset($entry['idfvbook'])) $idKey = $entry['idfvbook'];
+				} elseif (is_object($entry)) {
+					if (isset($entry->id)) $idKey = $entry->id;
+					elseif (isset($entry->bookId)) $idKey = $entry->bookId;
+					elseif (isset($entry->idfvbook)) $idKey = $entry->idfvbook;
+				}
+				$key = $idKey === null ? md5(json_encode($entry)) : (string)$idKey;
+				if (!isset($unique[$key])) $unique[$key] = $entry;
+			}
+			$data5['results'] = array_values($unique);
+			$data5['bookCount'] = count($data5['results']);
+		}
+	}
+	curl_close($ch);
+}
+
+// get-cart3 -> $dataCart
+$url = rtrim(BACKEND_URL, '/') . '/api/get-cart3';
+$dataCart = null;
+$idusername = $_COOKIE['idusername'] ?? -1;
+if ($idusername) {
+	$datacart = array('idusername' => $idusername, 'userId' => intval($idusername));
+	$jsonDataCart = json_encode($datacart);
+	$ch = curl_init($url);
+	curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+	curl_setopt($ch, CURLOPT_HTTPHEADER, array(
+		'Content-Type: application/json',
+		'Authorization: ' . 'Bearer'
+	));
+	curl_setopt($ch, CURLOPT_POST, true);
+	curl_setopt($ch, CURLOPT_POSTFIELDS, $jsonDataCart);
+	$responseCart = curl_exec($ch);
+	if ($responseCart !== FALSE) {
+		$dataCart = json_decode($responseCart, true) ?: null;
+	}
+	curl_close($ch);
+}
+
+?>
 <body>
 
 	<div id="tg-wrapper" class="tg-wrapper tg-haslayout">
@@ -1166,7 +1297,7 @@
 									</div>
 									<div class="tg-widgetcontent">
 										<ul>
-											<li><a href="contactus.html">Liên hệ</a></li>
+											<li><a href="contactus.php">Liên hệ</a></li>
 											<li><a href="aboutus.html">Về chúng tôi</a></li>
 										</ul>
 										<ul>
@@ -1220,6 +1351,43 @@
 	<script src="js/appear.js"></script>
 	<script src="js/gmap3.js"></script>
 	<script src="js/main.js"></script>
+	<script>
+		// Header JS: dropdown, cookies, search, cart/wishlist helpers (copied from index.php)
+		function profileBar() { document.getElementById("myDropdown").classList.toggle("show"); }
+		window.onclick = function(event) {
+		  if (!event.target.matches('.dropbtn')) {
+			var dropdowns = document.getElementsByClassName("dropdown-content");
+			for (var i = 0; i < dropdowns.length; i++) {
+			  var openDropdown = dropdowns[i];
+			  if (openDropdown.classList.contains('show')) {
+				openDropdown.classList.remove('show');
+			  }
+			}
+		  }
+		}
+		function deleteCookie(name) { document.cookie = name + '=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;'; }
+		function logout() { localStorage.removeItem('userData'); localStorage.removeItem('jwtToken'); deleteCookie('idusername'); deleteCookie('token'); deleteCookie('jwtToken'); }
+		let dataLocal = localStorage.getItem('userData');
+		if (dataLocal) { dataLocal = JSON.parse(dataLocal); var dbtn = document.querySelector('.dropbtn'); if (dbtn) dbtn.innerHTML = 'Hi ' + (dataLocal.lastName||''); var d1 = document.querySelector('.dropdown-1'); if(d1) d1.innerHTML='Đăng xuất'; var d2 = document.querySelector('.dropdown-2'); if(d2) d2.style.display='none'; } else { var dbtn = document.querySelector('.dropbtn'); if (dbtn) dbtn.innerHTML='Welcome'; var d1 = document.querySelector('.dropdown-1'); if(d1) d1.innerHTML='Đăng nhập'; var d2 = document.querySelector('.dropdown-2'); if(d2) d2.style.display='block'; }
+
+		function setCookie(name, value, days) { var expires = ""; if (days){ var date = new Date(); date.setTime(date.getTime() + (days * 24 * 60 * 60 * 1000)); expires = "; expires=" + date.toUTCString(); } document.cookie = name + "=" + (value || "") + expires + "; path=/"; }
+		function getCookie(name) { var nameEQ = name + "="; var ca = document.cookie.split(';'); for (var i = 0; i < ca.length; i++) { var c = ca[i]; while (c.charAt(0) == ' ') c = c.substring(1, c.length); if (c.indexOf(nameEQ) == 0) return c.substring(nameEQ.length, c.length); } return null; }
+		function eraseCookie(name) { document.cookie = name + '=; Max-Age=-99999999;'; }
+		function setCookiesBook(category,bookId){ setCookie('categoryBook', category, 30); setCookie('bookId', bookId, 30); }
+
+		document.getElementById && document.getElementById('searchForm') && document.getElementById('searchForm').addEventListener('submit', function(e){ e.preventDefault(); var q = document.querySelector('input[name="search"]').value; setCookie('tukhoa', q, 30); window.location.href = 'findingbook.php?tukhoa=' + encodeURIComponent(q); });
+
+		// basic addToCart/order handlers copied (non-exhaustive)
+		async function addToCart(bookId, bookcode, bookname, price = 0, image = null) {
+			const user = JSON.parse(localStorage.getItem('userData') || 'null'); if (!user || !user.id) { if (confirm('Bạn chưa đăng nhập. Bạn muốn tạo tài khoản bây giờ?')) window.location.href='admin-ui/page-register.html'; return; }
+			const token = localStorage.getItem('jwtToken'); if (!token){ alert('Phiên đăng nhập hết hạn. Vui lòng đăng nhập lại.'); window.location.href='admin-ui/page-login.html'; return; }
+			const backendBase = (window.APP_CONFIG && window.APP_CONFIG.backendUrl) ? String(window.APP_CONFIG.backendUrl).replace(/\/$/, '') : 'http://localhost:8000';
+			const apiUrl = `${backendBase}/api/save-cart`;
+			const payload = { items: [{ bookId: parseInt(bookId), bookcode, bookname, quantity:1, price: parseFloat(price)||0, image: image||null }] };
+			try { const resp = await fetch(apiUrl, { method:'POST', headers: {'Authorization': `Bearer ${token}`, 'Content-Type':'application/json'}, body: JSON.stringify(payload) }); const result = await resp.json(); if (resp.ok && result.errCode===0) { try{ if (typeof refreshCart==='function') await refreshCart(); }catch(e){} window.location.href='cartbook.php'; } else { alert('Lỗi: '+(result.message||result.errMessage||'Không thể thêm vào giỏ hàng')); } } catch(e){ console.error(e); alert('Lỗi kết nối'); }
+		}
+
+	</script>
 	<script>
 		function profileBar() {
 		  document.getElementById("myDropdown").classList.toggle("show");
