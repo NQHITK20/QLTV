@@ -462,7 +462,7 @@ if (isset($data12['data'])) {
 									</a>
 								</li>
 								<li>
-									<a href="aboutus.html">
+									<a href="aboutus.php">
 										<i class="icon-user"></i>
 										<em>Về chúng tôi</em>
 									</a>
@@ -995,20 +995,16 @@ if (isset($data3['data'])) {
 										<h2><span>Thông tin &amp; Liên hệ</span>Về nhà sách chúng tôi</h2>
 									</div>
 									<div class="tg-description">
-										<p style="font-size: 17px;">Consectetur adipisicing elit sed do 
-											eiusmod tempor incididunt labore toloregna aliqua. Ut en
-											im ad minim veniam, quis nostrud exercitation ullamcoiars nisiuip commodo conse
-											quat aute irure dolor in aprehenderit aveli esseati cillum dolor fugiat nulla paria
-											tur cepteur sint occaecat cupidatat.</p>
+										<p style="font-size: 17px;line-height: 1.6;">Tại đây, chúng tôi không chỉ cung cấp những cuốn sách, mà còn mở ra những cánh cửa dẫn đến tri thức và sự sáng tạo. Với niềm đam mê lan tỏa văn hóa đọc, chúng tôi nỗ lực mang đến một không gian trực tuyến tiện lợi, nơi bạn có thể dễ dàng tìm thấy những tựa sách hay nhất, từ văn học kinh điển đến những kiến thức công nghệ mới nhất.</p>
 									</div>
 									<div class="tg-btns">
 										<a class="tg-btn" href="contactus.php">Liên hệ</a>
-										<a class="tg-btn" href="aboutus.html">Tìm hiểu thêm</a>
+										<a class="tg-btn" href="aboutus.php">Tìm hiểu thêm</a>
 									</div>
 								</div>
 							</div>
 							<div class="col-xs-12 col-sm-12 col-md-6 col-lg-6">
-									<iframe width="560" height="330" src="https://www.youtube.com/embed/OKB1PuclFEo?si=9S8Ve2A-Hl_3Y6dd" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+									<iframe width="560" height="315" src="https://www.youtube.com/embed/kbgCpnV1sEQ?si=Wrvz3spnDcNXJeYY" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
 							</div>
 						</div>
 					</div>
@@ -1071,11 +1067,11 @@ if (isset($data3['data'])) {
 									<div class="tg-widgetcontent">
 										<ul>
 											<li><a href="contactus.php">Liên hệ</a></li>
-											<li><a href="aboutus.html">Về chúng tôi</a></li>
+											<li><a href="aboutus.php">Về chúng tôi</a></li>
 										</ul>
 										<ul>
 											<li><a href="products.php?pageIndex=1">Sách</a></li>
-											<li><a href="aboutus.html">Tin tức</a></li>
+											<li><a href="aboutus.php">Tin tức</a></li>
 										</ul>
 									</div>
 								</div>

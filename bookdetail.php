@@ -504,7 +504,7 @@ if (isset($data12['data'])) {
 									</a>
 								</li>
 								<li>
-									<a href="aboutus.html">
+									<a href="aboutus.php">
 										<i class="icon-user"></i>
 										<em>Về chúng tôi</em>
 									</a>

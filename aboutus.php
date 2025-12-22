@@ -18,6 +18,58 @@
 	<link rel="stylesheet" href="css/main.css">
 	<link rel="stylesheet" href="css/color.css">
 	<link rel="stylesheet" href="css/responsive.css">
+
+	<style>
+	/* Responsive about-us video */
+	.about-video-wrap{position:relative;padding-bottom:56.25%;padding-top:25px;height:0;overflow:hidden;}
+	.about-video-wrap iframe{position:absolute;top:0;left:50%;transform:translateX(-50%);width:85%;height:100%;border:0;}
+	@media (max-width:767px){ .about-video-wrap iframe{width:100%;} }
+
+	/* Story section styles */
+	.story-items{margin-top:30px;}
+	.story-item{background:#fff;padding:12px;border-radius:6px;text-align:center;box-shadow:0 1px 4px rgba(0,0,0,0.06);height:100%;display:flex;flex-direction:column;}
+	.story-item figure{margin:0}
+	.story-item img{width:100%;height:auto;border-radius:4px;display:block}
+	.story-item p{margin-top:12px;font-size:14px;color:#444;flex:1}
+	@media (max-width:767px){ .story-item p{font-size:13px} }
+
+	/* Success slider: balanced image + text layout */
+	.tg-successstory .tg-successslider .item{
+		display:flex;
+		align-items:stretch;
+		gap:28px;
+	}
+	.tg-successstory .tg-successslider .item figure{
+		flex:0 0 40%;
+		max-width:40%;
+		margin:0;
+		display:block;
+	}
+	.tg-successstory .tg-successslider .item figure img{
+		width:100%;
+		height:100%;
+		max-height:420px;
+		object-fit:cover;
+		border-radius:6px;
+		display:block;
+	}
+	.tg-successstory .tg-successslider .item .tg-successcontent{
+		flex:1;
+		display:flex;
+		flex-direction:column;
+		justify-content:center;
+		padding:8px 0;
+	}
+	.tg-successstory .tg-successslider .item .tg-sectionhead h2{margin:0 0 8px 0;font-size:24px}
+	.tg-successstory .tg-successslider .item .tg-description p{margin:0;color:#444;line-height:1.6}
+
+	@media (max-width:991px){
+		.tg-successstory .tg-successslider .item{flex-direction:column;align-items:stretch}
+		.tg-successstory .tg-successslider .item figure{max-width:100%;flex-basis:auto;margin-bottom:16px}
+		.tg-successstory .tg-successslider .item figure img{max-height:320px;height:auto}
+		.tg-successstory .tg-successslider .item .tg-successcontent{padding-left:0}
+	}
+	</style>
 	<script src="js/vendor/modernizr-2.8.3-respond-1.4.2.min.js"></script>
 </head>
 <?php
@@ -250,7 +302,7 @@ curl_close($ch);
 									</a>
 								</li>
 								<li>
-									<a href="aboutus.html">
+									<a href="aboutus.php">
 										<i class="icon-user"></i>
 										<em>Về chúng tôi</em>
 									</a>
@@ -582,19 +634,12 @@ curl_close($ch);
 										<h2><span>Greetings &amp; Welcome</span>Về chúng tôi</h2>
 									</div>
 									<div class="tg-description">
-										<p>Consectetur adipisicing elit sed do eiusmod tempor incididunt labore toloregna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamcoiars nisiuip commodo consequat aute irure dolor in aprehenderit aveli esseati cillum dolor fugiat nulla pariatur cepteur sint occaecat cupidatat.</p>
-									</div>
-									<div class="tg-btns">
-										<a class="tg-btn tg-active" href="javascript:void(0);">Our History</a>
-										<a class="tg-btn" href="javascript:void(0);">Meet Our Team</a>
+										<p>Tại đây, chúng tôi không chỉ cung cấp những cuốn sách, mà còn mở ra những cánh cửa dẫn đến tri thức và sự sáng tạo. Với niềm đam mê lan tỏa văn hóa đọc, chúng tôi nỗ lực mang đến một không gian trực tuyến tiện lợi, nơi bạn có thể dễ dàng tìm thấy những tựa sách hay nhất, từ văn học kinh điển đến những kiến thức công nghệ mới nhất.</p>
 									</div>
 								</div>
 							</div>
 							<div class="col-xs-12 col-sm-12 col-md-6 col-lg-6">
-								<figure>
-									<img src="images/placeholder.jpg" alt="image description">
-									<iframe src="https://www.youtube.com/embed/acwr_Islo9A?rel=0&amp;controls=0&amp;showinfo=0"></iframe>
-								</figure>
+								<iframe width="560" height="315" src="https://www.youtube.com/embed/kbgCpnV1sEQ?si=Wrvz3spnDcNXJeYY" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
 							</div>
 						</div>
 					</div>
@@ -612,9 +657,11 @@ curl_close($ch);
 						<div class="row">
 							<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
 								<div class="tg-calltoaction">
-									<h2>Fully Loaded Template</h2>
-									<h3>Consectetur adipisicing elit sed do eiusmod tempor incididunt ut labore et dolore.</h3>
-									<a class="tg-btn tg-active" href="javascript:void(0);">Buy Now</a>
+									<h2>Giao Diện Hoàn Chỉnh</h2>
+<p>
+Chúng tôi mang đến giải pháp hiện đại, linh hoạt và dễ sử dụng cho mọi dự án của bạn.
+</p>
+									<a class="tg-btn tg-active" href="http://localhost/QLTV-ChatboxAi/frontend/products.php?pageIndex=1">Đặt hàng ngay</a>
 								</div>
 							</div>
 						</div>
@@ -633,45 +680,66 @@ curl_close($ch);
 						<div class="tg-successstory">
 							<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
 								<div class="tg-sectionhead">
-									<h2><span>Our Pride Moments</span>Journey of Success</h2>
+									<h2><span>Về chúng tôi</span>Hành Trình Thành Công</h2>
 								</div>
 								<div id="tg-successslider" class="tg-successslider tg-success owl-carousel">
 									<div class="item">
 										<figure>
-											<img src="images/img-01.jpg" alt="image description">
+											<img src="images/story/story1.jpg" alt="story 1" style="width:65%;height:auto;">
 										</figure>
 										<div class="tg-successcontent">
 											<div class="tg-sectionhead">
-												<h2><span>June 27, 2017</span>First Step Toward Success</h2>
+												<h2>Ngày đầu chúng tôi</h2>
 											</div>
 											<div class="tg-description">
-												<p>Consectetur adipisicing elit sed do eiusmod tempor incididunt labore toloregna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamcoiars nisiuip commodo consequat aute irure dolor in aprehenderit aveli esseati cillum dolor fugiat nulla pariatur cepteur sint occaecat cupidatat.</p>
+												<p>
+													Ban đầu mọi thứ chỉ bắt đầu bằng một suy nghĩ rất đỗi giản dị: “Hay là mình mở một shop bán sách nhỉ?”. Không có nhiều vốn, không có kinh nghiệm kinh doanh, chỉ có vài ý tưởng táo bạo, một chút liều lĩnh và tình yêu với sách. Thế là chúng tôi bắt đầu gom góp từng tài liệu, tìm hiểu thị trường, học cách xây dựng trang web, và dần dần biến ý tưởng nhỏ bé ấy thành một kế hoạch nghiêm túc.
+												</p>
 											</div>
 										</div>
 									</div>
 									<div class="item">
 										<figure>
-											<img src="images/img-01.jpg" alt="image description">
+											<img src="images/story/story2.jpg" alt="story 2" style="width:75%;height:auto;">
 										</figure>
 										<div class="tg-successcontent">
 											<div class="tg-sectionhead">
-												<h2><span>June 27, 2017</span>First Step Toward Success</h2>
+												<h2>Những ngày thử thách</h2>
 											</div>
 											<div class="tg-description">
-												<p>Consectetur adipisicing elit sed do eiusmod tempor incididunt labore toloregna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamcoiars nisiuip commodo consequat aute irure dolor in aprehenderit aveli esseati cillum dolor fugiat nulla pariatur cepteur sint occaecat cupidatat.</p>
+												<p>
+													Trong suốt hành trình xây dựng, không ít lần chúng tôi phải đối diện với những câu hỏi kiểu “Liệu có làm nổi không?”. Mỗi ngày là một chuỗi thử nghiệm, từ việc chọn từng mẫu bìa sách, thiết kế giao diện cho đến tối ưu trải nghiệm người dùng. Có lúc sai, có lúc thất bại, có lúc muốn bỏ cuộc, nhưng rồi cảm giác nhìn dự án lớn lên từng chút một lại kéo chúng tôi trở lại với niềm hứng khởi ban đầu.
+												</p>
 											</div>
 										</div>
 									</div>
 									<div class="item">
 										<figure>
-											<img src="images/img-01.jpg" alt="image description">
+											<img src="images/story/story3.jpg" alt="story 3" style="width:75%;height:auto;">
 										</figure>
 										<div class="tg-successcontent">
 											<div class="tg-sectionhead">
-												<h2><span>June 27, 2017</span>First Step Toward Success</h2>
+												<h2>Những thành tựu</h2>
 											</div>
 											<div class="tg-description">
-												<p>Consectetur adipisicing elit sed do eiusmod tempor incididunt labore toloregna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamcoiars nisiuip commodo consequat aute irure dolor in aprehenderit aveli esseati cillum dolor fugiat nulla pariatur cepteur sint occaecat cupidatat.</p>
+												<p>
+													Ngày cửa hàng trực tuyến chính thức hoạt động, mọi thứ vẫn còn đơn sơ nhưng đầy tự hào. Những lượt ghé thăm đầu tiên, những đơn hàng đầu tiên, những lời nhận xét chân thành của khách hàng khiến chúng tôi cảm thấy mọi nỗ lực đều xứng đáng. Shop không chỉ đơn thuần là nơi bán sách mà dần trở thành không gian để mọi người tìm thấy tri thức, niềm vui và cảm hứng.
+												</p>
+											</div>
+										</div>
+									</div>
+									<div class="item">
+										<figure>
+											<img src="images/story/story4.jpg" alt="story 4" style="width:75%;height:auto;">
+										</figure>
+										<div class="tg-successcontent">
+											<div class="tg-sectionhead">
+												<h2>Hành trình tiếp tục</h2>
+											</div>
+											<div class="tg-description">
+												<p>
+													Đến khi nhìn lại chặng đường đã đi qua, chúng tôi mới nhận ra điều quý giá nhất không phải chỉ là doanh thu hay con số thống kê, mà là trải nghiệm, sự trưởng thành và những giá trị mà shop mang lại. Hành trình này vẫn chưa dừng lại, bởi chúng tôi tin rằng mỗi ngày trôi qua lại là một cơ hội để tiếp tục hoàn thiện, phát triển và lan tỏa tình yêu dành cho sách đến nhiều người hơn nữa.
+												</p>
 											</div>
 										</div>
 									</div>
@@ -683,139 +751,6 @@ curl_close($ch);
 			</section>
 			<!--************************************
 					Success End
-			*************************************-->
-			<!--************************************
-					Testimonials Start
-			*************************************-->
-			<section class="tg-parallax tg-bgtestimonials tg-haslayout" data-z-index="-100" data-appear-top-offset="600" data-parallax="scroll" data-image-src="images/parallax/bgparallax-05.jpg">
-				<div class="tg-sectionspace tg-haslayout">
-					<div class="container">
-						<div class="row">
-							<div class="col-xs-12 col-sm-12 col-md-12 col-lg-8 col-lg-push-2">
-								<div id="tg-testimonialsslider" class="tg-testimonialsslider tg-testimonials owl-carousel">
-									<div class="item tg-testimonial">
-										<figure><img src="images/author/imag-02.jpg" alt="image description"></figure>
-										<blockquote><q>Consectetur adipisicing elit sed do eiusmod tempor incididunt ut labore tolore magna aliqua enim ad minim veniam, quis nostrud exercitation ullamcoiars nisi ut aliquip commodo.</q></blockquote>
-										<div class="tg-testimonialauthor">
-											<h3>Holli Fenstermacher</h3>
-											<span>Manager @ CIFP</span>
-										</div>
-									</div>
-									<div class="item tg-testimonial">
-										<figure><img src="images/author/imag-02.jpg" alt="image description"></figure>
-										<blockquote><q>Consectetur adipisicing elit sed do eiusmod tempor incididunt ut labore tolore magna aliqua enim ad minim veniam, quis nostrud exercitation ullamcoiars nisi ut aliquip commodo.</q></blockquote>
-										<div class="tg-testimonialauthor">
-											<h3>Holli Fenstermacher</h3>
-											<span>Manager @ CIFP</span>
-										</div>
-									</div>
-									<div class="item tg-testimonial">
-										<figure><img src="images/author/imag-02.jpg" alt="image description"></figure>
-										<blockquote><q>Consectetur adipisicing elit sed do eiusmod tempor incididunt ut labore tolore magna aliqua enim ad minim veniam, quis nostrud exercitation ullamcoiars nisi ut aliquip commodo.</q></blockquote>
-										<div class="tg-testimonialauthor">
-											<h3>Holli Fenstermacher</h3>
-											<span>Manager @ CIFP</span>
-										</div>
-									</div>
-								</div>
-							</div>
-						</div>
-					</div>
-				</div>
-			</section>
-			<!--************************************
-					Testimonials End
-			*************************************-->
-			<!--************************************
-					Authors Start
-			*************************************-->
-			<section class="tg-sectionspace tg-haslayout">
-				<div class="container">
-					<div class="row">
-						<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
-							<div class="tg-sectionhead">
-								<h2><span>Team Behind Book Library</span>Meet Our Professionals</h2>
-							</div>
-						</div>
-						<div id="tg-teamsslider" class="tg-authors tg-authorsslider tg-teamsmember owl-carousel">
-							<div class="item tg-author tg-member">
-								<figure><a href="javascript:void(0);"><img src="images/team/img-01.jpg" alt="image description"></a></figure>
-								<div class="tg-authorcontent">
-									<h2><a href="javascript:void(0);">Jude Morphew</a></h2>
-									<span>Online Retail Manager</span>
-									<ul class="tg-socialicons">
-										<li class="tg-facebook"><a href="javascript:void(0);"><i class="fa fa-facebook"></i></a></li>
-										<li class="tg-twitter"><a href="javascript:void(0);"><i class="fa fa-twitter"></i></a></li>
-										<li class="tg-linkedin"><a href="javascript:void(0);"><i class="fa fa-linkedin"></i></a></li>
-									</ul>
-								</div>
-							</div>
-							<div class="item tg-author tg-member">
-								<figure><a href="javascript:void(0);"><img src="images/team/img-02.jpg" alt="image description"></a></figure>
-								<div class="tg-authorcontent">
-									<h2><a href="javascript:void(0);">Book Burger</a></h2>
-									<span>Bookstore Director</span>
-									<ul class="tg-socialicons">
-										<li class="tg-facebook"><a href="javascript:void(0);"><i class="fa fa-facebook"></i></a></li>
-										<li class="tg-twitter"><a href="javascript:void(0);"><i class="fa fa-twitter"></i></a></li>
-										<li class="tg-linkedin"><a href="javascript:void(0);"><i class="fa fa-linkedin"></i></a></li>
-									</ul>
-								</div>
-							</div>
-							<div class="item tg-author tg-member">
-								<figure><a href="javascript:void(0);"><img src="images/team/img-03.jpg" alt="image description"></a></figure>
-								<div class="tg-authorcontent">
-									<h2><a href="javascript:void(0);">Book Ship &amp; Co.</a></h2>
-									<span>Business Operations</span>
-									<ul class="tg-socialicons">
-										<li class="tg-facebook"><a href="javascript:void(0);"><i class="fa fa-facebook"></i></a></li>
-										<li class="tg-twitter"><a href="javascript:void(0);"><i class="fa fa-twitter"></i></a></li>
-										<li class="tg-linkedin"><a href="javascript:void(0);"><i class="fa fa-linkedin"></i></a></li>
-									</ul>
-								</div>
-							</div>
-							<div class="item tg-author tg-member">
-								<figure><a href="javascript:void(0);"><img src="images/team/img-04.jpg" alt="image description"></a></figure>
-								<div class="tg-authorcontent">
-									<h2><a href="javascript:void(0);">Enoch Gallion</a></h2>
-									<span>Assistant Director</span>
-									<ul class="tg-socialicons">
-										<li class="tg-facebook"><a href="javascript:void(0);"><i class="fa fa-facebook"></i></a></li>
-										<li class="tg-twitter"><a href="javascript:void(0);"><i class="fa fa-twitter"></i></a></li>
-										<li class="tg-linkedin"><a href="javascript:void(0);"><i class="fa fa-linkedin"></i></a></li>
-									</ul>
-								</div>
-							</div>
-							<div class="item tg-author tg-member">
-								<figure><a href="javascript:void(0);"><img src="images/team/img-05.jpg" alt="image description"></a></figure>
-								<div class="tg-authorcontent">
-									<h2><a href="javascript:void(0);">Book House</a></h2>
-									<span>Business Operations</span>
-									<ul class="tg-socialicons">
-										<li class="tg-facebook"><a href="javascript:void(0);"><i class="fa fa-facebook"></i></a></li>
-										<li class="tg-twitter"><a href="javascript:void(0);"><i class="fa fa-twitter"></i></a></li>
-										<li class="tg-linkedin"><a href="javascript:void(0);"><i class="fa fa-linkedin"></i></a></li>
-									</ul>
-								</div>
-							</div>
-							<div class="item tg-author tg-member">
-								<figure><a href="javascript:void(0);"><img src="images/team/img-04.jpg" alt="image description"></a></figure>
-								<div class="tg-authorcontent">
-									<h2><a href="javascript:void(0);">Linnie Klimek</a></h2>
-									<span>Assistant Director</span>
-									<ul class="tg-socialicons">
-										<li class="tg-facebook"><a href="javascript:void(0);"><i class="fa fa-facebook"></i></a></li>
-										<li class="tg-twitter"><a href="javascript:void(0);"><i class="fa fa-twitter"></i></a></li>
-										<li class="tg-linkedin"><a href="javascript:void(0);"><i class="fa fa-linkedin"></i></a></li>
-									</ul>
-								</div>
-							</div>
-						</div>
-					</div>
-				</div>
-			</section>
-			<!--************************************
-					Authors End
 			*************************************-->
 		</main>
 		<!--************************************
@@ -873,11 +808,11 @@ curl_close($ch);
 									<div class="tg-widgetcontent">
 										<ul>
 											<li><a href="contactus.php">Liên hệ</a></li>
-											<li><a href="aboutus.html">Về chúng tôi</a></li>
+											<li><a href="aboutus.php">Về chúng tôi</a></li>
 										</ul>
 										<ul>
 											<li><a href="products.php?pageIndex=1">Sách</a></li>
-											<li><a href="aboutus.html">Tin tức</a></li>
+											<li><a href="aboutus.php">Tin tức</a></li>
 										</ul>
 									</div>
 								</div>

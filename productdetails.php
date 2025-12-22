@@ -1298,11 +1298,11 @@ if ($idusername) {
 									<div class="tg-widgetcontent">
 										<ul>
 											<li><a href="contactus.php">Liên hệ</a></li>
-											<li><a href="aboutus.html">Về chúng tôi</a></li>
+											<li><a href="aboutus.php">Về chúng tôi</a></li>
 										</ul>
 										<ul>
 											<li><a href="products.php">Sách hay</a></li>
-											<li><a href="aboutus.html">Về chúng tôi</a></li>
+											<li><a href="aboutus.php">Về chúng tôi</a></li>
 										</ul>
 									</div>
 								</div>
