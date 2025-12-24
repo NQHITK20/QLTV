@@ -237,23 +237,27 @@ jQuery(document).on('ready', function() {
 				],
 	});
 	/* -------------------------------------
-			Google Map
+		Google Map (initialize both contact map and footer map using same address)
 	-------------------------------------- */
-	jQuery("#tg-locationmap").gmap3({
-		marker: {
-			address: "1600 Elizabeth St, Melbourne, Victoria, Australia",
-			options: {
-				title: "Books Library",
-			}
-		},
-		map: {
-			options: {
-				zoom: 16,
-				scrollwheel: false,
-				disableDoubleClickZoom: true,
-			}
+	(function(){
+		var addr = (window.MAP_ADDRESS && String(window.MAP_ADDRESS).trim()) ? window.MAP_ADDRESS : "1600 Elizabeth St, Melbourne, Victoria, Australia";
+		var mapOptions = {
+			zoom: 15,
+			scrollwheel: false,
+			disableDoubleClickZoom: true
+		};
+
+		function initGmap(selector) {
+			if (!jQuery(selector).length) return;
+			jQuery(selector).gmap3({
+				marker: { address: addr, options: { title: "Books Library" } },
+				map: { options: mapOptions }
+			});
 		}
-	});
+
+		initGmap('#tg-locationmap');
+		initGmap('#footer-map');
+	})();
 	/*------------------------------------------
 			PRODUCT INCREASE
 	------------------------------------------*/

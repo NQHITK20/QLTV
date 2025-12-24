@@ -621,137 +621,106 @@ curl_close($ch);
 				Main Start
 		*************************************-->
 		<main id="tg-main" class="tg-main tg-haslayout">
-			<!--************************************
-					About Us Start
-			*************************************-->
-			<section class="tg-sectionspace tg-haslayout">
-				<div class="container">
-					<div class="row">
-						<div class="tg-aboutus">
-							<div class="col-xs-12 col-sm-12 col-md-6 col-lg-6">
-								<div class="tg-aboutusshortcode">
-									<div class="tg-sectionhead">
-										<h2><span>Greetings &amp; Welcome</span>Về chúng tôi</h2>
-									</div>
-									<div class="tg-description">
-										<p>Tại đây, chúng tôi không chỉ cung cấp những cuốn sách, mà còn mở ra những cánh cửa dẫn đến tri thức và sự sáng tạo. Với niềm đam mê lan tỏa văn hóa đọc, chúng tôi nỗ lực mang đến một không gian trực tuyến tiện lợi, nơi bạn có thể dễ dàng tìm thấy những tựa sách hay nhất, từ văn học kinh điển đến những kiến thức công nghệ mới nhất.</p>
-									</div>
-								</div>
-							</div>
-							<div class="col-xs-12 col-sm-12 col-md-6 col-lg-6">
-								<iframe width="560" height="315" src="https://www.youtube.com/embed/kbgCpnV1sEQ?si=Wrvz3spnDcNXJeYY" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
-							</div>
-						</div>
-					</div>
+			<section class="terms-wrapper" style="padding:36px 0; background:#fff; color:#222;">
+				<div class="container" style="max-width:980px; margin:0 auto; padding:0 16px;">
+					<h1 style="font-size:28px; margin-bottom:8px;">Điều Khoản và Dịch Vụ</h1>
+					<p style="color:#666; margin-bottom:24px;">Ngày hiệu lực: 24/12/2025 — Vui lòng đọc kỹ trước khi sử dụng dịch vụ.</p>
+
+					<section style="margin-bottom:20px;">
+						<h2 style="font-size:20px; margin-bottom:8px;">1. Giới thiệu</h2>
+						<p>Chào mừng bạn đến với trang web của chúng tôi. Các điều khoản sau ("Điều Khoản") quy định quyền lợi, trách nhiệm và cách sử dụng dịch vụ do website cung cấp. Bằng cách truy cập, đăng ký, hoặc sử dụng dịch vụ, bạn đồng ý bị ràng buộc bởi các Điều Khoản này.</p>
+					</section>
+
+					<section style="margin-bottom:20px;">
+						<h2 style="font-size:20px; margin-bottom:8px;">2. Định nghĩa</h2>
+						<ul style="margin-left:18px; color:#444;">
+							<li><strong>"Website"</strong>: giao diện frontend tại địa chỉ chứa mã nguồn hiện tại.</li>
+							<li><strong>"Dịch vụ"</strong>: các chức năng cung cấp thông tin sách, tìm kiếm, mua/đặt sách, giỏ hàng, và các tính năng liên quan.</li>
+							<li><strong>"Người dùng"</strong>: mọi cá nhân hoặc tổ chức truy cập hoặc sử dụng Dịch vụ.</li>
+						</ul>
+					</section>
+
+					<section style="margin-bottom:20px;">
+						<h2 style="font-size:20px; margin-bottom:8px;">3. Phạm vi áp dụng</h2>
+						<p>Điều Khoản áp dụng cho tất cả người dùng truy cập và sử dụng Website. Các điều khoản riêng lẻ có thể được bổ sung cho từng tính năng (ví dụ: mua hàng, thanh toán). Mọi bổ sung sẽ được thông báo trên Website và là một phần của Điều Khoản khi được công bố.</p>
+					</section>
+
+					<section style="margin-bottom:20px;">
+						<h2 style="font-size:20px; margin-bottom:8px;">4. Tài khoản và bảo mật</h2>
+						<p>Người dùng chịu trách nhiệm bảo mật thông tin đăng nhập của mình. Mọi hành vi sử dụng tài khoản do người dùng chịu là trách nhiệm của chính người dùng. Nếu phát hiện truy cập trái phép, người dùng phải thông báo ngay cho chúng tôi để kịp thời xử lý.</p>
+					</section>
+
+					<section style="margin-bottom:20px;">
+						<h2 style="font-size:20px; margin-bottom:8px;">5. Quyền và nghĩa vụ người dùng</h2>
+						<ul style="margin-left:18px; color:#444;">
+							<li>Tuân thủ pháp luật và không sử dụng dịch vụ cho hành vi vi phạm bản quyền, lừa đảo, hoặc gây hại cho người khác.</li>
+							<li>Cung cấp thông tin chính xác khi đăng ký/đặt hàng và cập nhật khi cần thiết.</li>
+							<li>Tôn trọng quyền sở hữu trí tuệ của nội dung hiển thị trên Website.</li>
+						</ul>
+					</section>
+
+					<section style="margin-bottom:20px;">
+						<h2 style="font-size:20px; margin-bottom:8px;">6. Quyền và nghĩa vụ của chúng tôi</h2>
+						<ul style="margin-left:18px; color:#444;">
+							<li>Cung cấp, vận hành và cập nhật dịch vụ; nỗ lực đảm bảo hệ thống hoạt động liên tục nhưng không thể đảm bảo 100% thời gian hoạt động.</li>
+							<li>Bảo vệ thông tin cá nhân theo chính sách bảo mật; chỉ chia sẻ dữ liệu khi có yêu cầu pháp lý hoặc sự đồng ý của người dùng.</li>
+							<li>Quyết định tạm ngưng hoặc chấm dứt cung cấp dịch vụ đối với hành vi vi phạm Điều Khoản.</li>
+						</ul>
+					</section>
+
+					<section style="margin-bottom:20px;">
+						<h2 style="font-size:20px; margin-bottom:8px;">7. Sử dụng nội dung</h2>
+						<p>Mọi nội dung (văn bản, hình ảnh, logo, dữ liệu) trên Website được bảo hộ bởi quyền sở hữu trí tuệ. Người dùng được phép xem và lưu trữ tạm thời cho mục đích cá nhân. Mọi sao chép, tái sử dụng thương mại, hoặc phân phối phải có sự cho phép bằng văn bản của chủ sở hữu.</p>
+					</section>
+
+					<section style="margin-bottom:20px;">
+						<h2 style="font-size:20px; margin-bottom:8px;">8. Thanh toán, hoàn tiền và đặt hàng</h2>
+						<p>Điều kiện thanh toán, phí, chính sách hoàn tiền và quy trình giao dịch được quy định tại trang thanh toán tương ứng. Chúng tôi có thể thực hiện xác minh bổ sung để phòng ngừa gian lận. Trong trường hợp hủy đơn hoặc hoàn tiền, thời gian xử lý tuân theo chính sách được công bố.</p>
+					</section>
+
+					<section style="margin-bottom:20px;">
+						<h2 style="font-size:20px; margin-bottom:8px;">9. Vận chuyển và giao nhận</h2>
+						<p>Thời gian giao hàng phụ thuộc vào địa chỉ, trạng thái kho và nhà vận chuyển đối tác. Mọi thông tin về phí vận chuyển, thời gian ước tính sẽ được hiển thị khi đặt hàng. Chúng tôi không chịu trách nhiệm cho chậm trễ do sự kiện bất khả kháng hoặc lỗi của đơn vị giao hàng.</p>
+					</section>
+
+					<section style="margin-bottom:20px;">
+						<h2 style="font-size:20px; margin-bottom:8px;">10. Quyền sở hữu trí tuệ</h2>
+						<p>Mọi quyền sở hữu trí tuệ liên quan đến nội dung do chúng tôi tạo hoặc cấp phép được bảo lưu. Việc sử dụng trái phép có thể dẫn tới hành động pháp lý.</p>
+					</section>
+
+					<section style="margin-bottom:20px;">
+						<h2 style="font-size:20px; margin-bottom:8px;">11. Bảo mật và dữ liệu cá nhân</h2>
+						<p>Chúng tôi thu thập và xử lý dữ liệu cá nhân theo Chính sách Bảo mật. Dữ liệu có thể được dùng để xử lý đơn hàng, cải thiện dịch vụ và liên hệ với người dùng. Người dùng có quyền yêu cầu chỉnh sửa hoặc xóa dữ liệu cá nhân theo quy định pháp luật.</p>
+					</section>
+
+					<section style="margin-bottom:20px;">
+						<h2 style="font-size:20px; margin-bottom:8px;">12. Cookie và công nghệ tương tự</h2>
+						<p>Website sử dụng cookie để nâng cao trải nghiệm người dùng và phục vụ mục đích phân tích. Người dùng có thể từ chối cookie bằng cài đặt trình duyệt, tuy nhiên một số tính năng có thể không hoạt động đầy đủ.</p>
+					</section>
+
+					<section style="margin-bottom:20px;">
+						<h2 style="font-size:20px; margin-bottom:8px;">13. Liên kết đến bên thứ ba</h2>
+						<p>Website có thể chứa liên kết tới trang web của bên thứ ba. Chúng tôi không chịu trách nhiệm về nội dung, chính sách bảo mật hoặc hành vi của các trang đó. Việc truy cập các liên kết là hoàn toàn do người dùng tự chịu rủi ro.</p>
+					</section>
+
+					<section style="margin-bottom:20px;">
+						<h2 style="font-size:20px; margin-bottom:8px;">14. Thay đổi Điều Khoản</h2>
+						<p>Chúng tôi có thể sửa đổi Điều Khoản vào bất kỳ thời điểm nào. Mọi thay đổi sẽ được cập nhật trên trang này với ngày hiệu lực mới. Nếu bạn tiếp tục sử dụng dịch vụ sau khi thay đổi, bạn được coi là đã chấp nhận Điều Khoản đã sửa đổi.</p>
+					</section>
+
+					<section style="margin-bottom:20px;">
+						<h2 style="font-size:20px; margin-bottom:8px;">15. Giải quyết tranh chấp</h2>
+						<p>Mọi tranh chấp phát sinh từ việc áp dụng hoặc thực hiện Điều Khoản sẽ được giải quyết trước hết bằng hòa giải. Nếu không đạt được thỏa thuận, tranh chấp sẽ được giải quyết theo pháp luật Việt Nam và tại cơ quan có thẩm quyền nơi có trụ sở công ty (nếu có).</p>
+					</section>
+
+					<section style="margin-bottom:40px;">
+						<h2 style="font-size:20px; margin-bottom:8px;">16. Liên hệ</h2>
+						<p>Nếu bạn có câu hỏi hoặc khiếu nại liên quan đến Điều Khoản, vui lòng liên hệ qua email: <a href="mailto:support@domain.com">support@domain.com</a> hoặc sử dụng trang <a href="contactus.php">Liên hệ</a>.</p>
+					</section>
+
+					<p style="font-size:13px; color:#777;">Phiên bản Điều Khoản này chỉ mang tính tham khảo và có thể được điều chỉnh. Việc sử dụng Website đồng nghĩa với việc bạn đã đọc, hiểu và chấp nhận các điều khoản nêu trên.</p>
 				</div>
 			</section>
-			<!--************************************
-					About Us End
-			*************************************-->
-			<!--************************************
-					Call to Action Start
-			*************************************-->
-			<section class="tg-parallax tg-bgcalltoaction tg-haslayout" data-z-index="-100" data-appear-top-offset="600" data-parallax="scroll" data-image-src="images/parallax/bgparallax-06.jpg">
-				<div class="tg-sectionspace tg-haslayout">
-					<div class="container">
-						<div class="row">
-							<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
-								<div class="tg-calltoaction">
-									<h2>Giao Diện Hoàn Chỉnh</h2>
-<p>
-Chúng tôi mang đến giải pháp hiện đại, linh hoạt và dễ sử dụng cho mọi dự án của bạn.
-</p>
-									<a class="tg-btn tg-active" href="http://localhost/QLTV-ChatboxAi/frontend/products.php?pageIndex=1">Đặt hàng ngay</a>
-								</div>
-							</div>
-						</div>
-					</div>
-				</div>
-			</section>
-			<!--************************************
-					Call to Action End
-			*************************************-->
-			<!--************************************
-					Success Start
-			*************************************-->
-			<section class="tg-sectionspace tg-haslayout">
-				<div class="container">
-					<div class="row">
-						<div class="tg-successstory">
-							<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
-								<div class="tg-sectionhead">
-									<h2><span>Về chúng tôi</span>Hành Trình Thành Công</h2>
-								</div>
-								<div id="tg-successslider" class="tg-successslider tg-success owl-carousel">
-									<div class="item">
-										<figure>
-											<img src="images/story/story1.jpg" alt="story 1" style="width:65%;height:auto;">
-										</figure>
-										<div class="tg-successcontent">
-											<div class="tg-sectionhead">
-												<h2>Ngày đầu chúng tôi</h2>
-											</div>
-											<div class="tg-description">
-												<p>
-													Ban đầu mọi thứ chỉ bắt đầu bằng một suy nghĩ rất đỗi giản dị: “Hay là mình mở một shop bán sách nhỉ?”. Không có nhiều vốn, không có kinh nghiệm kinh doanh, chỉ có vài ý tưởng táo bạo, một chút liều lĩnh và tình yêu với sách. Thế là chúng tôi bắt đầu gom góp từng tài liệu, tìm hiểu thị trường, học cách xây dựng trang web, và dần dần biến ý tưởng nhỏ bé ấy thành một kế hoạch nghiêm túc.
-												</p>
-											</div>
-										</div>
-									</div>
-									<div class="item">
-										<figure>
-											<img src="images/story/story2.jpg" alt="story 2" style="width:75%;height:auto;">
-										</figure>
-										<div class="tg-successcontent">
-											<div class="tg-sectionhead">
-												<h2>Những ngày thử thách</h2>
-											</div>
-											<div class="tg-description">
-												<p>
-													Trong suốt hành trình xây dựng, không ít lần chúng tôi phải đối diện với những câu hỏi kiểu “Liệu có làm nổi không?”. Mỗi ngày là một chuỗi thử nghiệm, từ việc chọn từng mẫu bìa sách, thiết kế giao diện cho đến tối ưu trải nghiệm người dùng. Có lúc sai, có lúc thất bại, có lúc muốn bỏ cuộc, nhưng rồi cảm giác nhìn dự án lớn lên từng chút một lại kéo chúng tôi trở lại với niềm hứng khởi ban đầu.
-												</p>
-											</div>
-										</div>
-									</div>
-									<div class="item">
-										<figure>
-											<img src="images/story/story3.jpg" alt="story 3" style="width:75%;height:auto;">
-										</figure>
-										<div class="tg-successcontent">
-											<div class="tg-sectionhead">
-												<h2>Những thành tựu</h2>
-											</div>
-											<div class="tg-description">
-												<p>
-													Ngày cửa hàng trực tuyến chính thức hoạt động, mọi thứ vẫn còn đơn sơ nhưng đầy tự hào. Những lượt ghé thăm đầu tiên, những đơn hàng đầu tiên, những lời nhận xét chân thành của khách hàng khiến chúng tôi cảm thấy mọi nỗ lực đều xứng đáng. Shop không chỉ đơn thuần là nơi bán sách mà dần trở thành không gian để mọi người tìm thấy tri thức, niềm vui và cảm hứng.
-												</p>
-											</div>
-										</div>
-									</div>
-									<div class="item">
-										<figure>
-											<img src="images/story/story4.jpg" alt="story 4" style="width:75%;height:auto;">
-										</figure>
-										<div class="tg-successcontent">
-											<div class="tg-sectionhead">
-												<h2>Hành trình tiếp tục</h2>
-											</div>
-											<div class="tg-description">
-												<p>
-													Đến khi nhìn lại chặng đường đã đi qua, chúng tôi mới nhận ra điều quý giá nhất không phải chỉ là doanh thu hay con số thống kê, mà là trải nghiệm, sự trưởng thành và những giá trị mà shop mang lại. Hành trình này vẫn chưa dừng lại, bởi chúng tôi tin rằng mỗi ngày trôi qua lại là một cơ hội để tiếp tục hoàn thiện, phát triển và lan tỏa tình yêu dành cho sách đến nhiều người hơn nữa.
-												</p>
-											</div>
-										</div>
-									</div>
-								</div>
-							</div>
-						</div>
-					</div>
-				</div>
-			</section>
-			<!--************************************
-					Success End
-			*************************************-->
 		</main>
 		<!--************************************
 				Main End
