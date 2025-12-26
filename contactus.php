@@ -18,6 +18,31 @@
 	<link rel="stylesheet" href="css/main.css">
 	<link rel="stylesheet" href="css/color.css">
 	<link rel="stylesheet" href="css/responsive.css">
+	<style>
+		#loadingOverlay {
+			position: fixed;
+			top: 0;
+			left: 0;
+			width: 100%;
+			height: 100%;
+			background: rgba(0, 0, 0, 0.5);
+			display: none;
+			align-items: center;
+			justify-content: center;
+			z-index: 9999;
+		}
+		#loadingOverlay .spinner {
+			width: 60px;
+			height: 60px;
+			border-radius: 50%;
+			border: 6px solid #ffffff;
+			border-top-color: transparent;
+			animation: spin 1s linear infinite;
+		}
+		@keyframes spin {
+			to { transform: rotate(360deg); }
+		}
+	</style>
 
 	<script src="js/vendor/modernizr-2.8.3-respond-1.4.2.min.js"></script>
 
@@ -726,29 +751,28 @@ if (isset($data12['data'])) {
 								</div>
 							</div>
 							<div class="col-xs-12 col-sm-12 col-md-6 col-lg-6">
-										<iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d2638.664976961357!2d-69.06455608412711!3d44.21158417910234!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x4ca0e5c836af9b19%3A0x86e1a4918bb4fa0!2sCamden%20Public%20Library!5e0!3m2!1sen!2sus!4v1700000000000!5m2!1sen!2sus
-" width="auto" height="768" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
+										<iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d2638.664976961357!2d-69.06455608412711!3d44.21158417910234!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x4ca0e5c836af9b19%3A0x86e1a4918bb4fa0!2sCamden%20Public%20Library!5e0!3m2!1sen!2sus!4v1700000000000!5m2!1sen!2sus" width="auto" height="768" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
 							</div>
 							<div class="col-xs-12 col-sm-12 col-md-6 col-lg-6">
 								<form class="tg-formtheme tg-formcontactus">
 									<fieldset>
 										<div class="form-group">
-											<input type="text" name="first-name" class="form-control" placeholder="First Name*">
+											<input type="text" name="first-name" class="form-control" placeholder="First Name*" id="first-name">
 										</div>
 										<div class="form-group">
-											<input type="text" name="last-name" class="form-control" placeholder="Last Name*">
+											<input type="text" name="last-name" class="form-control" placeholder="Last Name*" id="last-name">
 										</div>
 										<div class="form-group">
-											<input type="email" name="email" class="form-control" placeholder="Last Name*">
+											<input type="email" name="email" class="form-control" placeholder="Email" id="email">
 										</div>
 										<div class="form-group">
-											<input type="text" name="subject" class="form-control" placeholder="Subject (optional)">
+											<input type="text" name="subject" class="form-control" placeholder="Subject (optional)" id="subject">
 										</div>
 										<div class="form-group tg-hastextarea">
-											<textarea placeholder="Comment"></textarea>
+											<textarea placeholder="Comment" id="comment"></textarea>
 										</div>
 										<div class="form-group">
-											<button type="submit" class="tg-btn tg-active">Submit</button>
+											<button type="submit" class="tg-btn tg-active" onclick="submitForm(event)">Submit</button>
 										</div>
 									</fieldset>
 								</form>
@@ -891,6 +915,9 @@ if (isset($data12['data'])) {
 				Footer End
 		*************************************-->
 	</div>
+	<div id="loadingOverlay">
+		<div class="spinner"></div>
+	</div>
 	<!--************************************
 			Wrapper End
 	*************************************-->
@@ -999,6 +1026,83 @@ if (isset($data12['data'])) {
 				return;
 			}
 		});
+		function submitForm(event) {
+				if (event && typeof event.preventDefault === 'function') {
+					event.preventDefault();
+				}
+
+				const firstNameInput = document.getElementById("first-name");
+				const lastNameInput = document.getElementById("last-name");
+				const emailInput = document.getElementById("email");
+				const subjectInput = document.getElementById("subject");
+				const commentInput = document.getElementById("comment");
+
+				const firstName = firstNameInput ? firstNameInput.value.trim() : "";
+				const lastName = lastNameInput ? lastNameInput.value.trim() : "";
+				const email = emailInput ? emailInput.value.trim() : "";
+				const subject = subjectInput ? subjectInput.value.trim() : "";
+				const comment = commentInput ? commentInput.value.trim() : "";
+
+				if (!firstName) {
+					alert("Vui lòng nhập tên.");
+					return;
+				} else if (!lastName) {
+					alert("Vui lòng nhập họ.");
+					return;
+				} else if (!email) {
+					alert("Vui lòng nhập email.");
+					return;
+				} else if (!subject) {
+					alert("Vui lòng nhập chủ đề.");
+					return;
+				} else if (!comment) {
+					alert("Vui lòng nhập bình luận.");
+					return;
+				}
+
+				// Dữ liệu gửi cho API /api/feedback (trùng với backend: firstName, lastName, email, subject, comment)
+				const userData = {
+					firstName: firstName,
+					lastName: lastName,
+					email: email,
+					subject: subject,
+					comment: comment
+				};
+
+				const xhr = new XMLHttpRequest();
+				xhr.open("POST", "http://localhost:8000/api/feedback", true);
+				xhr.setRequestHeader("Content-Type", "application/json");
+				const token = localStorage.getItem("jwtToken");
+				if (token) {
+					xhr.setRequestHeader("Authorization", `Bearer ${token}`);
+				}
+
+				const overlay = document.getElementById("loadingOverlay");
+				if (overlay) overlay.style.display = "flex";
+
+				xhr.onload = function () {
+					if (overlay) overlay.style.display = "none";
+					try {
+						var responseData = JSON.parse(xhr.responseText || "{}");
+						if (xhr.status === 200 && responseData.errCode === 0) {
+							alert("Bạn đã gửi phản hồi thành công");
+							window.location.href = "index.php";
+						} else {
+							alert(responseData.errMessage || "Gửi phản hồi thất bại");
+						}
+					} catch (error) {
+						console.log(error);
+						alert("Lỗi server");
+					}
+				};
+				xhr.onerror = function () {
+					console.error("Request failed");
+					alert("Có lỗi xảy ra khi gửi yêu cầu. Vui lòng thử lại sau.");
+					if (overlay) overlay.style.display = "none";
+				};
+
+				xhr.send(JSON.stringify(userData));
+			}
 	</script>
 </body>
 
