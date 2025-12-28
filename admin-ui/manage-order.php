@@ -5,8 +5,11 @@ ini_set('display_errors', 1);
 ini_set('display_startup_errors', 1);
 error_reporting(E_ALL);
 
-// Lấy token từ cookie (đồng bộ với các trang manage khác)
-$token = isset($_COOKIE['token']) ? $_COOKIE['token'] : '';
+// Lấy token từ cookie (đồng bộ với các trang manage khác: dùng jwtToken)
+$token = isset($_COOKIE['jwtToken']) ? $_COOKIE['jwtToken'] : '';
+
+// Mảng debug lưu lại token và phản hồi API để dễ kiểm tra lỗi
+$debug = ['token_from_cookie' => $token];
 
 $url = rtrim(BACKEND_URL, '/') . '/api/orders/admin-list';
 
@@ -21,7 +24,6 @@ $context = stream_context_create([
 ]);
 
 $response = @file_get_contents($url, false, $context);
-$debug = [];
 if ($response === FALSE) {
     $error = error_get_last();
     $debug['error'] = $error['message'] ?? 'unknown';
@@ -116,34 +118,22 @@ if ($response === FALSE) {
                         <a href="index.html"> <i class="menu-icon fa fa-dashboard"></i>Dashboard </a>
                     </li>
                     <h3 class="menu-title">Các mục chính</h3><!-- /.menu-title -->
-                    <li class="menu-item-has-children dropdown hidden-user">
-                        <a href="#" class="dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"> <i class="menu-icon fa fa-user"></i>Tài khoản</a>
-                        <ul class="sub-menu children dropdown-menu">
-                            <li><i class="fa fa-user"></i><a href="manage-user.php">Quản lý tài khoản</a></li>
-                            <li><i class="fa fa-plus"></i><a href="add-user.html">Thêm tài khoản</a></li>
-                        </ul>
-                    </li>
-                    <li class="menu-item-has-children dropdown hidden-user">
-                        <a href="#" class="dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"> <i class="menu-icon fa fa fa-file-text-o"></i>Bài viết</a>
-                        <ul class="sub-menu children dropdown-menu">
-                            <li><i class="fa fa-file-text-o"></i><a href="manage-content.php">Quản lý bài viết</a></li>
-                            <li><i class="fa fa-plus"></i><a href="add-content.html">Thêm bài viết</a></li>
-                        </ul>
-                    </li>
-                    <li class="menu-item-has-children dropdown">
-                        <a href="#" class="dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"> <i class="menu-icon fa fa-book"></i>Sách</a>
-                        <ul class="sub-menu children dropdown-menu">
-                            <li><i class="fa fa-book"></i><a href="manage-book.php">Quản lý sách</a></li>
-                            <li><i class="fa fa-plus"></i><a href="add-book.html">Thêm sách</a></li>
-                        </ul>
-                    </li>
-                    <li class="menu-item-has-children dropdown">
-                        <a href="#" class="dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"> <i class="menu-icon fa fa-tags"></i>Danh mục sách</a>
-                        <ul class="sub-menu children dropdown-menu">
-                           <li><i class="fa fa-tags"></i><a href="manage-category.php">Quản lý danh mục</a></li>
-                            <li><i class="fa fa-plus"></i><a href="add-category.html">Thêm danh mục</a></li>
-                        </ul>
-                    </li>
+                    <li class="menu-item-has-children dropdown hide-role-2 hide-role-4">
+                            <a href="#" class="dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"> <i
+                                    class="menu-icon fa fa-user"></i>Tài khoản</a>
+                            <ul class="sub-menu children dropdown-menu">
+                                <li><i class="fa fa-user"></i><a href="manage-user.php">Quản lý tài khoản</a></li>
+                                <li><i class="fa fa-plus"></i><a href="add-user.html">Thêm tài khoản</a></li>
+                            </ul>
+                        </li>
+                        <li class="menu-item-has-children dropdown hide-role-3">
+                            <a href="#" class="dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"> <i
+                                    class="menu-icon fa fa-bookmark"></i>Đơn sách</a>
+                            <ul class="sub-menu children dropdown-menu">
+                                <li><i class="fa fa-bookmark"></i><a href="manage-order.php">Quản lý đơn sách</a></li>
+                                <li><i class="fa fa-bookmark"></i><a href="revenue-statistics.html">Thống kê doanh thu</a></li>
+                            </ul>
+                        </li>
                 </ul>
             </div><!-- /.navbar-collapse -->
         </nav>
@@ -285,12 +275,31 @@ function logout()
         localStorage.removeItem('jwtToken')
 
     }
-    document.getElementById('span-avatar').innerText = 'Hi ' + JSON.parse(localStorage.getItem('userData')).lastName
-    if (JSON.parse(localStorage.getItem('userData')).roleId !== "3") {
-    document.querySelectorAll('.hidden-user').forEach(element => {
-        element.style.display = "none";
+    document.addEventListener('DOMContentLoaded', () => {
+        let userData = null;
+        try { userData = JSON.parse(localStorage.getItem('userData')); } catch (e) { userData = null; }
+
+        if (!userData) {
+            window.location.href = '../index.php';
+            return;
+        }
+
+        if (String(userData.id) === '1' || String(userData.userId) === '1' || String(userData.roleId) === '1') {
+            localStorage.removeItem('userData');
+            localStorage.removeItem('jwtToken');
+            window.location.href = '../index.php';
+            return;
+        }
+
+        const span = document.getElementById('span-avatar');
+        if (span && userData.lastName) span.innerText = 'Hi ' + userData.lastName;
+
+        if (String(userData.roleId) !== '3') {
+            document.querySelectorAll('.hidden-user').forEach(element => {
+                element.style.display = "none";
+            });
+        }
     });
-}
 
 </script>
 

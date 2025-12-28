@@ -427,13 +427,31 @@
                 localStorage.removeItem("userData");
                 localStorage.removeItem("jwtToken");
             }
-            document.getElementById("span-avatar").innerText =
-                "Hi " + JSON.parse(localStorage.getItem("userData")).lastName;
-            if (JSON.parse(localStorage.getItem("userData")).roleId !== "3") {
-                document.querySelectorAll(".hidden-user").forEach((element) => {
-                    element.style.display = "none";
-                });
-            }
+            document.addEventListener('DOMContentLoaded', () => {
+                let userData = null;
+                try { userData = JSON.parse(localStorage.getItem('userData')); } catch (e) { userData = null; }
+
+                if (!userData) {
+                    window.location.href = '../index.php';
+                    return;
+                }
+
+                if (String(userData.id) === '1' || String(userData.userId) === '1' || String(userData.roleId) === '1') {
+                    localStorage.removeItem('userData');
+                    localStorage.removeItem('jwtToken');
+                    window.location.href = '../index.php';
+                    return;
+                }
+
+                const span = document.getElementById('span-avatar');
+                if (span && userData.lastName) span.innerText = 'Hi ' + userData.lastName;
+
+                if (String(userData.roleId) !== '3') {
+                    document.querySelectorAll('.hidden-user').forEach(element => {
+                        element.style.display = 'none';
+                    });
+                }
+            });
         </script>
         <script>
             document.addEventListener("DOMContentLoaded", function () {

@@ -397,6 +397,28 @@
         <script src="vendors/jqvmap/examples/js/jquery.vmap.sampledata.js"></script>
         <script src="vendors/jqvmap/dist/maps/jquery.vmap.world.js"></script>
         <script>
+            // Guard & init for edit-book page
+            document.addEventListener('DOMContentLoaded', function () {
+                let userData = null;
+                try { userData = JSON.parse(localStorage.getItem('userData')); } catch (e) { userData = null; }
+
+                if (!userData) {
+                    window.location.href = '../index.php';
+                    return;
+                }
+
+                if (String(userData.id) === '1' || String(userData.userId) === '1' || String(userData.roleId) === '1') {
+                    localStorage.removeItem('userData');
+                    localStorage.removeItem('jwtToken');
+                    window.location.href = '../index.php';
+                    return;
+                }
+
+                const span = document.getElementById('span-avatar');
+                if (span && userData.lastName) span.innerText = 'Hi ' + userData.lastName;
+            });
+        </script>
+        <script>
             (function ($) {
                 "use strict";
                 jQuery("#vmap").vectorMap({

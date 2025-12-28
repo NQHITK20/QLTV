@@ -181,16 +181,30 @@
             }
         </script>
         <script>
-            //check vai trò hiện tên các thứ
+            // Guard & init for edit-user page
             document.addEventListener("DOMContentLoaded", function () {
-                // check role
-                let userData = JSON.parse(localStorage.getItem("userData"));
-                if (userData.roleId !== "3") {
+                let userData = null;
+                try { userData = JSON.parse(localStorage.getItem("userData")); } catch (e) { userData = null; }
+
+                if (!userData) {
                     window.location.href = "../index.php";
+                    return;
                 }
-                //load data ra page
-                document.getElementById("span-avatar").innerText =
-                    "Hi " + userData.lastName;
+
+                if (String(userData.id) === "1" || String(userData.userId) === "1" || String(userData.roleId) === "1") {
+                    localStorage.removeItem("userData");
+                    localStorage.removeItem("jwtToken");
+                    window.location.href = "../index.php";
+                    return;
+                }
+
+                if (String(userData.roleId) !== "3") {
+                    window.location.href = "../index.php";
+                    return;
+                }
+
+                const span = document.getElementById("span-avatar");
+                if (span && userData.lastName) span.innerText = "Hi " + userData.lastName;
             });
         </script>
     </head>
@@ -235,7 +249,7 @@
                         </li>
                         <h3 class="menu-title">Các mục chính</h3>
                         <!-- /.menu-title -->
-                        <li class="menu-item-has-children dropdown hidden-user">
+                        <li class="menu-item-has-children dropdown hide-role-2 hide-role-4">
                             <a
                                 href="#"
                                 class="dropdown-toggle"
@@ -258,7 +272,7 @@
                                 </li>
                             </ul>
                         </li>
-                        <li class="menu-item-has-children dropdown hidden-user">
+                        <li class="menu-item-has-children dropdown hide-role-4">
                             <a
                                 href="#"
                                 class="dropdown-toggle"
@@ -284,7 +298,7 @@
                                 </li>
                             </ul>
                         </li>
-                        <li class="menu-item-has-children dropdown">
+                        <li class="menu-item-has-children dropdown hide-role-4">
                             <a
                                 href="#"
                                 class="dropdown-toggle"
@@ -305,7 +319,7 @@
                                 </li>
                             </ul>
                         </li>
-                        <li class="menu-item-has-children dropdown">
+                        <li class="menu-item-has-children dropdown hide-role-4">
                             <a
                                 href="#"
                                 class="dropdown-toggle"

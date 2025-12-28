@@ -85,7 +85,7 @@ if ($data === null) {
             width: 100%;
             height: 100%;
             background-color: rgba(0, 0, 0, 0.5);
-            display: none;
+            display: flex;
             justify-content: center;
             align-items: center;
             z-index: 999;
@@ -122,29 +122,22 @@ if ($data === null) {
                         <a href="index.html"> <i class="menu-icon fa fa-dashboard"></i>Dashboard </a>
                     </li>
                     <h3 class="menu-title">Các mục chính</h3><!-- /.menu-title -->
-                    <li class="menu-item-has-children dropdown hidden-user">
-                        <a href="#" class="dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"> <i class="menu-icon fa fa-user"></i>Tài khoản</a>
-                        <ul class="sub-menu children dropdown-menu">
-                            <li><i class="fa fa-user"></i><a href="manage-user.php">Quản lý tài khoản</a></li>
-                            <li><i class="fa fa-plus"></i><a href="add-user.html">Thêm tài khoản</a></li>
-                        </ul>
-                    </li>
-                    <li class="menu-item-has-children dropdown hidden-user">
+                    <li class="menu-item-has-children dropdown hide-with-admin hide-role-3">
                         <a href="#" class="dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"> <i class="menu-icon fa fa fa-file-text-o"></i>Bài viết</a>
                         <ul class="sub-menu children dropdown-menu">
                             <li><i class="fa fa-file-text-o"></i><a href="manage-content.php">Quản lý bài viết</a></li>
                             <li><i class="fa fa-plus"></i><a href="add-content.html">Thêm bài viết</a></li>
                         </ul>
                     </li>
-                    <li class="menu-item-has-children dropdown">
+                    <li class="menu-item-has-children dropdown hide-with-admin hide-role-3">
                         <a href="#" class="dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"> <i class="menu-icon fa fa-book"></i>Sách</a>
                         <ul class="sub-menu children dropdown-menu">
                             <li><i class="fa fa-book"></i><a href="manage-book.php">Quản lý sách</a></li>
                             <li><i class="fa fa-plus"></i><a href="add-book.html">Thêm sách</a></li>
                         </ul>
                     </li>
-                    <li class="menu-item-has-children dropdown">
-                        <a href="#" class="dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"> <i class="menu-icon fa fa-tags"></i>Danh mục sách</a>
+                    <li class="menu-item-has-children dropdown hide-with-admin hide-role-3">
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"> <i class="menu-icon fa fa-tags"></i>Danh mục</a>
                         <ul class="sub-menu children dropdown-menu">
                            <li><i class="fa fa-tags"></i><a href="manage-category.php">Quản lý danh mục</a></li>
                             <li><i class="fa fa-plus"></i><a href="add-category.html">Thêm danh mục</a></li>
@@ -434,6 +427,59 @@ let hideNew = async (id, name , buttonId) => {
     }
   }
 }
+</script>
+<script>
+    function logout()
+    {
+        localStorage.removeItem('userData')
+        localStorage.removeItem('jwtToken')
+
+    }
+    document.addEventListener('DOMContentLoaded', () => {
+        const overlay = document.getElementById('loadingOverlay');
+        if (overlay) overlay.style.display = 'flex';
+
+        try {
+            const userDataRaw = localStorage.getItem('userData');
+            if (!userDataRaw) {
+                if (overlay) overlay.style.display = 'none';
+                window.location.href = '../index.php';
+                return;
+            }
+
+            const userData = JSON.parse(userDataRaw);
+
+            if (String(userData.id) === '1' || String(userData.userId) === '1' || String(userData.roleId) === '1') {
+                localStorage.removeItem('userData');
+                localStorage.removeItem('jwtToken');
+                window.location.href = '../index.php';
+                return;
+            }
+            const spanAvatar = document.getElementById('span-avatar');
+            if (spanAvatar && userData.lastName) {
+                spanAvatar.innerText = 'Hi ' + userData.lastName;
+            }
+
+            if (userData.roleId === "2") {
+                document.querySelectorAll('.hide-with-user').forEach(element => {
+                    element.style.display = "none";
+                });
+                document.querySelectorAll('.hide-role-2').forEach(element => {
+                    element.style.display = "none";
+                });
+            }
+
+            if (userData.roleId === "3") {
+                document.querySelectorAll('.hide-role-3').forEach(element => {
+                    element.style.display = "none";
+                });
+            }
+        } catch (e) {
+            console.error('Lỗi xử lý userData hoặc roleId:', e);
+        } finally {
+            if (overlay) overlay.style.display = 'none';
+        }
+    });
 </script>
 
 </html>
