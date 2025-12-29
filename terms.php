@@ -4,7 +4,7 @@
 <head>
 	<meta charset="utf-8">
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
-	 <title>Book Library</title>
+	 <title>Bookshop ai</title>
 	<meta name="description" content="">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<link rel="apple-touch-icon" href="apple-touch-icon.png">
@@ -806,7 +806,7 @@ curl_close($ch);
 				<div class="container">
 					<div class="row">
 						<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
-							<span class="tg-copyright">2017 All Rights Reserved By &copy; Book Library</span>
+							<span class="tg-copyright">2017 All Rights Reserved By &copy; Bookshop ai</span>
 						</div>
 					</div>
 				</div>
