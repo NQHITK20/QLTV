@@ -46,9 +46,9 @@ if ($response === FALSE) {
 }
 curl_close($ch);
 
-// get-category-by-id -> $data2
+// get-category-by-id -> $data2 (F10 normalized)
 $url = rtrim(BACKEND_URL, '/') . '/api/get-category-by-id';
-$datacat = array('id' => 'CatAndCount');
+$datacat = array('id' => 'F10');
 $jsonData = json_encode($datacat);
 $ch = curl_init($url);
 curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
@@ -60,11 +60,82 @@ curl_setopt($ch, CURLOPT_POST, true);
 curl_setopt($ch, CURLOPT_POSTFIELDS, $jsonData);
 $response2 = curl_exec($ch);
 if ($response2 === FALSE) {
-	$data2 = ['data' => []];
+	$data2 = ['categories' => [], 'data' => [], 'result' => []];
 } else {
-	$data2 = json_decode($response2, true) ?: ['data' => []];
+	$data2 = json_decode($response2, true) ?: ['categories' => [], 'data' => [], 'result' => []];
 }
 curl_close($ch);
+
+// Normalize category response shapes to expected keys: 'categories', 'data', 'result'
+if (!is_array($data2)) {
+	$data2 = ['categories' => [], 'data' => [], 'result' => []];
+} else {
+	if (isset($data2['categories']) && is_array($data2['categories'])) {
+		// ok
+	} elseif (isset($data2['data']) && is_array($data2['data'])) {
+		$data2['categories'] = $data2['data'];
+	} elseif (isset($data2['results']) && is_array($data2['results'])) {
+		$data2['categories'] = $data2['results'];
+	} else {
+		$data2['categories'] = [];
+	}
+
+	if (isset($data2['data']) && is_array($data2['data'])) {
+		// ok
+	} else {
+		$data2['data'] = $data2['categories'];
+	}
+
+	if (isset($data2['result']) && is_array($data2['result'])) {
+		// ok
+	} elseif (isset($data2['results']) && is_array($data2['results'])) {
+		$data2['result'] = $data2['results'];
+	} else {
+		$data2['result'] = [];
+	}
+}
+
+// Populate booksCount for sidebar: derive counts from grouped `result`
+$countsById = [];
+$countsByName = [];
+if (isset($data2['result']) && is_array($data2['result'])) {
+	foreach ($data2['result'] as $catdata) {
+		$cid = isset($catdata['catId']) ? (string)$catdata['catId'] : (isset($catdata['id']) ? (string)$catdata['id'] : '');
+		$cname = isset($catdata['category']) ? (string)$catdata['category'] : (isset($catdata['name']) ? (string)$catdata['name'] : '');
+		$count = 0;
+		if (isset($catdata['books']) && is_array($catdata['books'])) {
+			$count = count($catdata['books']);
+		} elseif (isset($catdata['newbooks']) && is_array($catdata['newbooks'])) {
+			$count = count($catdata['newbooks']);
+		}
+		if ($cid !== '') $countsById[$cid] = $count;
+		if ($cname !== '') $countsByName[$cname] = $count;
+	}
+}
+
+if (isset($data2['data']) && is_array($data2['data'])) {
+	foreach ($data2['data'] as &$cat) {
+		$catId = isset($cat['id']) ? (string)$cat['id'] : '';
+		$catName = isset($cat['category']) ? (string)$cat['category'] : (isset($cat['name']) ? (string)$cat['name'] : '');
+		$booksCount = 0;
+		if ($catId !== '' && isset($countsById[$catId])) $booksCount = $countsById[$catId];
+		elseif ($catName !== '' && isset($countsByName[$catName])) $booksCount = $countsByName[$catName];
+		$cat['booksCount'] = $booksCount;
+	}
+	unset($cat);
+}
+
+if (isset($data2['categories']) && is_array($data2['categories'])) {
+	foreach ($data2['categories'] as &$cat) {
+		$catId = isset($cat['id']) ? (string)$cat['id'] : '';
+		$catName = isset($cat['category']) ? (string)$cat['category'] : (isset($cat['name']) ? (string)$cat['name'] : '');
+		$booksCount = 0;
+		if ($catId !== '' && isset($countsById[$catId])) $booksCount = $countsById[$catId];
+		elseif ($catName !== '' && isset($countsByName[$catName])) $booksCount = $countsByName[$catName];
+		$cat['booksCount'] = $booksCount;
+	}
+	unset($cat);
+}
 
 // get-news -> $data3
 $url = rtrim(BACKEND_URL, '/') . '/api/get-news';
@@ -1166,17 +1237,19 @@ if ($idusername) {
 										</div>
 										<div class="tg-widgetcontent">
 											<ul>
-												<li><a href="javascript:void(0);"><span>Art &amp; Photography</span><em>28245</em></a></li>
-												<li><a href="javascript:void(0);"><span>Biography</span><em>4856</em></a></li>
-												<li><a href="javascript:void(0);"><span>Children’s Book</span><em>8654</em></a></li>
-												<li><a href="javascript:void(0);"><span>Craft &amp; Hobbies</span><em>6247</em></a></li>
-												<li><a href="javascript:void(0);"><span>Crime &amp; Thriller</span><em>888654</em></a></li>
-												<li><a href="javascript:void(0);"><span>Fantasy &amp; Horror</span><em>873144</em></a></li>
-												<li><a href="javascript:void(0);"><span>Fiction</span><em>18465</em></a></li>
-												<li><a href="javascript:void(0);"><span>Fod &amp; Drink</span><em>3148</em></a></li>
-												<li><a href="javascript:void(0);"><span>Graphic, Anime &amp; Manga</span><em>77531</em></a></li>
-												<li><a href="javascript:void(0);"><span>Science Fiction</span><em>9247</em></a></li>
-												<li><a href="javascript:void(0);"><span>View All</span></a></li>
+												<?php 
+												if (isset($data2['data']) && is_array($data2['data'])) {
+													foreach($data2['data'] as $cat) { 
+														$catName = isset($cat['category']) ? $cat['category'] : (isset($cat['name']) ? $cat['name'] : '');
+														$booksCount = isset($cat['booksCount']) ? $cat['booksCount'] : 0;
+														$catNameEsc = htmlspecialchars($catName, ENT_QUOTES, 'UTF-8');
+												?>
+													<li><a href="findingbook.php?tukhoa=<?php echo urlencode($catName) ?>" onclick="setCookie('tukhoa', '<?php echo $catNameEsc ?>', 30);"><span> <?php echo htmlspecialchars($catName) ?></span><em><?php echo htmlspecialchars($booksCount) ?></em></a></li>
+												<?php }
+												} else {
+													echo '<li>Không có danh mục</li>';
+												}
+												?>
 											</ul>
 										</div>
 									</div>

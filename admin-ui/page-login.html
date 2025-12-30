@@ -253,15 +253,7 @@
                                 // If rememberMe is not checked, remove rememberedEmail from localStorage
                                 localStorage.removeItem("rememberedEmail");
                             }
-                            // Lưu dữ liệu vào Local Storage
-                            // Redirect to dashboard or other page
-                            if (data.user.roleId == 1) {
-                                window.location.href = "../index.php";
-                            } else if (data.user.roleId == 2) {
-                                window.location.href = "index.html";
-                            } else {
-                                window.location.href = "index.html";
-                            }
+                             window.location.href = "../index.php";
                         }
                     } else {
                         // Login failed, display error message

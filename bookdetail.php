@@ -509,6 +509,12 @@ if (isset($data12['data'])) {
 										<em>Về chúng tôi</em>
 									</a>
 								</li>
+								<li>
+									<a href="terms.php">
+										<i class="icon-book"></i>
+										<em>Điều khoản và Dịch Vụ</em>
+									</a>
+								</li>
 							</ul>
 							<div class="tg-userlogin">
 								<figure><a><img src="images/blank-avatar.jpg" alt="image description"></a></figure>
@@ -567,36 +573,44 @@ if (isset($data12['data'])) {
 													// Giả sử mỗi mục danh mục có thuộc tính 'category'
 													if (isset($category['category'])) {
 													echo '<li role="presentation">';
-													echo '<a href="#' . htmlspecialchars($category['id']) . '" aria-controls="' . htmlspecialchars($category['id']) . '" role="tab" data-toggle="tab">' . htmlspecialchars($category['category']) . '</a>';
+													$catIdSafe = htmlspecialchars((string)($category['id'] ?? ''));
+													$catNameSafe = htmlspecialchars((string)($category['category'] ?? ''));
+													echo '<a href="#' . $catIdSafe . '" aria-controls="' . $catIdSafe . '" role="tab" data-toggle="tab">' . $catNameSafe . '</a>';
 													echo '</li>';
-																	  }
-															 }
+																  }
+														 }
 													} else {
 														echo 'Không có danh mục nào để hiển thị.';
 														}
 													?>
 													</ul>
 													<div class="tab-content tg-themetabcontent">
-													<?php foreach ($data2['result'] as $catdata): ?>
-														<div role="tabpanel" class="tab-pane active" id="<?= htmlspecialchars($catdata['catId']) ?>">
+													<?php if (isset($data2['result']) && is_array($data2['result']) && count($data2['result'])>0): foreach ($data2['result'] as $catdata): ?>
+														<?php $catPaneId = htmlspecialchars((string)($catdata['catId'] ?? ($catdata['id'] ?? ''))); ?>
+														<div role="tabpanel" class="tab-pane active" id="<?= $catPaneId ?>">
 															<ul>
 																<li>
 																	<div class="tg-linkstitle">
 																		<h2>Tác giả</h2>
 																	</div>
 																	<ul>
-																	<?php 
+																	<?php
 																	$count = 0;
 																	$displayed_authors = [];
-																	foreach ($catdata['books'] as $author): 
-																	if ($count >= 5) break;
-																	if (in_array($author['author'], $displayed_authors)) continue;
-																	$displayed_authors[] = $author['author'];
-																	?>
-																	<li><a><?= htmlspecialchars($author['author']) ?></a></li>
-																	<?php 
-																	$count++;
-																	endforeach; 
+																	if (isset($catdata['books']) && is_array($catdata['books'])) {
+																		foreach ($catdata['books'] as $author) {
+																			if ($count >= 5) break;
+																			$authorName = (string)($author['author'] ?? '');
+																			$authorNameEsc = htmlspecialchars($authorName);
+																			if (in_array($authorNameEsc, $displayed_authors)) continue;
+																			$displayed_authors[] = $authorNameEsc;
+																			$authorUrl = 'findingbook.php?tukhoa=' . urlencode($authorName);
+																			echo '<li><a href="' . $authorUrl . '" onclick="setCookie(\'tukhoa\', this.textContent.trim(), 30);">' . $authorNameEsc . '</a></li>';
+																			$count++;
+																		}
+																	} else {
+																		echo '<li><a>Không có tác giả</a></li>';
+																	}
 																	?>
 																	</ul>
 																</li>
@@ -605,19 +619,23 @@ if (isset($data12['data'])) {
 																		<h2>Mới nhất</h2>
 																	</div>
 																	<ul>
-																	<?php 
-																	   $count = 0;
-																	   $displayed_books = [];
-																	   foreach ($catdata['newbooks'] as $newbook): 
-																	   if ($count >= 5) break;
-																	   if (in_array($newbook['bookName'], $displayed_books)) continue;
-																	   $displayed_books[] = $newbook['bookName'];
-																	   ?>
-																	  <li><a><?= htmlspecialchars($newbook['bookName']) ?></a></li>
-																	  <?php 
-																	  $count++;
-																	  endforeach; 
-																	  ?>
+																	<?php
+																	 $count = 0;
+																	 $displayed_books = [];
+																	 if (isset($catdata['newbooks']) && is_array($catdata['newbooks'])) {
+																	 	foreach ($catdata['newbooks'] as $newbook) {
+																	 		if ($count >= 5) break;
+																	 		$bookName = (string)($newbook['bookName'] ?? '');
+																	 		if (in_array($bookName, $displayed_books)) continue;
+																	 		$displayed_books[] = $bookName;																	 		$bookId = isset($newbook['id']) ? (string)$newbook['id'] : '';
+																	 		$idAttr = htmlspecialchars($bookId);
+																	 		$categoryJson = json_encode($catdata['category'] ?? '');
+																	 		$idJson = json_encode($bookId);
+																	 		echo '<li><a href="bookdetail.php?id=' . $idAttr . '" onClick="setCookiesBook(' . $categoryJson . ',' . $idJson . ')">' . htmlspecialchars($bookName) . '</a></li>';
+																	 		$count++;
+																	 	}
+																	 }
+																	?>
 																	</ul>
 																</li>
 																<li>
@@ -625,19 +643,24 @@ if (isset($data12['data'])) {
 																		<h2>Sách hay</h2>
 																	</div>
 																	<ul>
-																	<?php 
+																	<?php
 																	  $count = 0;
 																	  $displayed_books = [];
-																	  foreach ($catdata['books'] as $book): 
-																	  if ($count >= 5) break;
-																	  if (in_array($book['bookName'], $displayed_books)) continue;
-																	  $displayed_books[] = $book['bookName'];
-																	  ?>
-																	  <li><a><?= htmlspecialchars($book['bookName']) ?></a></li>
-																	  <?php 
-																	  $count++;
-																	  endforeach; 
-																	  ?>
+																	  if (isset($catdata['books']) && is_array($catdata['books'])) {
+																	  	foreach ($catdata['books'] as $book) {
+																	  		if ($count >= 5) break;
+																	  		$bookName = (string)($book['bookName'] ?? '');
+																	  		if (in_array($bookName, $displayed_books)) continue;
+																	  		$displayed_books[] = $bookName;
+																	  		$bookId = isset($book['id']) ? (string)$book['id'] : '';
+																	  		$idAttr = htmlspecialchars($bookId);
+																	  		$categoryJson = json_encode($catdata['category'] ?? '');
+																	  		$idJson = json_encode($bookId);
+																	  		echo '<li><a href="bookdetail.php?id=' . $idAttr . '" onClick="setCookiesBook(' . $categoryJson . ',' . $idJson . ')">' . htmlspecialchars($bookName) . '</a></li>';
+																	  		$count++;
+																	  	}
+																	  }
+																	?>
 																	</ul>
 																</li>
 															</ul>
@@ -652,21 +675,22 @@ if (isset($data12['data'])) {
 															</ul>
 														</div>
 													<?php endforeach; ?>
+													<?php endif; ?>
 													</div>
 												</div>
 											</li>
 											<li class="menu-item-has-children">
 												<a>Sách</a>
 												<ul class="sub-menu">
-													<li><a href="">Sách mới nhất</a></li>
-													<li><a href="">Sách hay</a></li>
+													<li><a href="products.php?pageIndex=1">Sách mới nhất</a></li>
+													<li><a href="products.php?pageIndex=1">Sách hay</a></li>
 												</ul>
 											</li>
 											<li class="menu-item-has-children">
 											<a>Tin tức</a>
 											<ul class="sub-menu" id="menu-tin-tuc">
-												<li><a href="">Tin tức mới nhất</a></li>
-												<li><a href="">tin tức nổi bật</a></li>
+												<li><a href="newslist.php?pageIndex=1">Tin tức mới nhất</a></li>
+												<li><a href="newslist.php?pageIndex=1">tin tức nổi bật</a></li>
 											</ul>
 											</li>    
 									</div>
@@ -880,7 +904,7 @@ if (isset($data12['data'])) {
 																	</figure>
 																	<div class="tg-postbookcontent">
 																		<ul class="tg-bookscategories">
-																			<li><a><?php echo htmlspecialchars($book['category'] ?? '') ?></a></li>
+																			<li><a ><?php echo htmlspecialchars($book['category'] ?? '') ?></a></li>
 																		</ul>
 																		<div class="tg-booktitle">
 																			<h3><a href="bookdetail.php?id=<?php echo $idJson ?>" onClick="setCookiesBook(<?php echo $categoryJson ?>,<?php echo $idJson ?>)"><?php echo htmlspecialchars($book['bookName'] ?? '') ?></a></h3>
@@ -915,7 +939,7 @@ if (isset($data12['data'])) {
 												<?php 
 												if (isset($data2['data']) && is_array($data2['data'])) {
 													foreach($data2['data'] as $cat) { ?>
-														<li><a href="<?php echo htmlspecialchars($cat['category'] ?? '') ?>"><span> <?php echo htmlspecialchars($cat['category'] ?? '') ?></span><em><?php echo htmlspecialchars($cat['booksCount'] ?? 0) ?></em></a></li>
+														<li><a href="findingbook.php?tukhoa=<?php echo htmlspecialchars($cat['category'] ?? '') ?>" onclick="setCookie('tukhoa', '<?php echo htmlspecialchars($cat['category'] ?? '', ENT_QUOTES, 'UTF-8') ?>', 30);"><span> <?php echo htmlspecialchars($cat['category'] ?? '') ?></span><em><?php echo htmlspecialchars($cat['booksCount'] ?? 0) ?></em></a></li>
 													<?php }
 												} else {
 													echo '<li>Không có danh mục</li>';
@@ -1595,6 +1619,18 @@ async function addToCartDetail() {
 
 	.tg-orderbtn i { margin-right: 8px; }
 </style>
+<script>
+document.getElementById('searchForm').addEventListener('submit', function(event) {
+        event.preventDefault(); // Ngăn chặn hành động gửi biểu mẫu mặc định
+
+        let searchQuery = document.querySelector('input[name="search"]').value;
+		setCookie('tukhoa', searchQuery, 30);
+        let url = `findingbook.php?tukhoa=${encodeURIComponent(searchQuery)}`;
+        
+        // Điều hướng đến URL mới với từ khóa tìm kiếm
+        window.location.href = url;
+});
+</script>
 		
 </body>
 </html>

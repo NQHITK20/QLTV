@@ -139,11 +139,82 @@ curl_setopt($ch, CURLOPT_POST, true);
 curl_setopt($ch, CURLOPT_POSTFIELDS, $jsonData);
 $response2 = curl_exec($ch);
 if ($response2 === FALSE) {
-	$data2 = ['result' => []];
+	$data2 = ['categories' => [], 'data' => [], 'result' => []];
 } else {
-	$data2 = json_decode($response2, true) ?: ['result' => []];
+	$data2 = json_decode($response2, true) ?: ['categories' => [], 'data' => [], 'result' => []];
 }
 curl_close($ch);
+
+// Normalize category response shapes to expected keys: 'categories', 'data', 'result'
+if (!is_array($data2)) {
+	$data2 = ['categories' => [], 'data' => [], 'result' => []];
+} else {
+	if (isset($data2['categories']) && is_array($data2['categories'])) {
+		// ok
+	} elseif (isset($data2['data']) && is_array($data2['data'])) {
+		$data2['categories'] = $data2['data'];
+	} elseif (isset($data2['results']) && is_array($data2['results'])) {
+		$data2['categories'] = $data2['results'];
+	} else {
+		$data2['categories'] = [];
+	}
+
+	if (isset($data2['data']) && is_array($data2['data'])) {
+		// ok
+	} else {
+		$data2['data'] = $data2['categories'];
+	}
+
+	if (isset($data2['result']) && is_array($data2['result'])) {
+		// ok
+	} elseif (isset($data2['results']) && is_array($data2['results'])) {
+		$data2['result'] = $data2['results'];
+	} else {
+		$data2['result'] = [];
+	}
+}
+
+// Populate booksCount for sidebar/menus: derive counts from grouped `result`
+$countsById = [];
+$countsByName = [];
+if (isset($data2['result']) && is_array($data2['result'])) {
+	foreach ($data2['result'] as $catdata) {
+		$cid = isset($catdata['catId']) ? (string)$catdata['catId'] : (isset($catdata['id']) ? (string)$catdata['id'] : '');
+		$cname = isset($catdata['category']) ? (string)$catdata['category'] : (isset($catdata['name']) ? (string)$catdata['name'] : '');
+		$count = 0;
+		if (isset($catdata['books']) && is_array($catdata['books'])) {
+			$count = count($catdata['books']);
+		} elseif (isset($catdata['newbooks']) && is_array($catdata['newbooks'])) {
+			$count = count($catdata['newbooks']);
+		}
+		if ($cid !== '') $countsById[$cid] = $count;
+		if ($cname !== '') $countsByName[$cname] = $count;
+	}
+}
+
+if (isset($data2['data']) && is_array($data2['data'])) {
+	foreach ($data2['data'] as &$cat) {
+		$catId = isset($cat['id']) ? (string)$cat['id'] : '';
+		$catName = isset($cat['category']) ? (string)$cat['category'] : (isset($cat['name']) ? (string)$cat['name'] : '');
+		$booksCount = 0;
+		if ($catId !== '' && isset($countsById[$catId])) $booksCount = $countsById[$catId];
+		elseif ($catName !== '' && isset($countsByName[$catName])) $booksCount = $countsByName[$catName];
+		$cat['booksCount'] = $booksCount;
+	}
+	unset($cat);
+}
+
+if (isset($data2['categories']) && is_array($data2['categories'])) {
+	foreach ($data2['categories'] as &$cat) {
+		$catId = isset($cat['id']) ? (string)$cat['id'] : '';
+		$catName = isset($cat['category']) ? (string)$cat['category'] : (isset($cat['name']) ? (string)$cat['name'] : '');
+		$booksCount = 0;
+		if ($catId !== '' && isset($countsById[$catId])) $booksCount = $countsById[$catId];
+		elseif ($catName !== '' && isset($countsByName[$catName])) $booksCount = $countsByName[$catName];
+		$cat['booksCount'] = $booksCount;
+	}
+	unset($cat);
+}
 
 // get-news F7 -> $data3
 $url = rtrim(BACKEND_URL, '/') . '/api/get-news';
@@ -307,6 +378,12 @@ curl_close($ch);
 										<em>Về chúng tôi</em>
 									</a>
 								</li>
+								<li>
+									<a href="terms.php">
+										<i class="icon-book"></i>
+										<em>Điều khoản và Dịch Vụ</em>
+									</a>
+								</li>
 							</ul>
 							<div class="tg-userlogin">
 								<figure><a><img src="images/blank-avatar.jpg" alt="image description"></a></figure>
@@ -394,9 +471,7 @@ curl_close($ch);
 		                                                                    if (in_array($author['author'], $displayed_authors)) continue;
 		                                                                    $displayed_authors[] = $author['author'];
 		                                                                    ?>
-																		<li><a>
-																				<?= htmlspecialchars($author['author']) ?>
-																			</a></li>
+																		<li><a href="' . $authorUrl . '" onclick="setCookie(\'tukhoa\', this.textContent.trim(), 30);">' . $authorNameEsc . '</a></li>
 																		<?php 
 		                                                                    $count++;
 		                                                                    endforeach; 
@@ -416,9 +491,7 @@ curl_close($ch);
 		                                                                       if (in_array($newbook['bookName'], $displayed_books)) continue;
 		                                                                       $displayed_books[] = $newbook['bookName'];
 		                                                                       ?>
-																		<li><a>
-																				<?= htmlspecialchars($newbook['bookName']) ?>
-																			</a></li>
+																		<li><a href="bookdetail.php?id=' . $idAttr . '" onClick="setCookiesBook(' . $categoryJson . ',' . $idJson . ')">' . htmlspecialchars($bookName) . '</a></li>
 																		<?php 
 		                                                                      $count++;
 		                                                                      endforeach; 

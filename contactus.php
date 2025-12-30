@@ -453,6 +453,12 @@ if (isset($data12['data'])) {
 										<em>Về chúng tôi</em>
 									</a>
 								</li>
+								<li>
+									<a href="terms.php">
+										<i class="icon-book"></i>
+										<em>Điều khoản và Dịch Vụ</em>
+									</a>
+								</li>
 							</ul>
 							<div class="tg-userlogin">
 								<figure><a><img src="images/blank-avatar.jpg" alt="image description"></a></figure>
@@ -602,15 +608,15 @@ if (isset($data12['data'])) {
 											<li class="menu-item-has-children">
 												<a>Sách</a>
 												<ul class="sub-menu">
-													<li><a href="">Sách mới nhất</a></li>
-													<li><a href="">Sách hay</a></li>
+													<li><a href="products.php?pageIndex=1">Sách mới nhất</a></li>
+													<li><a href="products.php?pageIndex=1">Sách hay</a></li>
 												</ul>
 											</li>
 											<li class="menu-item-has-children">
 											<a>Tin tức</a>
 											<ul class="sub-menu" id="menu-tin-tuc">
-												<li><a href="">Tin tức mới nhất</a></li>
-												<li><a href="">tin tức nổi bật</a></li>
+												<li><a href="newslist.php?pageIndex=1">Tin tức mới nhất</a></li>
+												<li><a href="newslist.php?pageIndex=1">tin tức nổi bật</a></li>
 											</ul>
 											</li>    
 									</div>
@@ -1103,6 +1109,21 @@ if (isset($data12['data'])) {
 
 				xhr.send(JSON.stringify(userData));
 			}
+
+		// Search form submit handler
+		if (document.getElementById('searchForm')) {
+			document.getElementById('searchForm').addEventListener('submit', function(event) {
+				// Ngăn chặn hành động gửi biểu mẫu mặc định
+				event.preventDefault();
+
+				var searchQuery = document.querySelector('input[name="search"]').value;
+				setCookie('tukhoa', searchQuery, 30);
+				var url = 'findingbook.php?tukhoa=' + encodeURIComponent(searchQuery);
+
+				// Điều hướng đến URL mới với từ khóa tìm kiếm
+				window.location.href = url;
+			});
+		}
 	</script>
 </body>
 

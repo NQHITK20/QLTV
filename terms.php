@@ -307,6 +307,12 @@ curl_close($ch);
 										<em>Về chúng tôi</em>
 									</a>
 								</li>
+								<li>
+									<a href="terms.php">
+										<i class="icon-book"></i>
+										<em>Điều khoản và Dịch Vụ</em>
+									</a>
+								</li>
 							</ul>
 							<div class="tg-userlogin">
 								<figure><a><img src="images/blank-avatar.jpg" alt="image description"></a></figure>
@@ -394,9 +400,7 @@ curl_close($ch);
 		                                                                    if (in_array($author['author'], $displayed_authors)) continue;
 		                                                                    $displayed_authors[] = $author['author'];
 		                                                                    ?>
-																		<li><a>
-																				<?= htmlspecialchars($author['author']) ?>
-																			</a></li>
+																		<li><a href="' . $authorUrl . '" onclick="setCookie(\'tukhoa\', this.textContent.trim(), 30);">' . $authorNameEsc . '</a></li>
 																		<?php 
 		                                                                    $count++;
 		                                                                    endforeach; 
@@ -416,9 +420,7 @@ curl_close($ch);
 		                                                                       if (in_array($newbook['bookName'], $displayed_books)) continue;
 		                                                                       $displayed_books[] = $newbook['bookName'];
 		                                                                       ?>
-																		<li><a>
-																				<?= htmlspecialchars($newbook['bookName']) ?>
-																			</a></li>
+																		<li><a href="bookdetail.php?id=' . $idAttr . '" onClick="setCookiesBook(' . $categoryJson . ',' . $idJson . ')">' . htmlspecialchars($bookName) . '</a></li>
 																		<?php 
 		                                                                      $count++;
 		                                                                      endforeach; 
@@ -604,10 +606,10 @@ curl_close($ch);
 				<div class="row">
 					<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
 						<div class="tg-innerbannercontent">
-							<h1>About Us</h1>
+							<h1>Điều Khoản và Dịch Vụ</h1>
 							<ol class="tg-breadcrumb">
 								<li><a href="javascript:void(0);">home</a></li>
-								<li class="tg-active">About Us</li>
+								<li class="tg-active">Điều Khoản và Dịch Vụ</li>
 							</ol>
 						</div>
 					</div>
