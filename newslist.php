@@ -210,8 +210,6 @@ if ($idusername) {
 	}
 	curl_close($ch);
 }
-
-
 ini_set('display_errors', 1);
 ini_set('display_startup_errors', 1);
 error_reporting(E_ALL);
@@ -673,7 +671,7 @@ $jsonDataNew = json_encode($data4);
 														</div>
 														<a><?php echo $formattedDatetime ?></a>
 														<div class="tg-description">
-															<p><?php echo $new['description'] ?></p>
+															<p><?php echo htmlspecialchars($new['description'] ?? '', ENT_QUOTES, 'UTF-8'); ?></p>
 														</div>
 														<span class="tg-bookwriter">By: <a><?php echo $new['author'] ?></a></span>
 													</div>

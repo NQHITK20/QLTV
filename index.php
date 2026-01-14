@@ -535,12 +535,12 @@ if (isset($data12['data'])) {
 													$catNameSafe = htmlspecialchars((string)($category['category'] ?? ''));
 													echo '<a href="#' . $catIdSafe . '" aria-controls="' . $catIdSafe . '" role="tab" data-toggle="tab">' . $catNameSafe . '</a>';
 													echo '</li>';
-																	  }
-															 }
+																  }
+														 }
 													} else {
 														echo 'Không có danh mục nào để hiển thị.';
 														}
-                                                    ?>
+													?>
 													</ul>
 													<div class="tab-content tg-themetabcontent">
 													<?php if (isset($data2['result']) && is_array($data2['result']) && count($data2['result'])>0): foreach ($data2['result'] as $catdata): ?>
@@ -562,7 +562,8 @@ if (isset($data12['data'])) {
 																			$authorNameEsc = htmlspecialchars($authorName);
 																			if (in_array($authorNameEsc, $displayed_authors)) continue;
 																			$displayed_authors[] = $authorNameEsc;
-																			echo '<li><a>' . $authorNameEsc . '</a></li>';
+																			$authorUrl = 'findingbook.php?tukhoa=' . urlencode($authorName);
+																			echo '<li><a href="' . $authorUrl . '" onclick="setCookie(\'tukhoa\', this.textContent.trim(), 30);">' . $authorNameEsc . '</a></li>';
 																			$count++;
 																		}
 																	} else {
@@ -576,19 +577,23 @@ if (isset($data12['data'])) {
 																		<h2>Mới nhất</h2>
 																	</div>
 																	<ul>
-																	<?php 
-                                                                       $count = 0;
-                                                                       $displayed_books = [];
-                                                                       foreach ($catdata['newbooks'] as $newbook): 
-                                                                       if ($count >= 5) break;
-                                                                       if (in_array($newbook['bookName'], $displayed_books)) continue;
-                                                                       $displayed_books[] = $newbook['bookName'];
-                                                                       ?>
-                                                                      <li><a><?= htmlspecialchars($newbook['bookName']) ?></a></li>
-                                                                      <?php 
-                                                                      $count++;
-                                                                      endforeach; 
-                                                                      ?>
+																	<?php
+																	 $count = 0;
+																	 $displayed_books = [];
+																	 if (isset($catdata['newbooks']) && is_array($catdata['newbooks'])) {
+																	 	foreach ($catdata['newbooks'] as $newbook) {
+																	 		if ($count >= 5) break;
+																	 		$bookName = (string)($newbook['bookName'] ?? '');
+																	 		if (in_array($bookName, $displayed_books)) continue;
+																	 		$displayed_books[] = $bookName;																	 		$bookId = isset($newbook['id']) ? (string)$newbook['id'] : '';
+																	 		$idAttr = htmlspecialchars($bookId);
+																	 		$categoryJson = json_encode($catdata['category'] ?? '');
+																	 		$idJson = json_encode($bookId);
+																	 		echo '<li><a href="bookdetail.php?id=' . $idAttr . '" onClick="setCookiesBook(' . $categoryJson . ',' . $idJson . ')">' . htmlspecialchars($bookName) . '</a></li>';
+																	 		$count++;
+																	 	}
+																	 }
+																	?>
 																	</ul>
 																</li>
 																<li>
@@ -596,19 +601,24 @@ if (isset($data12['data'])) {
 																		<h2>Sách hay</h2>
 																	</div>
 																	<ul>
-																	<?php 
-                                                                      $count = 0;
-                                                                      $displayed_books = [];
-                                                                      foreach ($catdata['books'] as $book): 
-                                                                      if ($count >= 5) break;
-                                                                      if (in_array($book['bookName'], $displayed_books)) continue;
-                                                                      $displayed_books[] = $book['bookName'];
-                                                                      ?>
-                                                                      <li><a><?= htmlspecialchars($book['bookName']) ?></a></li>
-                                                                      <?php 
-                                                                      $count++;
-                                                                      endforeach; 
-                                                                      ?>
+																	<?php
+																	  $count = 0;
+																	  $displayed_books = [];
+																	  if (isset($catdata['books']) && is_array($catdata['books'])) {
+																	  	foreach ($catdata['books'] as $book) {
+																	  		if ($count >= 5) break;
+																	  		$bookName = (string)($book['bookName'] ?? '');
+																	  		if (in_array($bookName, $displayed_books)) continue;
+																	  		$displayed_books[] = $bookName;
+																	  		$bookId = isset($book['id']) ? (string)$book['id'] : '';
+																	  		$idAttr = htmlspecialchars($bookId);
+																	  		$categoryJson = json_encode($catdata['category'] ?? '');
+																	  		$idJson = json_encode($bookId);
+																	  		echo '<li><a href="bookdetail.php?id=' . $idAttr . '" onClick="setCookiesBook(' . $categoryJson . ',' . $idJson . ')">' . htmlspecialchars($bookName) . '</a></li>';
+																	  		$count++;
+																	  	}
+																	  }
+																	?>
 																	</ul>
 																</li>
 															</ul>
@@ -634,13 +644,13 @@ if (isset($data12['data'])) {
 													<li><a href="products.php?pageIndex=1">Sách hay</a></li>
 												</ul>
 											</li>
-										    <li class="menu-item-has-children">
+											<li class="menu-item-has-children">
 											<a>Tin tức</a>
 											<ul class="sub-menu" id="menu-tin-tuc">
 												<li><a href="newslist.php?pageIndex=1">Tin tức mới nhất</a></li>
 												<li><a href="newslist.php?pageIndex=1">tin tức nổi bật</a></li>
 											</ul>
-										    </li>	
+											</li>    
 									</div>
 								</nav>
 								<div class="tg-wishlistandcart">
@@ -661,7 +671,7 @@ if (isset($data12['data'])) {
 												<div class="tg-minicarproduct">
 													<figure>
 														<img src="images/books/<?php echo $book['image']; ?>" alt="image bug" style="width:65px">
-														
+                                                        
 													</figure>
 													<div class="tg-minicarproductdata">
 														<h5><a><?php echo $book['bookName']; ?></a></h5>
@@ -680,10 +690,10 @@ if (isset($data12['data'])) {
 													<a class="tg-btn" href="favoritebook.php">Xem thêm</a>
 													<a class="tg-btn" href="javascript:void(0);">Đóng</a>
 												</div>
-											    </div>
+												</div>
 									   </div>
 								</div>
-								
+                                
 							</div>
 							<div class="dropdown tg-themedropdown tg-wishlistdropdown">
 										<a href="javascript:void(0);" id="tg-cartdrop" class="tg-btnthemedropdown" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
@@ -842,7 +852,7 @@ if (isset($data['data'])) {
 						<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
 							<div class="tg-sectionhead">
 								<h2><span>Bộ sưu tập</span>Sách đang hot</h2>
-								<a class="tg-btn" href="javascript:void(0);">Xem tất cả</a>
+								<a class="tg-btn" href="products.php?pageIndex=1">Xem tất cả</a>
 							</div>
 						</div>
 						<div id="tg-pickedbyauthorslider" class="tg-pickedbyauthor tg-pickedbyauthorslider owl-carousel">

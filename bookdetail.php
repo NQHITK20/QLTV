@@ -874,6 +874,39 @@ if (isset($data12['data'])) {
 												</div>
 											</div>
 											<div class="tg-relatedproducts">
+											<?php
+											// Gọi API get-related-book gửi categoryBook và bookId trong body
+											$bookId = isset($_GET['id']) ? (string)$_GET['id'] : (isset($_COOKIE['bookId']) ? (string)$_COOKIE['bookId'] : '');
+											$categoryBook = isset($_COOKIE['categoryBook']) ? (string)$_COOKIE['categoryBook'] : '';
+											$data4 = ['relatedbook' => []];
+											if ($bookId !== '') {
+												$relUrl = rtrim(BACKEND_URL, '/') . '/api/get-related-book';
+												$payload = json_encode(['categoryBook' => $categoryBook, 'bookId' => $bookId]);
+												$chRel = curl_init($relUrl);
+												curl_setopt($chRel, CURLOPT_RETURNTRANSFER, true);
+												curl_setopt($chRel, CURLOPT_HTTPHEADER, [
+													'Content-Type: application/json',
+													'Authorization: Bearer'
+												]);
+												curl_setopt($chRel, CURLOPT_POST, true);
+												curl_setopt($chRel, CURLOPT_POSTFIELDS, $payload);
+												$relResp = curl_exec($chRel);
+												if ($relResp !== false) {
+													$decoded = json_decode($relResp, true);
+													if (is_array($decoded)) {
+														// normalize common keys
+														if (isset($decoded['relatedbook']) && is_array($decoded['relatedbook'])) {
+															$data4 = $decoded;
+														} elseif (isset($decoded['data']) && is_array($decoded['data'])) {
+															$data4['relatedbook'] = $decoded['data'];
+														} elseif (isset($decoded['results']) && is_array($decoded['results'])) {
+															$data4['relatedbook'] = $decoded['results'];
+														}
+													}
+												}
+												curl_close($chRel);
+											}
+											?>
 												<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
 													<div class="tg-sectionhead">
 														<h2><span>Sách liên quan</span>Bạn có thể quan tâm</h2>
