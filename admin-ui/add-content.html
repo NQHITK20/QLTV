@@ -328,12 +328,10 @@
                     return;
                 }
 
-                if (String(userData.id) === '1' || String(userData.userId) === '1' || String(userData.roleId) === '1') {
-                    localStorage.removeItem('userData');
-                    localStorage.removeItem('jwtToken');
-                    window.location.href = '../index.php';
-                    return;
-                }
+                if (String(userData.roleId) === '1' || String(userData.roleId) === '1' || String(userData.roleId) === '1') {
+                window.location.href = '../index.php';
+                return;
+            }
 
                 const span = document.getElementById('span-avatar');
                 if (span && userData.lastName) span.innerText = 'Hi ' + userData.lastName;

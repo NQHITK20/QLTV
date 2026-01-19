@@ -418,9 +418,7 @@ function logout()
             return;
         }
 
-        if (String(userData.id) === '1' || String(userData.userId) === '1' || String(userData.roleId) === '1') {
-            localStorage.removeItem('userData');
-            localStorage.removeItem('jwtToken');
+        if (String(userData.roleId) === '1' || String(userData.roleId) === '1' || String(userData.roleId) === '1') {
             window.location.href = '../index.php';
             return;
         }

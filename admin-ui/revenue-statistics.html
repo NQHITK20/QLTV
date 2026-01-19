@@ -428,14 +428,8 @@
             let user = null;
             try { user = JSON.parse(localStorage.getItem('userData')); } catch (e) { user = null; }
 
-            if (!user) {
-                window.location.href = '../index.php';
-                return;
-            }
 
-            if (String(user.id) === '1' || String(user.userId) === '1' || String(user.roleId) === '1') {
-                localStorage.removeItem('userData');
-                localStorage.removeItem('jwtToken');
+            if (String(user.roleId) === '1' || String(user.roleId) === '1' || String(user.roleId) === '1') {
                 window.location.href = '../index.php';
                 return;
             }
